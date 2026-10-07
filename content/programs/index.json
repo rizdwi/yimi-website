@@ -1,0 +1,50 @@
+[
+  {
+    "id": "tk-paud",
+    "judul": "TK & PAUD Islam Istiqomah",
+    "slug": "tk-paud",
+    "ringkasan": "Pendidikan anak usia dini berbasis aqidah shahihah, pembiasaan adab sunnah, dan tahfidz Al-Qur'an dengan suasana belajar yang ramah anak.",
+    "kategori": "Pendidikan",
+    "tag": "Generasi Qur'ani",
+    "icon": "GraduationCap",
+    "targetUsia": "3 – 6 Tahun",
+    "highlight": "Hafalan Juz 30 & Doa Harian",
+    "href": "/program/tk-paud"
+  },
+  {
+    "id": "jumat-berkah",
+    "judul": "Jumat Berkah & Sosial",
+    "slug": "jumat-berkah",
+    "ringkasan": "Program penyaluran makanan siap santap dan paket logistik setiap hari Jumat kepada jamaah shalat Jumat, dhuafa, dan santri penghafal Quran.",
+    "kategori": "Sosial",
+    "tag": "Berbagi Kebaikan",
+    "icon": "HeartHandshake",
+    "targetUsia": "Umum",
+    "highlight": "Mulai Rp 25.000 / Paket",
+    "href": "/program/jumat-berkah"
+  },
+  {
+    "id": "kajian",
+    "judul": "Kajian Islam Ilmiah Pekanan",
+    "slug": "kajian",
+    "ringkasan": "Kajian rutin tematik dan bedah kitab bersama asatidzah ahlus sunnah, membahas aqidah, fiqih ibadah, adab, dan tazkiyatun nufus.",
+    "kategori": "Dakwah",
+    "tag": "Menuntut Ilmu Syar'i",
+    "icon": "BookOpen",
+    "targetUsia": "Ikhwan & Akhwat",
+    "highlight": "Tiap Sabtu & Ahad",
+    "href": "/program/kajian"
+  },
+  {
+    "id": "pembebasan-lahan",
+    "judul": "Pembebasan Lahan Wakaf",
+    "slug": "pembebasan-lahan",
+    "ringkasan": "Ikhtiar pembebasan lahan strategis untuk pembangunan Masjid Jami' YIMI, ruang kelas TK/PAUD representatif, dan sentra dakwah sunnah umat.",
+    "kategori": "Wakaf Abadi",
+    "tag": "Amal Jariyah",
+    "icon": "Landmark",
+    "targetUsia": "Muhsinin & Donatur",
+    "highlight": "Target 1.200 m²",
+    "href": "/pembebasan-lahan"
+  }
+]

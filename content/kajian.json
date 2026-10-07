@@ -1,0 +1,50 @@
+[
+  {
+    "id": "kj-01",
+    "hari": "Sabtu",
+    "tanggal": "2026-10-10",
+    "waktu": "Ba'da Maghrib – Isya (18.15 – 19.30 WIB)",
+    "tema": "Kitab Ushul Tsalatsah: Mengenal Rabb, Agama, dan Nabi Kita",
+    "pemateri": "Ustadz Abdullah Abu Salma, B.A.",
+    "tempat": "Masjid Binaan YIMI, Jl. Dakwah Sunnah No. 08, Depok",
+    "kategori": "Aqidah & Tauhid",
+    "sifat": "Terbuka untuk Umum (Ikhwan & Akhwat)",
+    "keterangan": "Disediakan resume materi dan konsumsi ringan."
+  },
+  {
+    "id": "kj-02",
+    "hari": "Ahad",
+    "tanggal": "2026-10-11",
+    "waktu": "Ba'da Subuh – 06.30 WIB",
+    "tema": "Syarah Kitab Riyadhus Shalihin: Keutamaan Niat & Menuntut Ilmu",
+    "pemateri": "Ustadz Muhammad Hanif, Lc.",
+    "tempat": "Masjid Binaan YIMI, Jl. Dakwah Sunnah No. 08, Depok",
+    "kategori": "Hadits & Tazkiyatun Nufus",
+    "sifat": "Terbuka untuk Umum (Ikhwan & Akhwat)",
+    "keterangan": "Sarapan pagi bersama ba'da kajian."
+  },
+  {
+    "id": "kj-03",
+    "hari": "Sabtu",
+    "tanggal": "2026-10-17",
+    "waktu": "09.00 – 11.00 WIB",
+    "tema": "Fiqih Pendidikan Anak: Menanamkan Aqidah Shahihah Sejak Dini",
+    "pemateri": "Ustadz Dr. Fathurrahman, M.Pd.I.",
+    "tempat": "Aula Serbaguna YIMI, Depok",
+    "kategori": "Parenting & Keluarga",
+    "sifat": "Khusus Orang Tua Santri & Terbuka untuk Umum",
+    "keterangan": "Tersedia ruang konsultasi keluarga ba'da acara."
+  },
+  {
+    "id": "kj-04",
+    "hari": "Ahad",
+    "tanggal": "2026-10-18",
+    "waktu": "Ba'da Ashar – Menjelang Maghrib (15.45 – 17.30 WIB)",
+    "tema": "Tafsir Juz 'Amma: Tadabbur Surat Al-Fajr dan Makna Ujian Kehidupan",
+    "pemateri": "Ustadz Abu Zubair Al-Atsary",
+    "tempat": "Masjid Binaan YIMI, Jl. Dakwah Sunnah No. 08, Depok",
+    "kategori": "Tafsir Al-Qur'an",
+    "sifat": "Terbuka untuk Umum (Ikhwan & Akhwat)",
+    "keterangan": "Membawa mushaf Al-Qur'an masing-masing."
+  }
+]

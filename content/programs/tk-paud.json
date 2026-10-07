@@ -1,0 +1,46 @@
+{
+  "judul": "TK & PAUD Islam Istiqomah",
+  "subjudul": "Menumbuhkan Fitrah Keimanan, Adab Islami, dan Kecintaan pada Al-Qur'an Sejak Dini",
+  "deskripsi": "TK & PAUD Islam Istiqomah di bawah naungan YIMI didirikan dengan komitmen memberikan pondasi pendidikan usia dini yang kokoh di atas nilai-nilai tauhid dan sunnah Nabi Muhammad ﷺ. Kami memadukan kurikulum pendidikan nasional usia dini dengan penguatan keagamaan yang intensif, ramah anak, dan bebas dari doktrin menyimpang.",
+  "targetUsia": "Kelompok Bermain (3 – 4 Tahun) & TK A / TK B (4 – 6 Tahun)",
+  "waktuBelajar": "Senin – Kamis: 07.30 – 11.00 WIB | Jumat: 07.30 – 10.00 WIB",
+  "keunggulan": [
+    {
+      "judul": "Tahfidz Juz 'Amma Terbimbing",
+      "deskripsi": "Target hafalan surat-surat pendek juz 30 dengan makhraj dan tajwid yang tartil melalui metode talaqqi harian yang ceria dan tanpa tekanan."
+    },
+    {
+      "judul": "Pembiasaan Adab & Doa Nabawi",
+      "deskripsi": "Praktik adab makan, masuk kamar mandi, adab kepada orang tua, wudhu, shalat fardhu berjamaah, dan hafalan doa-doa harian sesuai sunnah."
+    },
+    {
+      "judul": "Sentra Kreativitas Ramah Anak",
+      "deskripsi": "Stimulasi motorik halus, motorik kasar, kemampuan bahasa, dan sains dasar melalui permainan edukatif serta eksperimen sederhana."
+    },
+    {
+      "judul": "Guru Pembimbing Berakhlak & Terlatih",
+      "deskripsi": "Tenaga pendidik akhwat berlatar belakang pendidikan anak usia dini dan memiliki pemahaman syar'i yang amanah dan penyayang."
+    }
+  ],
+  "kegiatanHarian": [
+    { "waktu": "07.30 – 08.00", "aktivitas": "Penyambutan santri, salam, dan senam motorik / dzikir pagi" },
+    { "waktu": "08.00 – 08.45", "aktivitas": "Halaqah Qur'an: Talaqqi hafalan dan pembacaan Iqro" },
+    { "waktu": "08.45 – 09.30", "aktivitas": "Materi tematik (kognitif, bahasa, adab harian)" },
+    { "waktu": "09.30 – 10.00", "aktivitas": "Istirahat, makan bersama dengan adab Islam, bermain luar" },
+    { "waktu": "10.00 – 10.45", "aktivitas": "Praktik ibadah (wudhu & simulasi shalat) serta kisah para Nabi" },
+    { "waktu": "10.45 – 11.00", "aktivitas": "Muroja'ah doa harian, refleksi, dan kepulangan" }
+  ],
+  "pendaftaran": {
+    "status": "Gelombang Inden Telah Dibuka",
+    "biaya": "[TBD: Rincian biaya pendaftaran dan SPP resmi pengurus]",
+    "syarat": [
+      "Mengisi formulir pendaftaran",
+      "Fotokopi Akta Kelahiran santri (2 lembar)",
+      "Fotokopi Kartu Keluarga (2 lembar)",
+      "Pasfoto santri 3x4 (3 lembar)",
+      "Wawancara kesepakatan visi pendidikan antara orang tua dan pihak sekolah"
+    ],
+    "kontakPendaftaran": "6281234567890",
+    "pesanWA": "Bismillah, saya ingin menanyakan informasi pendaftaran TK & PAUD Islam Istiqomah YIMI untuk ananda."
+  }
+}

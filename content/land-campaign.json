@@ -1,0 +1,75 @@
+{
+  "judul": "Pembebasan Lahan Wakaf Masjid & Sentra Dakwah YIMI",
+  "subjudul": "Investasi Abadi Menuju Jannah Melalui Wakaf Lahan Dakwah dan Pendidikan Sunnah",
+  "lokasi": "Kawasan Cilodong, Kota Depok, Jawa Barat [TBD: Nomor kavling dan sertifikat resmi pengurus]",
+  "luasTargetM2": 1200,
+  "hargaPerMeter": 1500000,
+  "targetDana": 1800000000,
+  "terkumpul": 845000000,
+  "diperbaruiPada": "2026-10-05",
+  "tujuanSingkat": "Lahan seluas 1.200 m² ini insya Allah akan diwakafkan untuk pembangunan Masjid Jami' YIMI, ruang kelas permanen TK/PAUD Islam Istiqomah, dan sekretariat dakwah umat.",
+  "rencanaPenggunaan": [
+    "Pembangunan Masjid Jami' YIMI berkapasitas 600 jamaah untuk shalat fardhu dan majelis taklim",
+    "Penyediaan 4 ruang kelas representatif dan sarana bermain luar untuk santri TK/PAUD",
+    "Ruang perpustakaan kitab syar'i dan ruang talaqqi tahfidz Al-Qur'an",
+    "Kantor operasional sekretariat yayasan, posko kemanusiaan, dan area parkir jamaah"
+  ],
+  "tahapan": [
+    {
+      "nama": "Tahap 1: Pembayaran DP & Tanda Jadi",
+      "status": "Selesai",
+      "keterangan": "Perjanjian pengikatan jual beli (PPJB) dan verifikasi legalitas berkas di hadapan notaris."
+    },
+    {
+      "nama": "Tahap 2: Angsuran Termin Pertama (40%)",
+      "status": "Selesai",
+      "keterangan": "Dana terhimpun dan diserahkan kepada pihak pemilik lahan dengan tanda terima resmi."
+    },
+    {
+      "nama": "Tahap 3: Pelunasan Sisa Lahan (60%)",
+      "status": "Sedang Berjalan",
+      "keterangan": "Penggalangan dana terus dibuka untuk melunasi sisa pembayaran lahan sebelum batas tempo."
+    },
+    {
+      "nama": "Tahap 4: Pengurusan Akta Ikrar Wakaf (AIW)",
+      "status": "Akan Datang",
+      "keterangan": "Penerbitan Akta Ikrar Wakaf resmi melalui KUA dan pendaftaran sertifikat ke Badan Wakaf Indonesia (BWI)."
+    }
+  ],
+  "paketWakaf": [
+    {
+      "nama": "Paket 1/2 Meter Persegi",
+      "nominal": 750000,
+      "deskripsi": "Infaq wakaf separuh meter persegi lahan dakwah"
+    },
+    {
+      "nama": "Paket 1 Meter Persegi",
+      "nominal": 1500000,
+      "deskripsi": "Infaq wakaf satu meter persegi lahan dakwah utuh"
+    },
+    {
+      "nama": "Paket 2 Meter Persegi",
+      "nominal": 3000000,
+      "deskripsi": "Infaq wakaf dua meter persegi lahan dakwah"
+    },
+    {
+      "nama": "Infaq Bebas / Sukarela",
+      "nominal": 0,
+      "deskripsi": "Nominal infaq tanpa batasan minimal sesuai kemampuan dan keikhlasan"
+    }
+  ],
+  "faq": [
+    {
+      "pertanyaan": "Bagaimana status legalitas lahan yang dibebaskan?",
+      "jawaban": "Lahan berstatus Sertifikat Hak Milik (SHM) yang bebas dari sengketa. Seluruh proses pengikatan dan pelunasan didampingi notaris PPAT resmi dan nantinya langsung dialihkan menjadi tanah wakaf bersertifikat resmi atas nama yayasan."
+    },
+    {
+      "pertanyaan": "Apakah donatur mendapatkan bukti tanda terima wakaf?",
+      "jawaban": "Ya, setiap donatur yang melakukan konfirmasi via WhatsApp akan mendapatkan tanda terima / kwitansi digital resmi dari Bendahara Yayasan beserta sertifikat wakaf simbolis."
+    },
+    {
+      "pertanyaan": "Bolehkah berinfaq atas nama orang tua yang telah wafat?",
+      "jawaban": "Boleh dan sangat dianjurkan. Berdasarkan hadits shahih, pahala sedekah/wakaf yang diniatkan untuk orang tua yang telah mendahului insya Allah tetap sampai kepada beliau."
+    }
+  ]
+}

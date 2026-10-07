@@ -1,0 +1,70 @@
+@import url('https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400&family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --color-yimi-blue-600: #3E5FD1;
+  --color-yimi-blue-800: #1F2F6B;
+  --color-yimi-blue-50: #EEF2FC;
+  --color-yimi-green-500: #2EE05A;
+  --color-yimi-green-700: #138A3A;
+  --color-yimi-yellow-400: #FFF200;
+  --color-yimi-red-600: #D7261E;
+  --color-neutral-900: #111827;
+  --color-neutral-500: #6B7280;
+  --color-neutral-100: #F5F7FA;
+  --color-white: #FFFFFF;
+
+  --font-sans: "Plus Jakarta Sans", "Inter", system-ui, -apple-system, sans-serif;
+  --font-arabic: "Amiri", "Noto Naskh Arabic", serif;
+
+  --shadow-yimi: 0 8px 24px rgba(31, 47, 107, 0.08);
+  --shadow-yimi-hover: 0 14px 32px rgba(31, 47, 107, 0.14);
+}
+
+:root {
+  --yimi-blue-600: #3E5FD1;
+  --yimi-blue-800: #1F2F6B;
+  --yimi-blue-50: #EEF2FC;
+  --yimi-green-500: #2EE05A;
+  --yimi-green-700: #138A3A;
+  --yimi-yellow-400: #FFF200;
+  --yimi-red-600: #D7261E;
+  --neutral-900: #111827;
+  --neutral-500: #6B7280;
+  --neutral-100: #F5F7FA;
+  --white: #FFFFFF;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background-color: var(--white);
+  color: var(--neutral-900);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Islamic Geometric Background Pattern tile */
+.bg-star8-pattern {
+  background-image: url('/patterns/pattern-star8.svg');
+  background-repeat: repeat;
+  background-size: 160px 160px;
+}
+
+/* Arabic typography styling */
+.font-arabic {
+  font-family: var(--font-arabic);
+}
+
+/* Accessibility: Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

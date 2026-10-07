@@ -1,0 +1,46 @@
+{
+  "judul": "Program Jumat Berkah & Sosial Umat",
+  "subjudul": "Meraih Keberkahan Sedekah di Sayyidul Ayyam untuk Sesama",
+  "deskripsi": "Program rutin pekanan Divisi Sosial YIMI yang menghimpun sedekah para muhsinin untuk disalurkan dalam bentuk makanan siap santap, minuman segar, serta paket sembako bagi jamaah shalat Jumat, dhuafa, musafir, santri, dan masyarakat sekitar.",
+  "landasanDalil": {
+    "arab": "وَأَحْسِنُوا إِنَّ اللَّهَ يُحِبُّ الْمُحْسِنِينَ",
+    "terjemahan": "Dan berbuat baiklah, sesungguhnya Allah menyukai orang-orang yang berbuat baik.",
+    "sumber": "QS. Al-Baqarah [2]: 195"
+  },
+  "paketInfaq": [
+    {
+      "nama": "Paket Nasi Berkah",
+      "nominal": 25000,
+      "deskripsi": "1 box nasi lengkap lauk higienis + air mineral disalurkan ke jamaah shalat Jumat & pekerja rentan."
+    },
+    {
+      "nama": "Paket Berbagi Beras",
+      "nominal": 75000,
+      "deskripsi": "5 kg beras premium untuk keluarga dhuafa di lingkar dakwah yayasan."
+    },
+    {
+      "nama": "Paket Santunan Dhuafa",
+      "nominal": 150000,
+      "deskripsi": "Paket sembako lengkap (beras, minyak, telur, gula, teh) untuk janda dan lansia kurang mampu."
+    }
+  ],
+  "mekanismePenyaluran": [
+    {
+      "tahap": "1. Penghimpunan Dana",
+      "rincian": "Donatur mentransfer infaq ke rekening resmi BSI YIMI dengan kode unik / konfirmasi WhatsApp hingga hari Kamis pukul 21.00 WIB."
+    },
+    {
+      "tahap": "2. Pengolahan & Pengemasan",
+      "rincian": "Tim relawan memesan makanan dari UMKM muslim sekitar atau memasak secara higienis di dapur yayasan setiap Jumat pagi."
+    },
+    {
+      "tahap": "3. Distribusi Terarah",
+      "rincian": "Paket didistribusikan ba'da shalat Jumat di titik masjid binaan dan pemukiman warga dhuafa."
+    },
+    {
+      "tahap": "4. Laporan Dokumentasi",
+      "rincian": "Dokumentasi penyaluran dan rincian kas diunggah secara berkala ke grup donatur dan media sosial yayasan."
+    }
+  ],
+  "ajakan": "Setiap butir nasi dan teguk air yang dinikmati jamaah menjadi amal shalih yang terus mengalir pahalanya bagi para donatur."
+}

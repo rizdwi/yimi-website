@@ -1,0 +1,56 @@
+[
+  {
+    "id": "gal-01",
+    "judul": "Suasana Khusyuk Kajian Ilmiah Pekanan di Masjid Binaan",
+    "kategori": "Kajian",
+    "tanggal": "2026-09-27",
+    "gambar": "https://images.unsplash.com/photo-1542816417-0983c9c9ad53?q=80&w=1200&auto=format&fit=crop",
+    "deskripsi": "Jamaah ikhwan menyimak pemaparan kitab Aqidah dengan penuh perhatian dan tertib.",
+    "izinOrangTua": true
+  },
+  {
+    "id": "gal-02",
+    "judul": "Penyaluran Paket Nasi Siap Santap Ba'da Shalat Jumat",
+    "kategori": "Jumat Berkah",
+    "tanggal": "2026-10-02",
+    "gambar": "https://images.unsplash.com/photo-1593113598332-cd288d649433?q=80&w=1200&auto=format&fit=crop",
+    "deskripsi": "Relawan yayasan membagikan nasi box higienis kepada jamaah dan warga sekitar.",
+    "izinOrangTua": true
+  },
+  {
+    "id": "gal-03",
+    "judul": "Pematokan dan Pengukuran Batas Lahan Wakaf YIMI",
+    "kategori": "Pembebasan Lahan",
+    "tanggal": "2026-09-20",
+    "gambar": "https://images.unsplash.com/photo-1500382017468-9049fed747ef?q=80&w=1200&auto=format&fit=crop",
+    "deskripsi": "Pengurus yayasan bersama tim juru ukur meninjau patok batas tanah seluas 1.200 m².",
+    "izinOrangTua": true
+  },
+  {
+    "id": "gal-04",
+    "judul": "Kegiatan Halaqah Talaqqi Hafalan Santri Usia Dini",
+    "kategori": "TK & PAUD",
+    "tanggal": "2026-09-29",
+    "gambar": "https://images.unsplash.com/photo-1509062522246-3755977927d7?q=80&w=1200&auto=format&fit=crop",
+    "deskripsi": "Anak-anak belajar membaca surat pendek dengan bimbingan ustadzah (dokumentasi izin orang tua terverifikasi).",
+    "izinOrangTua": true
+  },
+  {
+    "id": "gal-05",
+    "judul": "Musyawarah Rutin Pengurus dan Dewan Asatidzah",
+    "kategori": "Kajian",
+    "tanggal": "2026-09-15",
+    "gambar": "https://images.unsplash.com/photo-1517048676732-d65bc937f952?q=80&w=1200&auto=format&fit=crop",
+    "deskripsi": "Rapat koordinasi pematangan agenda dakwah dan evaluasi program bulanan yayasan.",
+    "izinOrangTua": true
+  },
+  {
+    "id": "gal-06",
+    "judul": "Gotong Royong Kebersihan Lingkungan dan Persiapan Lokasi Wakaf",
+    "kategori": "Pembebasan Lahan",
+    "tanggal": "2026-09-06",
+    "gambar": "https://images.unsplash.com/photo-1544717305-2782549b5136?q=80&w=1200&auto=format&fit=crop",
+    "deskripsi": "Kebersamaan para relawan dan warga sekitar membersihkan rumput liar di lahan rencana pembangunan.",
+    "izinOrangTua": true
+  }
+]

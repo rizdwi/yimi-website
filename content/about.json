@@ -1,0 +1,88 @@
+{
+  "judul": "Tentang Yayasan Insan Muslim Istiqomah",
+  "ringkasan": "Yayasan Insan Muslim Istiqomah (YIMI) hadir sebagai wadah dakwah, pendidikan, dan sosial yang mengajak kaum muslimin kembali kepada kemurnian syariat Islam.",
+  "visi": "[TBD: Visi resmi yayasan — Mengajak kaum muslimin kepada Islam yang murni dan istiqomah di atas Sunnah]",
+  "misi": [
+    "Menyelenggarakan kajian Islam ilmiah berlandaskan Al-Qur'an dan As-Sunnah sesuai pemahaman Salafus Shalih.",
+    "Mengembangkan pendidikan anak usia dini (TK/PAUD) yang berakhlak mulia, beraqidah shahihah, dan cinta Al-Qur'an.",
+    "Menyalurkan kepedulian sosial kaum muslimin melalui program rutin seperti Jumat Berkah dan bantuan kemanusiaan.",
+    "Mewujudkan sarana ibadah dan pusat dakwah permanen melalui pembebasan lahan wakaf yang berkelanjutan."
+  ],
+  "manhaj": {
+    "judul": "Landasan Dakwah & Manhaj",
+    "penjelasan": "Dakwah YIMI ditegakkan di atas sunnah Rasulullah ﷺ, berlandaskan Al-Qur'an dan As-Sunnah dengan merujuk kepada pemahaman Salafus Shalih (para sahabat radhiyallahu 'anhum, tabi'in, dan tabi'ut tabi'in). Kami menjunjung tinggi prinsip keikhlasan, ittiba' (mengikuti dalil), dan dakwah bil hikmah.",
+    "dalilQuran": {
+      "arab": "يَا أَيُّهَا الَّذِينَ آمَنُوا اتَّقُوا اللَّهَ حَقَّ تُقَاتِهِ وَلَا تَمُوتُنَّ إِلَّا وَأَنتُم مُّسْلِمُونَ",
+      "terjemahan": "Wahai orang-orang yang beriman! Bertakwalah kepada Allah sebenar-benar takwa kepada-Nya dan janganlah kamu mati kecuali dalam keadaan muslim.",
+      "sumber": "QS. Ali 'Imran [3]: 102"
+    },
+    "dalilHadits": {
+      "arab": "تَرَكْتُ فِيكُمْ أَمْرَيْنِ لَنْ تَضِلُّوا مَا تَمَسَّكْتُمْ بِهِمَا: كِتَابَ اللَّهِ وَسُنَّةَ نَبِيِّهِ",
+      "terjemahan": "Aku telah tinggalkan pada kalian dua perkara yang kalian tidak akan tersesat selama berpegang teguh kepada keduanya: Kitabullah dan Sunnah Nabi-Nya.",
+      "sumber": "HR. Malik dalam Al-Muwaththa' No. 1594"
+    }
+  },
+  "sejarah": {
+    "teks": "[TBD: Sejarah resmi berdirinya YIMI yang disusun oleh dewan pembina dan pengurus]. Berawal dari majelis taklim pekanan dan kepedulian bersama akan pentingnya sarana pendidikan Islam generasi dini, kaum muslimin berhimpun membentuk yayasan legal guna mengelola amanah dakwah, pendidikan, dan wakaf umat secara terorganisir, transparan, dan berkelanjutan."
+  },
+  "strukturPengurus": [
+    {
+      "jabatan": "Dewan Pembina",
+      "nama": "[TBD: Pembina Yayasan]",
+      "peran": "Memberikan arahan strategis, pembinaan syariah, dan penjagaan manhaj yayasan."
+    },
+    {
+      "jabatan": "Dewan Pengawas",
+      "nama": "[TBD: Pengawas Yayasan]",
+      "peran": "Mengawasi jalannya roda organisasi, kepatuhan legalitas, dan transparansi amanah umat."
+    },
+    {
+      "jabatan": "Ketua Pengurus",
+      "nama": "[TBD: Ketua Pengurus]",
+      "peran": "Memimpin eksekusi program harian, koordinasi divisi, dan hubungan eksternal."
+    },
+    {
+      "jabatan": "Sekretaris",
+      "nama": "[TBD: Sekretaris]",
+      "peran": "Administrasi, korespondensi resmi, perizinan, dan tata kelola dokumentasi."
+    },
+    {
+      "jabatan": "Bendahara",
+      "nama": "[TBD: Bendahara]",
+      "peran": "Akuntabilitas keuangan, pelaporan donasi, dan pengelolaan kas operasional yayasan."
+    },
+    {
+      "jabatan": "Divisi Dakwah & Kajian",
+      "nama": "[TBD: Koordinator Dakwah]",
+      "peran": "Penyelenggaraan kajian rutin, tabligh akbar, serta kurasi pemateri sunnah."
+    },
+    {
+      "jabatan": "Divisi Pendidikan (TK/PAUD)",
+      "nama": "[TBD: Kepala Sekolah & Koordinator]",
+      "peran": "Pengelolaan kurikulum dini, hafalan Quran, dan pembinaan pengajar TK/PAUD."
+    },
+    {
+      "jabatan": "Divisi Sosial & Wakaf Lahan",
+      "nama": "[TBD: Koordinator Wakaf]",
+      "peran": "Pelaksanaan Jumat Berkah, kampanye pembebasan lahan, dan hubungan donatur."
+    }
+  ],
+  "maknaLambang": [
+    {
+      "elemen": "Bintang 8 Sudut (Khatim / Rub el Hizb)",
+      "makna": "Bentuk geometri Islam melambangkan ketertiban syariat, keindahan arsitektur peradaban Islam, dan komitmen untuk istiqomah meniti sunnah."
+    },
+    {
+      "elemen": "Kubah Masjid & Bulan Sabit (Hilal)",
+      "makna": "Simbol pusat tauhid dan ibadah umat, sekaligus penegasan arah dakwah untuk memakmurkan rumah Allah dan memancarkan syiar cahaya Islam."
+    },
+    {
+      "elemen": "Al-Qur'an Terbuka",
+      "makna": "Menjadi sumber rujukan utama seluruh lini gerak yayasan, lambang ilmu syar'i yang diamalkan dan diajarkan kepada generasi ke generasi."
+    },
+    {
+      "elemen": "Dua Telapak Tangan",
+      "makna": "Melambangkan doa, tawakal, keikhlasan dalam berkhidmah, serta amanah dalam memegang dan menyalurkan infaq para muhsinin."
+    }
+  ]
+}

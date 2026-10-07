@@ -1,0 +1,40 @@
+<svg width="160" height="160" viewBox="0 0 160 160" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Central 8-pointed star (Rub el Hizb geometry) -->
+  <g stroke="#3E5FD1" stroke-width="1.2" stroke-linejoin="round" stroke-linecap="round" opacity="0.35">
+    <!-- Star square 1 -->
+    <rect x="52" y="52" width="56" height="56" rx="2" transform="rotate(0 80 80)"/>
+    <!-- Star square 2 rotated 45 deg -->
+    <rect x="52" y="52" width="56" height="56" rx="2" transform="rotate(45 80 80)"/>
+    <!-- Inner octagram star accent -->
+    <circle cx="80" cy="80" r="14" stroke="#2EE05A" stroke-width="0.8"/>
+    <circle cx="80" cy="80" r="4" fill="#3E5FD1" stroke="none" opacity="0.5"/>
+    
+    <!-- Corner stars (seamless repeating connection) -->
+    <!-- Top-Left (0, 0) -->
+    <rect x="-20" y="-20" width="40" height="40" rx="1.5" transform="rotate(0 0 0)"/>
+    <rect x="-20" y="-20" width="40" height="40" rx="1.5" transform="rotate(45 0 0)"/>
+    
+    <!-- Top-Right (160, 0) -->
+    <rect x="140" y="-20" width="40" height="40" rx="1.5" transform="rotate(0 160 0)"/>
+    <rect x="140" y="-20" width="40" height="40" rx="1.5" transform="rotate(45 160 0)"/>
+    
+    <!-- Bottom-Left (0, 160) -->
+    <rect x="-20" y="140" width="40" height="40" rx="1.5" transform="rotate(0 0 160)"/>
+    <rect x="-20" y="140" width="40" height="40" rx="1.5" transform="rotate(45 0 160)"/>
+    
+    <!-- Bottom-Right (160, 160) -->
+    <rect x="140" y="140" width="40" height="40" rx="1.5" transform="rotate(0 160 160)"/>
+    <rect x="140" y="140" width="40" height="40" rx="1.5" transform="rotate(45 160 160)"/>
+
+    <!-- Interlocking connecting lattice lines -->
+    <line x1="80" y1="24" x2="80" y2="0" stroke-dasharray="3 3"/>
+    <line x1="80" y1="136" x2="80" y2="160" stroke-dasharray="3 3"/>
+    <line x1="24" y1="80" x2="0" y2="80" stroke-dasharray="3 3"/>
+    <line x1="136" y1="80" x2="160" y2="80" stroke-dasharray="3 3"/>
+
+    <line x1="40" y1="40" x2="0" y2="0"/>
+    <line x1="120" y1="40" x2="160" y2="0"/>
+    <line x1="40" y1="120" x2="0" y2="160"/>
+    <line x1="120" y1="120" x2="160" y2="160"/>
+  </g>
+</svg>
