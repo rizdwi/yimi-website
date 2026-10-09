@@ -1,14 +1,48 @@
-import React from 'react';
+'use client';
+
+import React, { useState, useEffect } from 'react';
 import { Landmark, ArrowRight, Heart, MapPin } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
 import { ProgressBar } from '@/components/ui/ProgressBar';
 import { CountUp } from '@/components/motion/CountUp';
 import { ParallaxLayer } from '@/components/motion/ParallaxLayer';
 import { formatRupiah, formatPersen } from '@/lib/format';
-import landData from '@/content/land-campaign.json';
+import landDataFallback from '@/content/land-campaign.json';
 
 export function LandBanner() {
-  const percentage = formatPersen(landData.terkumpul, landData.targetDana);
+  const [campaign, setCampaign] = useState({
+    judul: landDataFallback.judul,
+    lokasi: landDataFallback.lokasi,
+    luasTargetM2: landDataFallback.luasTargetM2,
+    targetDana: landDataFallback.targetDana,
+    terkumpul: landDataFallback.terkumpul,
+  });
+
+  useEffect(() => {
+    async function fetchLiveLand() {
+      try {
+        const res = await fetch('/api/lahan');
+        if (res.ok) {
+          const data = await res.json();
+          if (data.campaign) {
+            setCampaign({
+              judul: data.campaign.judul || landDataFallback.judul,
+              lokasi: data.campaign.lokasi || landDataFallback.lokasi,
+              luasTargetM2: Number(data.campaign.luasTargetM2) || landDataFallback.luasTargetM2,
+              targetDana: Number(data.campaign.targetDana) || landDataFallback.targetDana,
+              terkumpul: Number(data.campaign.terkumpul) || 0,
+            });
+          }
+        }
+      } catch (err) {
+        console.error('Failed to fetch live land banner data:', err);
+      }
+    }
+
+    fetchLiveLand();
+  }, []);
+
+  const percentage = formatPersen(campaign.terkumpul, campaign.targetDana);
 
   return (
     <section className="relative py-20 md:py-28 bg-yimi-blue-800 text-white overflow-hidden">
@@ -42,14 +76,14 @@ export function LandBanner() {
             <p className="text-base sm:text-lg text-blue-100/90 leading-relaxed max-w-xl">
               Ikhtiar bersama membebaskan lahan seluas{' '}
               <strong className="text-white font-bold">
-                {landData.luasTargetM2.toLocaleString('id-ID')} m²
+                {campaign.luasTargetM2.toLocaleString('id-ID')} m²
               </strong>{' '}
               untuk pembangunan Masjid Jami&apos; YIMI dan gedung representatif TK/PAUD Islam Istiqomah.
             </p>
 
             <div className="flex items-center gap-2 text-xs md:text-sm text-blue-200 mt-1">
               <MapPin className="w-4 h-4 text-yimi-green-500 shrink-0" />
-              <span>{landData.lokasi}</span>
+              <span>{campaign.lokasi}</span>
             </div>
           </div>
 
@@ -62,14 +96,14 @@ export function LandBanner() {
               <div className="flex items-baseline gap-2">
                 <span className="text-3xl sm:text-4xl font-extrabold text-yimi-yellow-400 font-mono tracking-tight">
                   <CountUp
-                    end={landData.terkumpul}
+                    end={campaign.terkumpul}
                     prefix="Rp "
                     duration={1500}
                   />
                 </span>
               </div>
               <span className="text-xs text-blue-200">
-                dari target kebutuhan {formatRupiah(landData.targetDana)}
+                dari target kebutuhan {formatRupiah(campaign.targetDana)}
               </span>
             </div>
 
@@ -80,7 +114,7 @@ export function LandBanner() {
                   {percentage}% Tercapai
                 </span>
                 <span className="text-blue-200">
-                  Sisa {formatRupiah(landData.targetDana - landData.terkumpul)}
+                  Sisa {formatRupiah(Math.max(0, campaign.targetDana - campaign.terkumpul))}
                 </span>
               </div>
               <ProgressBar
