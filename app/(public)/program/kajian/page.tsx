@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   BookOpen,
   Clock,
@@ -9,16 +9,39 @@ import {
   CalendarPlus,
   CheckCircle2,
   FileCheck,
+  AlertOctagon,
 } from 'lucide-react';
 import { Card } from '@/components/ui/Card';
 import { Badge } from '@/components/ui/Badge';
 import { Button } from '@/components/ui/Button';
 import { downloadIcsFile } from '@/lib/ics';
+import { KajianItem } from '@/lib/types';
 import kajianProgramData from '@/content/programs/kajian.json';
-import kajianScheduleData from '@/content/kajian.json';
+import kajianScheduleFallback from '@/content/kajian.json';
 
 export default function KajianProgramPage() {
+  const [kajianList, setKajianList] = useState<KajianItem[]>(
+    kajianScheduleFallback as unknown as KajianItem[]
+  );
   const todayStr = new Date().toISOString().split('T')[0];
+
+  useEffect(() => {
+    async function fetchKajian() {
+      try {
+        const res = await fetch('/api/kajian');
+        if (res.ok) {
+          const data = await res.json();
+          if (Array.isArray(data.kajian) && data.kajian.length > 0) {
+            setKajianList(data.kajian);
+          }
+        }
+      } catch (err) {
+        console.error('Gagal mengambil data kajian live:', err);
+      }
+    }
+
+    fetchKajian();
+  }, []);
 
   return (
     <div className="pt-[72px]">
@@ -29,7 +52,7 @@ export default function KajianProgramPage() {
           aria-hidden="true"
         />
         <div className="max-w-[1200px] w-full mx-auto px-5 md:px-8 text-center relative z-10">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 text-yimi-yellow-400 text-xs font-bold uppercase tracking-wider mb-3">
+          <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-white/10 text-yimi-yellow-400 text-xs font-bold uppercase tracking-wider mb-3 border border-white/15">
             <BookOpen className="w-3.5 h-3.5" />
             <span>Majelis Talabul &apos;Ilmi</span>
           </div>
@@ -91,33 +114,64 @@ export default function KajianProgramPage() {
           </div>
 
           <div className="flex flex-col gap-5">
-            {kajianScheduleData.map((item) => {
+            {kajianList.map((item) => {
               const isToday = item.tanggal === todayStr;
+              const isBatal = item.status === 'batal';
 
               return (
                 <Card
                   key={item.id}
                   hoverEffect
-                  className="p-6 border-neutral-200/80 flex flex-col md:flex-row items-start md:items-center justify-between gap-6"
+                  className={`p-6 flex flex-col md:flex-row items-start md:items-center justify-between gap-6 transition-colors duration-200 ${
+                    isBatal
+                      ? 'border-rose-200 bg-rose-50/20'
+                      : 'border-neutral-200/80'
+                  }`}
                 >
                   {/* Left Date */}
                   <div className="flex items-center gap-4 shrink-0">
-                    <div className="w-20 md:w-24 py-3 bg-yimi-blue-50 rounded-2xl flex flex-col items-center justify-center text-center">
-                      <span className="text-xs font-bold uppercase text-yimi-blue-600">
+                    <div
+                      className={`w-20 md:w-24 py-3 rounded-2xl flex flex-col items-center justify-center text-center transition-colors ${
+                        isBatal
+                          ? 'bg-rose-100/70 text-rose-800'
+                          : 'bg-yimi-blue-50 text-yimi-blue-800'
+                      }`}
+                    >
+                      <span
+                        className={`text-xs font-bold uppercase ${
+                          isBatal ? 'text-rose-700' : 'text-yimi-blue-600'
+                        }`}
+                      >
                         {item.hari}
                       </span>
-                      <span className="text-2xl md:text-3xl font-extrabold text-yimi-blue-800 font-mono my-1">
-                        {new Date(item.tanggal).getDate()}
+                      <span
+                        className={`text-2xl md:text-3xl font-extrabold font-mono my-1 ${
+                          isBatal ? 'text-rose-900' : 'text-yimi-blue-800'
+                        }`}
+                      >
+                        {item.tanggal ? new Date(item.tanggal).getDate() : '-'}
                       </span>
-                      <span className="text-[11px] font-semibold text-neutral-500">
-                        {new Intl.DateTimeFormat('id-ID', { month: 'short' }).format(
-                          new Date(item.tanggal)
-                        )}
+                      <span
+                        className={`text-[11px] font-semibold ${
+                          isBatal ? 'text-rose-600' : 'text-neutral-500'
+                        }`}
+                      >
+                        {item.tanggal
+                          ? new Intl.DateTimeFormat('id-ID', { month: 'short' }).format(
+                              new Date(item.tanggal)
+                            )
+                          : ''}
                       </span>
                     </div>
 
                     <div className="flex flex-col gap-1 md:hidden">
-                      {isToday && <Badge variant="green">Hari Ini</Badge>}
+                      {isBatal ? (
+                        <Badge variant="red" className="font-bold text-[10px]">
+                          Batal
+                        </Badge>
+                      ) : isToday ? (
+                        <Badge variant="green">Hari Ini</Badge>
+                      ) : null}
                       <Badge variant="blue" className="text-[10px]">
                         {item.kategori}
                       </Badge>
@@ -125,9 +179,15 @@ export default function KajianProgramPage() {
                   </div>
 
                   {/* Middle Info */}
-                  <div className="flex-1 flex flex-col gap-2">
+                  <div className="flex-1 flex flex-col gap-2.5">
                     <div className="hidden md:flex items-center gap-2">
-                      {isToday && <Badge variant="green">Hari Ini</Badge>}
+                      {isBatal ? (
+                        <Badge variant="red" className="font-bold tracking-wider">
+                          Kajian Dibatalkan
+                        </Badge>
+                      ) : isToday ? (
+                        <Badge variant="green">Hari Ini</Badge>
+                      ) : null}
                       <Badge variant="blue" className="text-[10px]">
                         {item.kategori}
                       </Badge>
@@ -136,13 +196,42 @@ export default function KajianProgramPage() {
                       </span>
                     </div>
 
-                    <h3 className="text-lg md:text-xl font-bold text-yimi-blue-800">
+                    <h3
+                      className={`text-lg md:text-xl font-bold leading-snug ${
+                        isBatal
+                          ? 'text-neutral-500 line-through decoration-rose-500/80'
+                          : 'text-yimi-blue-800'
+                      }`}
+                    >
                       {item.tema}
                     </h3>
 
+                    {/* Announcement Notice for Cancelled Kajian */}
+                    {isBatal && (
+                      <div className="flex items-start sm:items-center gap-2.5 p-3 rounded-xl bg-rose-50 border border-rose-200 text-rose-800 text-xs sm:text-sm font-medium">
+                        <AlertOctagon className="w-4 h-4 text-rose-600 shrink-0 mt-0.5 sm:mt-0" />
+                        <div>
+                          <strong className="font-bold">Pemberitahuan: Kajian Dibatalkan.</strong>{' '}
+                          {item.alasan_batal ? (
+                            <span>Alasan: {item.alasan_batal}</span>
+                          ) : (
+                            <span>Ustadz berhalangan hadir. Mohon maaf atas ketidaknyamanan jamaah.</span>
+                          )}
+                        </div>
+                      </div>
+                    )}
+
                     <div className="flex flex-wrap items-center gap-x-5 gap-y-1.5 text-xs md:text-sm text-neutral-600">
-                      <div className="flex items-center gap-1.5 text-yimi-blue-800 font-semibold">
-                        <User className="w-4 h-4 text-yimi-green-700 shrink-0" />
+                      <div
+                        className={`flex items-center gap-1.5 font-semibold ${
+                          isBatal ? 'text-neutral-500' : 'text-yimi-blue-800'
+                        }`}
+                      >
+                        <User
+                          className={`w-4 h-4 shrink-0 ${
+                            isBatal ? 'text-neutral-400' : 'text-yimi-green-700'
+                          }`}
+                        />
                         <span>{item.pemateri}</span>
                       </div>
                       <div className="flex items-center gap-1.5">
@@ -158,16 +247,27 @@ export default function KajianProgramPage() {
 
                   {/* Right Download Button */}
                   <div className="w-full md:w-auto flex items-center justify-end">
-                    <Button
-                      type="button"
-                      variant="primary"
-                      size="sm"
-                      onClick={() => downloadIcsFile(item)}
-                      className="w-full md:w-auto flex items-center justify-center gap-1.5 text-xs"
-                    >
-                      <CalendarPlus className="w-4 h-4" />
-                      <span>Simpan Jadwal (.ics)</span>
-                    </Button>
+                    {isBatal ? (
+                      <button
+                        disabled
+                        type="button"
+                        className="w-full md:w-auto px-4 py-2.5 rounded-xl bg-rose-50 border border-rose-200 text-rose-600 text-xs font-semibold flex items-center justify-center gap-1.5 opacity-80 cursor-not-allowed"
+                      >
+                        <AlertOctagon className="w-4 h-4" />
+                        <span>Kajian Dibatalkan</span>
+                      </button>
+                    ) : (
+                      <Button
+                        type="button"
+                        variant="primary"
+                        size="sm"
+                        onClick={() => downloadIcsFile(item)}
+                        className="w-full md:w-auto flex items-center justify-center gap-1.5 text-xs"
+                      >
+                        <CalendarPlus className="w-4 h-4" />
+                        <span>Simpan Jadwal (.ics)</span>
+                      </Button>
+                    )}
                   </div>
                 </Card>
               );
