@@ -6,6 +6,8 @@ import { Images, Eye, X } from 'lucide-react';
 import { Badge } from '@/components/ui/Badge';
 import galleryData from '@/content/gallery.json';
 
+const FALLBACK_IMAGE = 'https://images.unsplash.com/photo-1542816417-0983c9c9ad53?q=80&w=1200&auto=format&fit=crop';
+
 interface GalleryPhotoItemLocal {
   id: string;
   judul: string;
@@ -14,6 +16,46 @@ interface GalleryPhotoItemLocal {
   deskripsi: string;
   izinOrangTua: boolean;
   tanggal?: string;
+}
+
+function GalleryPhotoCard({ photo, onSelect }: { photo: GalleryPhotoItemLocal; onSelect: () => void }) {
+  const [imgSrc, setImgSrc] = useState(photo.gambar || FALLBACK_IMAGE);
+  const isSupabase = Boolean(imgSrc && imgSrc.includes('supabase.co'));
+
+  return (
+    <div
+      onClick={onSelect}
+      className="group relative aspect-4/3 rounded-3xl overflow-hidden bg-neutral-200 cursor-pointer border border-neutral-200/80 shadow-xs"
+    >
+      <Image
+        src={imgSrc}
+        alt={photo.judul}
+        fill
+        unoptimized={isSupabase}
+        onError={() => setImgSrc(FALLBACK_IMAGE)}
+        sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+        className="object-cover group-hover:scale-105 transition-transform duration-500"
+      />
+
+      {/* Overlay gradient */}
+      <div className="absolute inset-0 bg-gradient-to-t from-yimi-blue-800/90 via-yimi-blue-800/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-between p-6">
+        <div className="self-end">
+          <span className="w-10 h-10 rounded-full bg-white/20 backdrop-blur-xs flex items-center justify-center text-white">
+            <Eye className="w-5 h-5" />
+          </span>
+        </div>
+
+        <div>
+          <Badge variant="yellow" className="mb-2">
+            {photo.kategori}
+          </Badge>
+          <h3 className="text-white text-base font-bold leading-snug drop-shadow-xs">
+            {photo.judul}
+          </h3>
+        </div>
+      </div>
+    </div>
+  );
 }
 
 export default function GaleriPage() {
@@ -116,37 +158,11 @@ export default function GaleriPage() {
           {/* Grid */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {filteredPhotos.map((photo) => (
-              <div
+              <GalleryPhotoCard
                 key={photo.id}
-                onClick={() => setActivePhoto(photo)}
-                className="group relative aspect-4/3 rounded-3xl overflow-hidden bg-neutral-200 cursor-pointer border border-neutral-200/80 shadow-xs"
-              >
-                <Image
-                  src={photo.gambar}
-                  alt={photo.judul}
-                  fill
-                  sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-                  className="object-cover group-hover:scale-105 transition-transform duration-500"
-                />
-
-                {/* Overlay gradient */}
-                <div className="absolute inset-0 bg-gradient-to-t from-yimi-blue-800/90 via-yimi-blue-800/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-between p-6">
-                  <div className="self-end">
-                    <span className="w-10 h-10 rounded-full bg-white/20 backdrop-blur-xs flex items-center justify-center text-white">
-                      <Eye className="w-5 h-5" />
-                    </span>
-                  </div>
-
-                  <div>
-                    <Badge variant="yellow" className="mb-2">
-                      {photo.kategori}
-                    </Badge>
-                    <h3 className="text-white text-base font-bold leading-snug drop-shadow-xs">
-                      {photo.judul}
-                    </h3>
-                  </div>
-                </div>
-              </div>
+                photo={photo}
+                onSelect={() => setActivePhoto(photo)}
+              />
             ))}
           </div>
         </div>
@@ -177,9 +193,10 @@ export default function GaleriPage() {
             {/* Modal Image */}
             <div className="relative aspect-16/10 w-full bg-neutral-950">
               <Image
-                src={activePhoto.gambar}
+                src={activePhoto.gambar || FALLBACK_IMAGE}
                 alt={activePhoto.judul}
                 fill
+                unoptimized={Boolean(activePhoto.gambar && activePhoto.gambar.includes('supabase.co'))}
                 sizes="(max-width: 1024px) 100vw, 900px"
                 className="object-contain"
               />

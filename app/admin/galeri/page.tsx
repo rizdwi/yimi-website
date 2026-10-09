@@ -270,6 +270,10 @@ export default function AdminGaleriPage() {
                     src={item.gambar}
                     alt={item.judul}
                     className="w-full h-full object-cover group-hover:scale-105 transition duration-200"
+                    onError={(e) => {
+                      (e.target as HTMLImageElement).src =
+                        'https://images.unsplash.com/photo-1542816417-0983c9c9ad53?q=80&w=1200&auto=format&fit=crop';
+                    }}
                   />
 
                   {/* Kategori Badge */}
@@ -395,7 +399,15 @@ export default function AdminGaleriPage() {
                 {/* Preview Thumbnail jika sudah ada foto */}
                 {gambar && (
                   <div className="relative aspect-video max-h-48 rounded-xl overflow-hidden border border-[#E3E7EE] bg-gray-50 flex items-center justify-center mt-2 group">
-                    <img src={gambar} alt="Preview" className="w-full h-full object-cover" />
+                    <img
+                      src={gambar}
+                      alt="Preview"
+                      className="w-full h-full object-cover"
+                      onError={(e) => {
+                        (e.target as HTMLImageElement).src =
+                          'https://images.unsplash.com/photo-1542816417-0983c9c9ad53?q=80&w=1200&auto=format&fit=crop';
+                      }}
+                    />
                     <div className="absolute top-2 right-2 bg-black/60 text-white text-[10px] px-2 py-0.5 rounded-md flex items-center space-x-1">
                       <CheckCircle2 className="w-3 h-3 text-[#2EE05A]" />
                       <span>Foto Terpasang</span>

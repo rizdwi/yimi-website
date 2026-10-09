@@ -8,6 +8,54 @@ import { Badge } from '@/components/ui/Badge';
 import { GalleryItem } from '@/lib/content';
 import galleryData from '@/content/gallery.json';
 
+const FALLBACK_IMAGE = 'https://images.unsplash.com/photo-1542816417-0983c9c9ad53?q=80&w=1200&auto=format&fit=crop';
+
+function GalleryCardItem({ item, onSelect }: { item: GalleryItem; onSelect: () => void }) {
+  const [imgSrc, setImgSrc] = useState(item.gambar || FALLBACK_IMAGE);
+  const isSupabase = Boolean(imgSrc && imgSrc.includes('supabase.co'));
+
+  return (
+    <div
+      onClick={onSelect}
+      className="group relative rounded-2xl overflow-hidden aspect-4/3 bg-neutral-100 cursor-pointer shadow-sm hover:shadow-xl transition-all duration-300"
+    >
+      <Image
+        src={imgSrc}
+        alt={item.judul}
+        fill
+        unoptimized={isSupabase}
+        onError={() => setImgSrc(FALLBACK_IMAGE)}
+        className="object-cover transition-transform duration-500 group-hover:scale-108"
+        sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+      />
+
+      {/* Gradient Overlay */}
+      <div className="absolute inset-0 bg-linear-to-t from-yimi-blue-800/85 via-yimi-blue-800/20 to-transparent opacity-60 group-hover:opacity-90 transition-opacity duration-300" />
+
+      {/* Category Pill Top Left */}
+      <div className="absolute top-3.5 left-3.5 z-10">
+        <Badge variant="blue" className="bg-white/95 text-yimi-blue-800 font-bold backdrop-blur-xs">
+          {item.kategori}
+        </Badge>
+      </div>
+
+      {/* Quick View Icon Center (hover) */}
+      <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-200 z-10 pointer-events-none">
+        <div className="w-12 h-12 rounded-full bg-white/90 text-yimi-blue-800 flex items-center justify-center shadow-lg">
+          <Eye className="w-6 h-6" />
+        </div>
+      </div>
+
+      {/* Caption Bottom */}
+      <div className="absolute bottom-0 inset-x-0 p-4 text-white z-10">
+        <h3 className="text-sm font-bold leading-snug line-clamp-2">
+          {item.judul}
+        </h3>
+      </div>
+    </div>
+  );
+}
+
 export function GalleryPreview() {
   const [selectedPhoto, setSelectedPhoto] = useState<GalleryItem | null>(null);
   const [photos, setPhotos] = useState<GalleryItem[]>(
@@ -70,43 +118,11 @@ export function GalleryPreview() {
         {/* 6 Grid Photos */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {safePhotos.map((item) => (
-            <div
+            <GalleryCardItem
               key={item.id}
-              onClick={() => setSelectedPhoto(item)}
-              className="group relative rounded-2xl overflow-hidden aspect-4/3 bg-neutral-100 cursor-pointer shadow-sm hover:shadow-xl transition-all duration-300"
-            >
-              <Image
-                src={item.gambar}
-                alt={item.judul}
-                fill
-                className="object-cover transition-transform duration-500 group-hover:scale-108"
-                sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-              />
-
-              {/* Gradient Overlay */}
-              <div className="absolute inset-0 bg-linear-to-t from-yimi-blue-800/85 via-yimi-blue-800/20 to-transparent opacity-60 group-hover:opacity-90 transition-opacity duration-300" />
-
-              {/* Category Pill Top Left */}
-              <div className="absolute top-3.5 left-3.5 z-10">
-                <Badge variant="blue" className="bg-white/95 text-yimi-blue-800 font-bold backdrop-blur-xs">
-                  {item.kategori}
-                </Badge>
-              </div>
-
-              {/* Quick View Icon Center (hover) */}
-              <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-200 z-10 pointer-events-none">
-                <div className="w-12 h-12 rounded-full bg-white/90 text-yimi-blue-800 flex items-center justify-center shadow-lg">
-                  <Eye className="w-6 h-6" />
-                </div>
-              </div>
-
-              {/* Caption Bottom */}
-              <div className="absolute bottom-0 inset-x-0 p-4 text-white z-10">
-                <h3 className="text-sm font-bold leading-snug line-clamp-2">
-                  {item.judul}
-                </h3>
-              </div>
-            </div>
+              item={item}
+              onSelect={() => setSelectedPhoto(item)}
+            />
           ))}
         </div>
       </div>
@@ -135,9 +151,10 @@ export function GalleryPreview() {
 
             <div className="relative aspect-16/10 w-full bg-neutral-950">
               <Image
-                src={selectedPhoto.gambar}
+                src={selectedPhoto.gambar || FALLBACK_IMAGE}
                 alt={selectedPhoto.judul}
                 fill
+                unoptimized={Boolean(selectedPhoto.gambar && selectedPhoto.gambar.includes('supabase.co'))}
                 className="object-contain"
                 sizes="100vw"
                 priority

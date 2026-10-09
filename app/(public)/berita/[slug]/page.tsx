@@ -93,6 +93,7 @@ export default async function BeritaDetailPage({ params }: Props) {
             alt={article.judul}
             fill
             priority
+            unoptimized={Boolean(article.gambar && article.gambar.includes('supabase.co'))}
             sizes="(max-width: 800px) 100vw, 800px"
             className="object-cover"
           />
