@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
 import { ChevronDown, ArrowRight, Heart } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
@@ -8,6 +8,30 @@ import { ParallaxLayer } from '@/components/motion/ParallaxLayer';
 import siteData from '@/content/site.json';
 
 export function Hero() {
+  const [tagline, setTagline] = useState('Dakwah di Atas Sunnah Sesuai Pemahaman Salafus Shalih');
+  const [subtitle, setSubtitle] = useState(
+    'Mengajak kaum muslimin kepada pemurnian aqidah dan ibadah, menyemai generasi Qur\'ani, serta menebar kemaslahatan umat berlandaskan Al-Qur\'an dan As-Sunnah.'
+  );
+
+  useEffect(() => {
+    async function fetchHomeContent() {
+      try {
+        const res = await fetch('/api/halaman?kunci=beranda');
+        if (res.ok) {
+          const data = await res.json();
+          if (data.page?.konten) {
+            if (data.page.konten.heroTagline) setTagline(data.page.konten.heroTagline);
+            if (data.page.konten.heroSubtitle) setSubtitle(data.page.konten.heroSubtitle);
+          }
+        }
+      } catch (err) {
+        console.error('Failed to load hero content:', err);
+      }
+    }
+
+    fetchHomeContent();
+  }, []);
+
   const scrollToContent = () => {
     const nextSection = document.getElementById('pengantar');
     if (nextSection) {
@@ -55,13 +79,12 @@ export function Hero() {
 
         {/* Hero Title */}
         <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold text-yimi-blue-800 tracking-tight max-w-4xl leading-[1.15] mb-5">
-          Dakwah di Atas Sunnah Sesuai Pemahaman{' '}
-          <span className="text-yimi-blue-600">Salafus Shalih</span>
+          {tagline}
         </h1>
 
         {/* Hero Tagline Subtitle */}
         <p className="text-base sm:text-lg md:text-xl text-neutral-600 max-w-2xl font-normal leading-relaxed mb-8">
-          Mengajak kaum muslimin kepada pemurnian aqidah dan ibadah, menyemai generasi Qur&apos;ani, serta menebar kemaslahatan umat berlandaskan Al-Qur&apos;an dan As-Sunnah.
+          {subtitle}
         </p>
 
         {/* CTA Buttons (Primary & Secondary) */}

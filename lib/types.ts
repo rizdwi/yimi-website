@@ -113,6 +113,7 @@ export interface GalleryPhotoItem {
   urutan: number;
   izin_orang_tua: boolean;
   tampil_publik: boolean;
+  tampil_beranda?: boolean;
   created_at?: string;
 }
 

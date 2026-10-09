@@ -42,6 +42,7 @@ export async function POST(req: NextRequest) {
       urutan: body.urutan || 0,
       izin_orang_tua: Boolean(body.izin_orang_tua),
       tampil_publik: tampilPublik,
+      tampil_beranda: body.tampil_beranda !== false,
       created_at: new Date().toISOString(),
     })
     .select()
@@ -81,6 +82,7 @@ export async function PUT(req: NextRequest) {
       urutan: body.urutan,
       izin_orang_tua: Boolean(body.izin_orang_tua),
       tampil_publik: tampilPublik,
+      tampil_beranda: body.tampil_beranda !== false,
     })
     .eq('id', body.id)
     .select()

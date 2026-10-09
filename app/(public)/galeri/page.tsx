@@ -1,19 +1,64 @@
 'use client';
 
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import Image from 'next/image';
 import { Images, Eye, X } from 'lucide-react';
 import { Badge } from '@/components/ui/Badge';
 import galleryData from '@/content/gallery.json';
 
+interface GalleryPhotoItemLocal {
+  id: string;
+  judul: string;
+  kategori: string;
+  gambar: string;
+  deskripsi: string;
+  izinOrangTua: boolean;
+  tanggal?: string;
+}
+
 export default function GaleriPage() {
+  const [photos, setPhotos] = useState<GalleryPhotoItemLocal[]>(
+    galleryData.map((g) => ({
+      ...g,
+      deskripsi: g.deskripsi || '',
+      izinOrangTua: g.izinOrangTua ?? true,
+    }))
+  );
   const [selectedCategory, setSelectedCategory] = useState<string>('Semua');
-  const [activePhoto, setActivePhoto] = useState<(typeof galleryData)[0] | null>(null);
+  const [activePhoto, setActivePhoto] = useState<GalleryPhotoItemLocal | null>(null);
+
+  useEffect(() => {
+    async function fetchPhotos() {
+      try {
+        const res = await fetch('/api/galeri');
+        if (res.ok) {
+          const data = await res.json();
+          if (data.items && data.items.length > 0) {
+            setPhotos(
+              data.items.map((i: { id: string; judul: string; keterangan?: string; deskripsi?: string; gambar: string; kategori: string; izin_orang_tua?: boolean; izinOrangTua?: boolean; tanggal?: string }) => ({
+                id: i.id,
+                judul: i.judul,
+                deskripsi: i.keterangan || i.deskripsi || '',
+                gambar: i.gambar,
+                kategori: i.kategori,
+                izinOrangTua: i.izin_orang_tua ?? i.izinOrangTua ?? true,
+                tanggal: i.tanggal,
+              }))
+            );
+          }
+        }
+      } catch (err) {
+        console.error('Failed to load photos:', err);
+      }
+    }
+
+    fetchPhotos();
+  }, []);
 
   // Filter only items with parental consent flag (respect privacy rule in AGENTS.md)
   const approvedPhotos = useMemo(() => {
-    return galleryData.filter((item) => item.izinOrangTua === true);
-  }, []);
+    return photos.filter((item) => item.izinOrangTua === true);
+  }, [photos]);
 
   const categories = useMemo(() => {
     const list = Array.from(new Set(approvedPhotos.map((item) => item.kategori)));

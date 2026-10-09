@@ -54,7 +54,10 @@ export default function AdminBeritaPage() {
   }
 
   async function handleSaveNews(statusTarget: ContentStatus) {
-    if (!selectedNews.judul) return;
+    if (!selectedNews.judul || !selectedNews.judul.trim()) {
+      alert('Judul berita wajib diisi sebelum menyimpan!');
+      return;
+    }
     setSubmitting(true);
 
     try {
@@ -70,13 +73,18 @@ export default function AdminBeritaPage() {
         body: JSON.stringify(payload),
       });
 
-      if (res.ok) {
-        setActiveModal(null);
-        setSelectedNews({});
-        reloadNews();
+      const data = await res.json();
+      if (!res.ok) {
+        alert(data.error || 'Gagal menyimpan berita.');
+        return;
       }
+
+      setActiveModal(null);
+      setSelectedNews({});
+      reloadNews();
     } catch (err) {
       console.error(err);
+      alert('Terjadi kesalahan koneksi.');
     } finally {
       setSubmitting(false);
     }
@@ -266,19 +274,29 @@ export default function AdminBeritaPage() {
               <div className="flex items-center space-x-2">
                 <button
                   type="button"
+                  onClick={() => {
+                    setActiveModal(null);
+                    setSelectedNews({});
+                  }}
+                  className="px-3 py-1.5 border border-[#E3E7EE] rounded-lg text-xs font-semibold text-[#6B7280] hover:bg-gray-50"
+                >
+                  Batal
+                </button>
+                <button
+                  type="button"
                   onClick={() => handleSaveNews('draf')}
                   disabled={submitting}
-                  className="px-3 py-1.5 border border-[#E3E7EE] rounded-lg text-xs font-semibold text-[#374151] hover:bg-gray-50"
+                  className="px-3 py-1.5 border border-[#3E5FD1]/30 bg-[#EEF2FC] rounded-lg text-xs font-semibold text-[#3E5FD1] hover:bg-[#3E5FD1]/10 disabled:opacity-50"
                 >
-                  Simpan sebagai Draf
+                  {submitting ? 'Menyimpan…' : 'Simpan Draf'}
                 </button>
                 <button
                   type="button"
                   onClick={() => handleSaveNews('terbit')}
                   disabled={submitting}
-                  className="px-4 py-1.5 bg-[#3E5FD1] hover:bg-[#1F2F6B] text-white rounded-lg text-xs font-bold"
+                  className="px-4 py-1.5 bg-[#3E5FD1] hover:bg-[#1F2F6B] text-white rounded-lg text-xs font-bold disabled:opacity-50 flex items-center space-x-1"
                 >
-                  Terbitkan Sekarang
+                  <span>{submitting ? 'Memproses…' : 'Terbitkan Sekarang'}</span>
                 </button>
               </div>
             </div>

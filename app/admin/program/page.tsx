@@ -44,13 +44,18 @@ export default function AdminProgramPage() {
         body: JSON.stringify(selectedProgram),
       });
 
-      if (res.ok) {
-        setActiveModal(null);
-        setSelectedProgram({});
-        loadPrograms();
+      const data = await res.json();
+      if (!res.ok) {
+        alert(data.error || 'Gagal menyimpan program.');
+        return;
       }
+
+      setActiveModal(null);
+      setSelectedProgram({});
+      loadPrograms();
     } catch (err) {
       console.error(err);
+      alert('Terjadi kesalahan jaringan.');
     } finally {
       setSubmitting(false);
     }
@@ -224,7 +229,7 @@ export default function AdminProgramPage() {
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div>
                   <label className="block font-semibold text-[#374151] mb-1">
-                    Judul Program <span className="text-[#D7261E]">*</span>
+                    Nama Program <span className="text-[#D7261E]">*</span>
                   </label>
                   <input
                     type="text"
@@ -236,23 +241,33 @@ export default function AdminProgramPage() {
                       setSelectedProgram({
                         ...selectedProgram,
                         judul,
-                        slug: selectedProgram.slug || slug,
+                        slug: activeModal === 'create' ? slug : (selectedProgram.slug || slug),
                       });
                     }}
+                    placeholder="Contoh: Santunan Yatim & Dhuafa"
                     className="w-full text-xs p-2.5 bg-white border border-[#E3E7EE] rounded-lg"
                   />
                 </div>
                 <div>
                   <label className="block font-semibold text-[#374151] mb-1">
-                    Slug URL <span className="text-[#D7261E]">*</span>
+                    Tautan Alamat Halaman (URL Web) <span className="text-[11px] font-normal text-[#138A3A]">(Otomatis Terisi)</span>
                   </label>
-                  <input
-                    type="text"
-                    required
-                    value={selectedProgram.slug || ''}
-                    onChange={(e) => setSelectedProgram({ ...selectedProgram, slug: e.target.value })}
-                    className="w-full text-xs p-2.5 bg-white border border-[#E3E7EE] rounded-lg font-mono"
-                  />
+                  <div className="flex items-center">
+                    <span className="px-2.5 py-2.5 bg-[#F5F7FA] border border-r-0 border-[#E3E7EE] rounded-l-lg text-[#6B7280] text-xs font-mono">
+                      /program/
+                    </span>
+                    <input
+                      type="text"
+                      required
+                      value={selectedProgram.slug || ''}
+                      onChange={(e) => setSelectedProgram({ ...selectedProgram, slug: e.target.value.toLowerCase().replace(/[^a-z0-9-]/g, '') })}
+                      placeholder="santunan-yatim-dhuafa"
+                      className="w-full text-xs p-2.5 bg-white border border-[#E3E7EE] rounded-r-lg font-mono"
+                    />
+                  </div>
+                  <span className="text-[11px] text-[#6B7280] mt-1 block">
+                    Alamat URL web untuk halaman program ini, otomatis dibuat dari nama program.
+                  </span>
                 </div>
               </div>
 

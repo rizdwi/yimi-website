@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { ArrowRight, Eye, X } from 'lucide-react';
@@ -10,11 +10,39 @@ import galleryData from '@/content/gallery.json';
 
 export function GalleryPreview() {
   const [selectedPhoto, setSelectedPhoto] = useState<GalleryItem | null>(null);
+  const [photos, setPhotos] = useState<GalleryItem[]>(
+    galleryData.filter((item) => item.izinOrangTua === true).slice(0, 6)
+  );
 
-  // Filter privacy: only with verified permission
-  const safePhotos = galleryData
-    .filter((item) => item.izinOrangTua === true)
-    .slice(0, 6);
+  useEffect(() => {
+    async function fetchLivePhotos() {
+      try {
+        const res = await fetch('/api/galeri?beranda=true');
+        if (res.ok) {
+          const data = await res.json();
+          if (data.items && data.items.length > 0) {
+            setPhotos(
+              data.items.map((i: { id: string; judul: string; keterangan?: string; deskripsi?: string; gambar: string; kategori: string; izin_orang_tua?: boolean; izinOrangTua?: boolean; tanggal?: string }) => ({
+                id: i.id,
+                judul: i.judul,
+                deskripsi: i.keterangan || i.deskripsi || '',
+                gambar: i.gambar,
+                kategori: i.kategori,
+                izinOrangTua: i.izin_orang_tua ?? i.izinOrangTua ?? true,
+                tanggal: i.tanggal || new Date().toISOString().split('T')[0],
+              }))
+            );
+          }
+        }
+      } catch (err) {
+        console.error('Failed to load live gallery:', err);
+      }
+    }
+
+    fetchLivePhotos();
+  }, []);
+
+  const safePhotos = photos.slice(0, 6);
 
   return (
     <section className="py-20 md:py-24 bg-white relative">

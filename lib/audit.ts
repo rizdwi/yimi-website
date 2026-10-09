@@ -8,7 +8,7 @@ export async function createAuditLog(
   detail?: Record<string, unknown>
 ) {
   try {
-    await supabase.from('audit_logs').insert({
+    const { error } = await supabase.from('audit_logs').insert({
       waktu: new Date().toISOString(),
       pengguna: pengguna || 'admin',
       modul,
@@ -16,6 +16,9 @@ export async function createAuditLog(
       ringkasan,
       detail: detail || {},
     });
+    if (error) {
+      console.error('Audit log Supabase error:', error.message);
+    }
   } catch (error) {
     console.error('Failed to write audit log to Supabase:', error);
   }

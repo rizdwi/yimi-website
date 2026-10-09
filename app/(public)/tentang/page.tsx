@@ -6,6 +6,9 @@ import { Card } from '@/components/ui/Card';
 import { StarOrnament } from '@/components/ui/StarOrnament';
 import { constructMetadata } from '@/lib/seo';
 import aboutData from '@/content/about.json';
+import { supabase } from '@/lib/supabase';
+
+export const dynamic = 'force-dynamic';
 
 export const metadata: Metadata = constructMetadata({
   title: 'Tentang Yayasan & Manhaj Dakwah',
@@ -13,8 +16,88 @@ export const metadata: Metadata = constructMetadata({
     'Profil Yayasan Insan Muslim Istiqomah: visi, misi, manhaj dakwah di atas sunnah, susunan pengurus, dan makna lambang yayasan.',
 });
 
-export default function TentangPage() {
-  const { visi, misi, manhaj, sejarah, strukturPengurus, maknaLambang } = aboutData;
+interface AboutContent {
+  visi?: string;
+  misi?: string[];
+  manhaj?: {
+    judul?: string;
+    penjelasan?: string;
+    dalilQuran?: {
+      arab?: string;
+      teksArab?: string;
+      terjemahan?: string;
+      sumber?: string;
+    };
+    dalilHadits?: {
+      arab?: string;
+      teksArab?: string;
+      terjemahan?: string;
+      sumber?: string;
+    };
+  };
+  sejarah?: {
+    teks?: string;
+  };
+  strukturPengurus?: Array<{
+    jabatan: string;
+    nama: string;
+    peran: string;
+  }>;
+  maknaLambang?: Array<{
+    elemen: string;
+    makna: string;
+  }>;
+}
+
+export default async function TentangPage() {
+  let content: AboutContent = aboutData;
+
+  try {
+    const { data } = await supabase
+      .from('static_pages')
+      .select('konten')
+      .eq('kunci', 'tentang')
+      .maybeSingle();
+
+    if (data?.konten) {
+      content = {
+        ...aboutData,
+        ...(data.konten as AboutContent),
+      };
+    }
+  } catch (err) {
+    console.error('Failed to load static page dari Supabase:', err);
+  }
+
+  const visi = content.visi || aboutData.visi;
+  const misi = Array.isArray(content.misi) ? content.misi : aboutData.misi;
+  const manhaj = {
+    judul: content.manhaj?.judul || aboutData.manhaj.judul,
+    penjelasan: content.manhaj?.penjelasan || aboutData.manhaj.penjelasan,
+    dalilQuran: {
+      arab:
+        content.manhaj?.dalilQuran?.teksArab ||
+        content.manhaj?.dalilQuran?.arab ||
+        aboutData.manhaj.dalilQuran.arab,
+      terjemahan:
+        content.manhaj?.dalilQuran?.terjemahan || aboutData.manhaj.dalilQuran.terjemahan,
+      sumber: content.manhaj?.dalilQuran?.sumber || aboutData.manhaj.dalilQuran.sumber,
+    },
+    dalilHadits: {
+      arab:
+        content.manhaj?.dalilHadits?.teksArab ||
+        content.manhaj?.dalilHadits?.arab ||
+        aboutData.manhaj.dalilHadits.arab,
+      terjemahan:
+        content.manhaj?.dalilHadits?.terjemahan || aboutData.manhaj.dalilHadits.terjemahan,
+      sumber: content.manhaj?.dalilHadits?.sumber || aboutData.manhaj.dalilHadits.sumber,
+    },
+  };
+  const sejarah = content.sejarah || aboutData.sejarah;
+  const strukturPengurus = Array.isArray(content.strukturPengurus)
+    ? content.strukturPengurus
+    : aboutData.strukturPengurus;
+  const maknaLambang = content.maknaLambang || aboutData.maknaLambang;
 
   return (
     <div className="pt-[72px]">
