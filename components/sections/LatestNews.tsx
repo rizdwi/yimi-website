@@ -1,14 +1,47 @@
-import React from 'react';
+'use client';
+
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { ArrowRight, Calendar, User } from 'lucide-react';
 import { Card } from '@/components/ui/Card';
 import { Badge } from '@/components/ui/Badge';
 import { formatTanggal } from '@/lib/format';
-import newsData from '@/content/news/index.json';
+import newsDataFallback from '@/content/news/index.json';
+
+interface NewsItem {
+  id: string;
+  slug: string;
+  judul: string;
+  tanggal: string;
+  penulis: string;
+  kategori: string;
+  gambar: string;
+  ringkasan: string;
+}
 
 export function LatestNews() {
-  const latestThree = newsData.slice(0, 3);
+  const [newsList, setNewsList] = useState<NewsItem[]>(newsDataFallback);
+
+  useEffect(() => {
+    async function fetchLatestNews() {
+      try {
+        const res = await fetch('/api/berita');
+        if (res.ok) {
+          const data = await res.json();
+          if (Array.isArray(data.news) && data.news.length > 0) {
+            setNewsList(data.news);
+          }
+        }
+      } catch (err) {
+        console.error('Gagal mengambil berita live:', err);
+      }
+    }
+
+    fetchLatestNews();
+  }, []);
+
+  const latestThree = newsList.slice(0, 3);
 
   return (
     <section className="py-20 md:py-24 bg-neutral-100/60 relative">

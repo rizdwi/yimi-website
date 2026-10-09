@@ -1,10 +1,32 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
-import { Plus, Edit2, Archive, Trash2, Search, ExternalLink } from 'lucide-react';
+import React, { useState, useEffect, useRef } from 'react';
+import {
+  Plus,
+  Edit2,
+  Archive,
+  Trash2,
+  Search,
+  ExternalLink,
+  UploadCloud,
+  FolderOpen,
+  Loader2,
+  X,
+  Check,
+} from 'lucide-react';
 import { NewsPostItem, ContentStatus } from '@/lib/types';
 import { AdminStatusBadge } from '@/components/admin/AdminStatusBadge';
 import { ConfirmModal } from '@/components/admin/ConfirmModal';
+
+interface MediaItem {
+  id: string;
+  name: string;
+  size: number;
+  mimetype: string;
+  created_at: string;
+  url: string;
+  isSystem?: boolean;
+}
 
 export default function AdminBeritaPage() {
   const [newsList, setNewsList] = useState<NewsPostItem[]>([]);
@@ -16,6 +38,14 @@ export default function AdminBeritaPage() {
   const [selectedNews, setSelectedNews] = useState<Partial<NewsPostItem>>({});
   const [submitting, setSubmitting] = useState(false);
   const [confirmDeleteId, setConfirmDeleteId] = useState<string | null>(null);
+
+  // Upload & Media Picker State
+  const [uploadingImage, setUploadingImage] = useState(false);
+  const [showMediaPicker, setShowMediaPicker] = useState(false);
+  const [mediaList, setMediaList] = useState<MediaItem[]>([]);
+  const [loadingMedia, setLoadingMedia] = useState(false);
+  const [mediaSearch, setMediaSearch] = useState('');
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
 
   useEffect(() => {
     let ignore = false;
@@ -53,17 +83,97 @@ export default function AdminBeritaPage() {
     }
   }
 
+  async function openMediaPicker() {
+    setShowMediaPicker(true);
+    setLoadingMedia(true);
+    try {
+      const res = await fetch('/api/admin/media');
+      if (res.ok) {
+        const data = await res.json();
+        setMediaList(data.files || []);
+      }
+    } catch (err) {
+      console.error('Gagal mengambil daftar media:', err);
+    } finally {
+      setLoadingMedia(false);
+    }
+  }
+
+  async function handleFileUpload(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    if (!file.type.startsWith('image/')) {
+      alert('Hanya berkas gambar (JPG, PNG, WebP, SVG) yang diperbolehkan.');
+      return;
+    }
+
+    if (file.size > 5 * 1024 * 1024) {
+      alert('Ukuran berkas maksimal adalah 5MB.');
+      return;
+    }
+
+    setUploadingImage(true);
+    try {
+      const formData = new FormData();
+      formData.append('file', file);
+
+      const res = await fetch('/api/admin/upload', {
+        method: 'POST',
+        body: formData,
+      });
+
+      const data = await res.json();
+      if (!res.ok) {
+        throw new Error(data.error || 'Gagal mengunggah foto.');
+      }
+
+      setSelectedNews((prev) => ({
+        ...prev,
+        gambar_utama: data.url,
+      }));
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : 'Terjadi kesalahan saat unggah';
+      alert(`Gagal upload foto: ${msg}`);
+    } finally {
+      setUploadingImage(false);
+      if (fileInputRef.current) {
+        fileInputRef.current.value = '';
+      }
+    }
+  }
+
   async function handleSaveNews(statusTarget: ContentStatus) {
     if (!selectedNews.judul || !selectedNews.judul.trim()) {
       alert('Judul berita wajib diisi sebelum menyimpan!');
       return;
     }
+
+    // Auto-generate slug if empty
+    const autoSlug =
+      selectedNews.slug && selectedNews.slug.trim()
+        ? selectedNews.slug.trim()
+        : selectedNews.judul
+            .toLowerCase()
+            .replace(/[^a-z0-9]+/g, '-')
+            .replace(/(^-|-$)/g, '') || `berita-${Date.now()}`;
+
+    // Auto-generate ringkasan if empty
+    const autoRingkasan =
+      selectedNews.ringkasan && selectedNews.ringkasan.trim()
+        ? selectedNews.ringkasan.trim()
+        : selectedNews.isi
+        ? selectedNews.isi.slice(0, 160) + '...'
+        : 'Warta dakwah dan kegiatan yayasan.';
+
     setSubmitting(true);
 
     try {
       const method = activeModal === 'create' ? 'POST' : 'PUT';
       const payload = {
         ...selectedNews,
+        slug: autoSlug,
+        ringkasan: autoRingkasan,
         status: statusTarget,
       };
 
@@ -116,14 +226,18 @@ export default function AdminBeritaPage() {
     }
   }
 
+  const filteredMedia = mediaList.filter((m) =>
+    mediaSearch ? m.name.toLowerCase().includes(mediaSearch.toLowerCase()) : true
+  );
+
   return (
     <div className="space-y-6">
       {/* Top Header & Search */}
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div>
-          <h2 className="text-lg font-bold text-[#111827]">Warta & Artikel Dakwah YIMI</h2>
+          <h2 className="text-lg font-bold text-[#111827]">Warta &amp; Artikel Dakwah YIMI</h2>
           <p className="text-xs text-[#6B7280]">
-            Publikasikan artikel dakwah, transparansi kegiatan, dan warta resmi yayasan.
+            Publikasikan artikel dakwah, transparansi kegiatan, dan warta resmi yayasan secara langsung ke website publik.
           </p>
         </div>
         <button
@@ -141,7 +255,7 @@ export default function AdminBeritaPage() {
             });
             setActiveModal('create');
           }}
-          className="inline-flex items-center space-x-1.5 px-4 py-2 bg-[#3E5FD1] hover:bg-[#1F2F6B] text-white text-xs font-semibold rounded-lg shadow-sm transition"
+          className="inline-flex items-center space-x-1.5 px-4 py-2 bg-[#3E5FD1] hover:bg-[#1F2F6B] text-white text-xs font-semibold rounded-lg shadow-sm transition cursor-pointer"
         >
           <Plus className="w-4 h-4" />
           <span>Tulis Berita Baru</span>
@@ -183,7 +297,7 @@ export default function AdminBeritaPage() {
           <table className="w-full text-left text-xs">
             <thead className="bg-[#F5F7FA] text-[#6B7280] uppercase tracking-wider font-semibold border-b border-[#E3E7EE]">
               <tr>
-                <th className="py-3 px-4">Judul & Kategori</th>
+                <th className="py-3 px-4">Judul &amp; Kategori</th>
                 <th className="py-3 px-4">Tanggal Terbit</th>
                 <th className="py-3 px-4">Penulis</th>
                 <th className="py-3 px-4 text-center">Status</th>
@@ -235,21 +349,21 @@ export default function AdminBeritaPage() {
                             setActiveModal('edit');
                           }}
                           title="Edit Berita"
-                          className="p-1.5 text-[#3E5FD1] hover:bg-[#EEF2FC] rounded-md transition"
+                          className="p-1.5 text-[#3E5FD1] hover:bg-[#EEF2FC] rounded-md transition cursor-pointer"
                         >
                           <Edit2 className="w-4 h-4" />
                         </button>
                         <button
                           onClick={() => handleArchive(n)}
                           title="Arsipkan"
-                          className="p-1.5 text-[#6B7280] hover:bg-gray-100 rounded-md transition"
+                          className="p-1.5 text-[#6B7280] hover:bg-gray-100 rounded-md transition cursor-pointer"
                         >
                           <Archive className="w-4 h-4" />
                         </button>
                         <button
                           onClick={() => setConfirmDeleteId(n.id)}
                           title="Hapus Permanen"
-                          className="p-1.5 text-[#D7261E] hover:bg-[#FEE2E2] rounded-md transition"
+                          className="p-1.5 text-[#D7261E] hover:bg-[#FEE2E2] rounded-md transition cursor-pointer"
                         >
                           <Trash2 className="w-4 h-4" />
                         </button>
@@ -263,10 +377,10 @@ export default function AdminBeritaPage() {
         </div>
       </div>
 
-      {/* Modal / Editor Dua Kolom (Design Spec 7.1) */}
+      {/* Modal / Editor Dua Kolom */}
       {activeModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs overflow-y-auto">
-          <div className="w-full max-w-4xl bg-white rounded-2xl shadow-2xl border border-[#E3E7EE] p-6 space-y-4 my-8">
+          <div className="w-full max-w-4xl bg-white rounded-2xl shadow-2xl border border-[#E3E7EE] p-6 space-y-4 my-8 max-h-[90vh] overflow-y-auto">
             <div className="flex items-center justify-between pb-3 border-b border-[#E3E7EE]">
               <h3 className="text-base font-bold text-[#111827]">
                 {activeModal === 'create' ? 'Tulis Berita / Artikel Baru' : 'Edit Konten Berita'}
@@ -278,7 +392,7 @@ export default function AdminBeritaPage() {
                     setActiveModal(null);
                     setSelectedNews({});
                   }}
-                  className="px-3 py-1.5 border border-[#E3E7EE] rounded-lg text-xs font-semibold text-[#6B7280] hover:bg-gray-50"
+                  className="px-3 py-1.5 border border-[#E3E7EE] rounded-lg text-xs font-semibold text-[#6B7280] hover:bg-gray-50 cursor-pointer"
                 >
                   Batal
                 </button>
@@ -286,7 +400,7 @@ export default function AdminBeritaPage() {
                   type="button"
                   onClick={() => handleSaveNews('draf')}
                   disabled={submitting}
-                  className="px-3 py-1.5 border border-[#3E5FD1]/30 bg-[#EEF2FC] rounded-lg text-xs font-semibold text-[#3E5FD1] hover:bg-[#3E5FD1]/10 disabled:opacity-50"
+                  className="px-3 py-1.5 border border-[#3E5FD1]/30 bg-[#EEF2FC] rounded-lg text-xs font-semibold text-[#3E5FD1] hover:bg-[#3E5FD1]/10 disabled:opacity-50 cursor-pointer"
                 >
                   {submitting ? 'Menyimpan…' : 'Simpan Draf'}
                 </button>
@@ -294,7 +408,7 @@ export default function AdminBeritaPage() {
                   type="button"
                   onClick={() => handleSaveNews('terbit')}
                   disabled={submitting}
-                  className="px-4 py-1.5 bg-[#3E5FD1] hover:bg-[#1F2F6B] text-white rounded-lg text-xs font-bold disabled:opacity-50 flex items-center space-x-1"
+                  className="px-4 py-1.5 bg-[#3E5FD1] hover:bg-[#1F2F6B] text-white rounded-lg text-xs font-bold disabled:opacity-50 flex items-center space-x-1 cursor-pointer"
                 >
                   <span>{submitting ? 'Memproses…' : 'Terbitkan Sekarang'}</span>
                 </button>
@@ -328,14 +442,13 @@ export default function AdminBeritaPage() {
 
                 <div>
                   <label className="block font-semibold text-[#374151] mb-1">
-                    Ringkasan Singkat (Lead Paragraph) <span className="text-[#D7261E]">*</span>
+                    Ringkasan Singkat (Lead Paragraph)
                   </label>
                   <textarea
                     rows={2}
-                    required
                     value={selectedNews.ringkasan || ''}
                     onChange={(e) => setSelectedNews({ ...selectedNews, ringkasan: e.target.value })}
-                    placeholder="Ringkasan 1-2 kalimat untuk pratinjau kartu berita..."
+                    placeholder="Ringkasan 1-2 kalimat untuk kartu berita (opsional, otomatis dari isi jika kosong)..."
                     className="w-full text-xs p-2.5 bg-white border border-[#E3E7EE] rounded-lg"
                   />
                 </div>
@@ -355,7 +468,7 @@ export default function AdminBeritaPage() {
                 </div>
               </div>
 
-              {/* Kolom Kanan: Pengaturan Berita (1 Kolom) */}
+              {/* Kolom Kanan: Pengaturan Berita & Upload Gambar */}
               <div className="space-y-4 bg-[#F5F7FA] p-4 rounded-xl border border-[#E3E7EE]">
                 <div>
                   <label className="block font-semibold text-[#374151] mb-1">Kategori Berita</label>
@@ -364,7 +477,7 @@ export default function AdminBeritaPage() {
                     onChange={(e) => setSelectedNews({ ...selectedNews, kategori: e.target.value })}
                     className="w-full p-2 bg-white border border-[#E3E7EE] rounded-lg"
                   >
-                    <option value="Kajian">Kajian & Majelis</option>
+                    <option value="Kajian">Kajian &amp; Majelis</option>
                     <option value="Wakaf Lahan">Pembebasan Lahan</option>
                     <option value="Jumat Berkah">Jumat Berkah</option>
                     <option value="TK/PAUD">TK/PAUD Islam</option>
@@ -378,6 +491,7 @@ export default function AdminBeritaPage() {
                     type="text"
                     value={selectedNews.slug || ''}
                     onChange={(e) => setSelectedNews({ ...selectedNews, slug: e.target.value })}
+                    placeholder="otomatis-dari-judul"
                     className="w-full p-2 bg-white border border-[#E3E7EE] rounded-lg font-mono text-[11px]"
                   />
                 </div>
@@ -402,24 +516,94 @@ export default function AdminBeritaPage() {
                   />
                 </div>
 
-                <div>
-                  <label className="block font-semibold text-[#374151] mb-1">URL Gambar Utama</label>
+                {/* Seksi Unggah & Pratinjau Foto Utama Artikel */}
+                <div className="pt-2 border-t border-[#E3E7EE]/80 space-y-2">
+                  <label className="block font-semibold text-[#374151]">
+                    Foto Utama Artikel
+                  </label>
+
+                  {/* Pratinjau Gambar */}
+                  {selectedNews.gambar_utama && (
+                    <div className="relative aspect-video rounded-lg overflow-hidden border border-[#E3E7EE] bg-white group">
+                      <img
+                        src={selectedNews.gambar_utama}
+                        alt="Pratinjau Foto"
+                        className="w-full h-full object-cover"
+                        onError={(e) => {
+                          const target = e.currentTarget;
+                          target.src =
+                            'https://images.unsplash.com/photo-1542816417-0983c9c9ad53?q=80&w=600&auto=format&fit=crop';
+                        }}
+                      />
+                      <button
+                        type="button"
+                        onClick={() => setSelectedNews({ ...selectedNews, gambar_utama: '' })}
+                        className="absolute top-1 right-1 p-1 rounded-full bg-black/60 text-white hover:bg-red-600 transition"
+                        title="Hapus Foto"
+                      >
+                        <X className="w-3.5 h-3.5" />
+                      </button>
+                    </div>
+                  )}
+
+                  {/* Tombol Aksi: Upload dari HP/Komputer ATAU Pilih dari Media Library */}
                   <input
-                    type="text"
-                    value={selectedNews.gambar_utama || ''}
-                    onChange={(e) => setSelectedNews({ ...selectedNews, gambar_utama: e.target.value })}
-                    placeholder="https://images.unsplash.com/..."
-                    className="w-full p-2 bg-white border border-[#E3E7EE] rounded-lg text-[11px]"
+                    type="file"
+                    ref={fileInputRef}
+                    onChange={handleFileUpload}
+                    accept="image/*"
+                    className="hidden"
                   />
+
+                  <div className="grid grid-cols-2 gap-2">
+                    <button
+                      type="button"
+                      disabled={uploadingImage}
+                      onClick={() => fileInputRef.current?.click()}
+                      className="inline-flex items-center justify-center gap-1.5 p-2 bg-[#1F2F6B] hover:bg-[#3E5FD1] text-white rounded-lg font-semibold text-[11px] transition cursor-pointer disabled:opacity-50"
+                    >
+                      {uploadingImage ? (
+                        <>
+                          <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                          <span>Mengunggah...</span>
+                        </>
+                      ) : (
+                        <>
+                          <UploadCloud className="w-3.5 h-3.5" />
+                          <span>Select Foto</span>
+                        </>
+                      )}
+                    </button>
+
+                    <button
+                      type="button"
+                      onClick={openMediaPicker}
+                      className="inline-flex items-center justify-center gap-1.5 p-2 bg-white border border-[#3E5FD1] text-[#3E5FD1] hover:bg-[#EEF2FC] rounded-lg font-semibold text-[11px] transition cursor-pointer"
+                    >
+                      <FolderOpen className="w-3.5 h-3.5" />
+                      <span>Media Library</span>
+                    </button>
+                  </div>
+
+                  {/* Input URL Manual (Opsional) */}
+                  <div className="pt-1">
+                    <input
+                      type="text"
+                      value={selectedNews.gambar_utama || ''}
+                      onChange={(e) => setSelectedNews({ ...selectedNews, gambar_utama: e.target.value })}
+                      placeholder="Atau tempel URL gambar..."
+                      className="w-full p-2 bg-white border border-[#E3E7EE] rounded-lg text-[10px] text-[#4B5563]"
+                    />
+                  </div>
                 </div>
 
                 <div className="pt-2">
                   <button
                     type="button"
                     onClick={() => setActiveModal(null)}
-                    className="w-full py-2 bg-white border border-[#E3E7EE] rounded-lg text-xs text-[#374151] hover:bg-gray-50"
+                    className="w-full py-2 bg-white border border-[#E3E7EE] rounded-lg text-xs text-[#374151] hover:bg-gray-50 cursor-pointer"
                   >
-                    Batal
+                    Tutup
                   </button>
                 </div>
               </div>
@@ -428,12 +612,99 @@ export default function AdminBeritaPage() {
         </div>
       )}
 
+      {/* Modal Pemilih Media (Media Library Picker) */}
+      {showMediaPicker && (
+        <div className="fixed inset-0 z-60 flex items-center justify-center p-4 bg-black/70 backdrop-blur-xs">
+          <div className="w-full max-w-2xl bg-white rounded-2xl shadow-2xl border border-[#E3E7EE] p-5 space-y-4 max-h-[85vh] flex flex-col">
+            <div className="flex items-center justify-between pb-3 border-b border-[#E3E7EE]">
+              <div>
+                <h4 className="text-sm font-bold text-[#111827]">Pilih Foto dari Media Library</h4>
+                <p className="text-[11px] text-[#6B7280]">
+                  Klik foto di bawah untuk langsung menjadikannya gambar utama artikel.
+                </p>
+              </div>
+              <button
+                type="button"
+                onClick={() => setShowMediaPicker(false)}
+                className="p-1 rounded-lg text-[#6B7280] hover:bg-gray-100 cursor-pointer"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            <div className="relative">
+              <input
+                type="text"
+                placeholder="Cari nama berkas media..."
+                value={mediaSearch}
+                onChange={(e) => setMediaSearch(e.target.value)}
+                className="w-full pl-8 pr-3 py-1.5 bg-[#F5F7FA] border border-[#E3E7EE] rounded-lg text-xs"
+              />
+              <Search className="w-3.5 h-3.5 text-[#9CA3AF] absolute left-2.5 top-1/2 -translate-y-1/2" />
+            </div>
+
+            <div className="flex-1 overflow-y-auto">
+              {loadingMedia ? (
+                <div className="py-12 text-center text-xs text-[#6B7280]">
+                  <Loader2 className="w-6 h-6 animate-spin mx-auto text-[#3E5FD1] mb-2" />
+                  Memuat berkas media dari Supabase Storage...
+                </div>
+              ) : filteredMedia.length === 0 ? (
+                <div className="py-12 text-center text-xs text-[#6B7280]">
+                  Tidak ada berkas media ditemukan. Anda dapat mengunggah langsung dengan tombol &ldquo;Select Foto&rdquo;.
+                </div>
+              ) : (
+                <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+                  {filteredMedia.map((m) => (
+                    <div
+                      key={m.id}
+                      onClick={() => {
+                        setSelectedNews((prev) => ({ ...prev, gambar_utama: m.url }));
+                        setShowMediaPicker(false);
+                      }}
+                      className="cursor-pointer group relative rounded-lg border border-[#E3E7EE] overflow-hidden hover:border-[#3E5FD1] hover:ring-2 hover:ring-[#3E5FD1]/30 transition"
+                    >
+                      <div className="aspect-video bg-neutral-100 overflow-hidden">
+                        <img
+                          src={m.url}
+                          alt={m.name}
+                          className="w-full h-full object-cover group-hover:scale-105 transition-transform"
+                        />
+                      </div>
+                      <div className="p-1.5 bg-white text-[10px]">
+                        <span className="font-semibold text-[#111827] block truncate">{m.name}</span>
+                      </div>
+                      {selectedNews.gambar_utama === m.url && (
+                        <div className="absolute top-1 right-1 bg-[#138A3A] text-white p-0.5 rounded-full">
+                          <Check className="w-3 h-3" />
+                        </div>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+
+            <div className="pt-2 border-t border-[#E3E7EE] flex justify-end">
+              <button
+                type="button"
+                onClick={() => setShowMediaPicker(false)}
+                className="px-4 py-1.5 bg-gray-100 hover:bg-gray-200 text-xs font-semibold rounded-lg text-[#374151] cursor-pointer"
+              >
+                Tutup
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
       <ConfirmModal
         isOpen={Boolean(confirmDeleteId)}
         title="Hapus Berita Permanen"
-        variant="danger"
         message="Hapus artikel berita ini secara permanen dari basis data?"
         confirmLabel="Hapus Permanen"
+        cancelLabel="Batal"
+        variant="danger"
         onConfirm={handleDeletePermanent}
         onCancel={() => setConfirmDeleteId(null)}
       />

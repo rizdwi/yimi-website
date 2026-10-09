@@ -1,25 +1,55 @@
 'use client';
 
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { Newspaper, Calendar, User, Search, ArrowRight, Tag } from 'lucide-react';
 import { Card } from '@/components/ui/Card';
 import { Badge } from '@/components/ui/Badge';
 import { formatTanggal } from '@/lib/format';
-import newsData from '@/content/news/index.json';
+import newsDataFallback from '@/content/news/index.json';
+
+interface NewsItem {
+  id: string;
+  slug: string;
+  judul: string;
+  tanggal: string;
+  penulis: string;
+  kategori: string;
+  gambar: string;
+  ringkasan: string;
+}
 
 export default function BeritaPage() {
+  const [newsList, setNewsList] = useState<NewsItem[]>(newsDataFallback);
   const [selectedCategory, setSelectedCategory] = useState<string>('Semua');
   const [searchQuery, setSearchQuery] = useState<string>('');
 
-  const categories = useMemo(() => {
-    const list = Array.from(new Set(newsData.map((item) => item.kategori)));
-    return ['Semua', ...list];
+  useEffect(() => {
+    async function fetchNews() {
+      try {
+        const res = await fetch('/api/berita');
+        if (res.ok) {
+          const data = await res.json();
+          if (Array.isArray(data.news) && data.news.length > 0) {
+            setNewsList(data.news);
+          }
+        }
+      } catch (err) {
+        console.error('Gagal mengambil daftar berita live:', err);
+      }
+    }
+
+    fetchNews();
   }, []);
 
+  const categories = useMemo(() => {
+    const list = Array.from(new Set(newsList.map((item) => item.kategori)));
+    return ['Semua', ...list];
+  }, [newsList]);
+
   const filteredNews = useMemo(() => {
-    return newsData.filter((item) => {
+    return newsList.filter((item) => {
       const matchCat =
         selectedCategory === 'Semua' || item.kategori === selectedCategory;
       const matchSearch =
@@ -28,7 +58,7 @@ export default function BeritaPage() {
         item.ringkasan.toLowerCase().includes(searchQuery.toLowerCase());
       return matchCat && matchSearch;
     });
-  }, [selectedCategory, searchQuery]);
+  }, [newsList, selectedCategory, searchQuery]);
 
   return (
     <div className="pt-[72px]">

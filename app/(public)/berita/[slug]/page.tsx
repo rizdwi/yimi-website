@@ -8,11 +8,99 @@ import { Badge } from '@/components/ui/Badge';
 import { Card } from '@/components/ui/Card';
 import { formatTanggal } from '@/lib/format';
 import { constructMetadata } from '@/lib/seo';
+import { supabase } from '@/lib/supabase';
 import newsData from '@/content/news/index.json';
 
 type Props = {
   params: Promise<{ slug: string }>;
 };
+
+export const dynamicParams = true;
+
+interface ArticleItem {
+  id: string;
+  slug: string;
+  judul: string;
+  tanggal: string;
+  penulis: string;
+  kategori: string;
+  gambar: string;
+  ringkasan: string;
+  konten: string[];
+  ayatRujukan?: string;
+}
+
+async function getArticle(slug: string): Promise<ArticleItem | null> {
+  try {
+    const { data: post, error } = await supabase
+      .from('news_posts')
+      .select('*')
+      .eq('slug', slug)
+      .eq('status', 'terbit')
+      .maybeSingle();
+
+    if (!error && post) {
+      return {
+        id: post.id,
+        slug: post.slug,
+        judul: post.judul,
+        tanggal: post.terbit_pada || (post.created_at ? post.created_at.split('T')[0] : '2026-10-09'),
+        penulis: post.penulis || 'Tim Dakwah YIMI',
+        kategori: post.kategori || 'Umum',
+        gambar:
+          post.gambar_utama ||
+          'https://images.unsplash.com/photo-1542816417-0983c9c9ad53?q=80&w=1200&auto=format&fit=crop',
+        ringkasan:
+          post.ringkasan ||
+          (post.isi ? post.isi.slice(0, 160) + '...' : 'Warta kegiatan dan dakwah Yayasan Insan Muslim Istiqomah.'),
+        konten: post.isi
+          ? post.isi.split('\n\n').map((p: string) => p.trim()).filter(Boolean)
+          : [],
+        ayatRujukan: '',
+      };
+    }
+  } catch (err) {
+    console.error('Error fetching article by slug from Supabase:', err);
+  }
+
+  // Fallback to local JSON
+  const localArticle = newsData.find((item) => item.slug === slug);
+  return localArticle || null;
+}
+
+async function getRelatedArticles(currentSlug: string): Promise<ArticleItem[]> {
+  try {
+    const { data, error } = await supabase
+      .from('news_posts')
+      .select('*')
+      .eq('status', 'terbit')
+      .neq('slug', currentSlug)
+      .order('terbit_pada', { ascending: false })
+      .limit(2);
+
+    if (!error && data && data.length > 0) {
+      return data.map((post) => ({
+        id: post.id,
+        slug: post.slug,
+        judul: post.judul,
+        tanggal: post.terbit_pada || (post.created_at ? post.created_at.split('T')[0] : '2026-10-09'),
+        penulis: post.penulis || 'Tim Dakwah YIMI',
+        kategori: post.kategori || 'Umum',
+        gambar:
+          post.gambar_utama ||
+          'https://images.unsplash.com/photo-1542816417-0983c9c9ad53?q=80&w=1200&auto=format&fit=crop',
+        ringkasan: post.ringkasan || '',
+        konten: [],
+      }));
+    }
+  } catch (err) {
+    console.error('Error fetching related articles from Supabase:', err);
+  }
+
+  return newsData
+    .filter((item) => item.slug !== currentSlug)
+    .slice(0, 2);
+}
 
 export async function generateStaticParams() {
   return newsData.map((item) => ({
@@ -22,7 +110,7 @@ export async function generateStaticParams() {
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
-  const article = newsData.find((item) => item.slug === slug);
+  const article = await getArticle(slug);
 
   if (!article) {
     return {
@@ -39,17 +127,13 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function BeritaDetailPage({ params }: Props) {
   const { slug } = await params;
-  const article = newsData.find((item) => item.slug === slug);
+  const article = await getArticle(slug);
 
   if (!article) {
     notFound();
   }
 
-  // Related news
-  const relatedArticles = newsData
-    .filter((item) => item.slug !== article.slug)
-    .slice(0, 2);
-
+  const relatedArticles = await getRelatedArticles(article.slug);
   const shareText = encodeURIComponent(`${article.judul}\n\nBaca selengkapnya di Website Resmi YIMI:`);
 
   return (
@@ -102,7 +186,6 @@ export default async function BeritaDetailPage({ params }: Props) {
         {/* Prose text constrained to 68ch */}
         <div className="max-w-[68ch] mx-auto flex flex-col gap-6 text-neutral-800 text-base sm:text-lg leading-[1.85]">
           {article.konten.map((paragraf, idx) => {
-            // Check if paragraph is Arabic text (heuristic: contains Arabic characters)
             const isArabic = /[\u0600-\u06FF]/.test(paragraf);
 
             if (isArabic) {
