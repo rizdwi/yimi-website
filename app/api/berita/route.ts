@@ -2,6 +2,14 @@ import { NextResponse } from 'next/server';
 import { supabase } from '@/lib/supabase';
 import fallbackNews from '@/content/news/index.json';
 
+export const revalidate = 60;
+
+const CACHE_HEADERS = {
+  'Cache-Control': 'public, s-maxage=60, stale-while-revalidate=600',
+  'CDN-Cache-Control': 'public, s-maxage=60, stale-while-revalidate=600',
+  'Vercel-CDN-Cache-Control': 'public, s-maxage=60, stale-while-revalidate=600',
+};
+
 export async function GET() {
   try {
     const { data, error } = await supabase
@@ -32,11 +40,11 @@ export async function GET() {
         ayatRujukan: '',
       }));
 
-      return NextResponse.json({ news: formatted });
+      return NextResponse.json({ news: formatted }, { headers: CACHE_HEADERS });
     }
   } catch (err) {
     console.error('Failed to load public news from Supabase:', err);
   }
 
-  return NextResponse.json({ news: fallbackNews });
+  return NextResponse.json({ news: fallbackNews }, { headers: CACHE_HEADERS });
 }

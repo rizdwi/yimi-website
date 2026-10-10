@@ -2,6 +2,14 @@ import { NextResponse } from 'next/server';
 import { supabase } from '@/lib/supabase';
 import fallbackPrograms from '@/content/programs/index.json';
 
+export const revalidate = 60;
+
+const CACHE_HEADERS = {
+  'Cache-Control': 'public, s-maxage=60, stale-while-revalidate=600',
+  'CDN-Cache-Control': 'public, s-maxage=60, stale-while-revalidate=600',
+  'Vercel-CDN-Cache-Control': 'public, s-maxage=60, stale-while-revalidate=600',
+};
+
 interface ProgramDbRow {
   id: string;
   slug: string;
@@ -29,10 +37,13 @@ export async function GET() {
       .order('urutan', { ascending: true });
 
     if (error || !programs || programs.length === 0) {
-      return NextResponse.json({
-        programs: fallbackPrograms,
-        source: 'local-fallback',
-      });
+      return NextResponse.json(
+        {
+          programs: fallbackPrograms,
+          source: 'local-fallback',
+        },
+        { headers: CACHE_HEADERS }
+      );
     }
 
     const list = (programs as ProgramDbRow[]).map((p) => {
@@ -61,15 +72,18 @@ export async function GET() {
       };
     });
 
-    return NextResponse.json({
-      programs: list,
-      source: 'database',
-    });
+    return NextResponse.json(
+      {
+        programs: list,
+        source: 'database',
+      },
+      { headers: CACHE_HEADERS }
+    );
   } catch (err) {
     console.error('Error fetching programs API:', err);
     return NextResponse.json(
       { programs: fallbackPrograms, source: 'fallback-error' },
-      { status: 500 }
+      { headers: CACHE_HEADERS }
     );
   }
 }

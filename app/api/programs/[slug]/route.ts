@@ -3,6 +3,14 @@ import { supabase } from '@/lib/supabase';
 import tkFallback from '@/content/programs/tk-paud.json';
 import jumatFallback from '@/content/programs/jumat-berkah.json';
 
+export const revalidate = 60;
+
+const CACHE_HEADERS = {
+  'Cache-Control': 'public, s-maxage=60, stale-while-revalidate=600',
+  'CDN-Cache-Control': 'public, s-maxage=60, stale-while-revalidate=600',
+  'Vercel-CDN-Cache-Control': 'public, s-maxage=60, stale-while-revalidate=600',
+};
+
 type RouteContext = {
   params: Promise<{ slug: string }>;
 };
@@ -19,7 +27,7 @@ export async function GET(req: NextRequest, { params }: RouteContext) {
       .maybeSingle();
 
     if (!error && data) {
-      return NextResponse.json({ program: data });
+      return NextResponse.json({ program: data }, { headers: CACHE_HEADERS });
     }
   } catch (err) {
     console.error(`Error fetching program by slug (${slug}):`, err);
@@ -27,42 +35,48 @@ export async function GET(req: NextRequest, { params }: RouteContext) {
 
   // Fallback
   if (slug === 'tk-paud') {
-    return NextResponse.json({
-      program: {
-        slug: 'tk-paud',
-        judul: tkFallback.judul,
-        ringkasan: tkFallback.subjudul,
-        deskripsi: tkFallback.deskripsi,
-        metadata: {
-          kategori: 'Pendidikan',
-          biaya_pendaftaran: 'Rp 350.000',
-          biaya_spp: 'Rp 250.000 / bulan',
-          status_pendaftaran: tkFallback.pendaftaran.status,
-          kontak_wa: tkFallback.pendaftaran.kontakPendaftaran,
-          file_lampiran: '',
-          file_lampiran_nama: '',
+    return NextResponse.json(
+      {
+        program: {
+          slug: 'tk-paud',
+          judul: tkFallback.judul,
+          ringkasan: tkFallback.subjudul,
+          deskripsi: tkFallback.deskripsi,
+          metadata: {
+            kategori: 'Pendidikan',
+            biaya_pendaftaran: 'Rp 350.000',
+            biaya_spp: 'Rp 250.000 / bulan',
+            status_pendaftaran: tkFallback.pendaftaran.status,
+            kontak_wa: tkFallback.pendaftaran.kontakPendaftaran,
+            file_lampiran: '',
+            file_lampiran_nama: '',
+          },
         },
       },
-    });
+      { headers: CACHE_HEADERS }
+    );
   }
 
   if (slug === 'jumat-berkah') {
-    return NextResponse.json({
-      program: {
-        slug: 'jumat-berkah',
-        judul: jumatFallback.judul,
-        ringkasan: jumatFallback.subjudul,
-        deskripsi: jumatFallback.deskripsi,
-        metadata: {
-          kategori: 'Sosial',
-          biaya_label: 'Mulai Rp 25.000 / Paket',
-          paket_infaq: jumatFallback.paketInfaq,
-          file_lampiran: '',
-          file_lampiran_nama: '',
+    return NextResponse.json(
+      {
+        program: {
+          slug: 'jumat-berkah',
+          judul: jumatFallback.judul,
+          ringkasan: jumatFallback.subjudul,
+          deskripsi: jumatFallback.deskripsi,
+          metadata: {
+            kategori: 'Sosial',
+            biaya_label: 'Mulai Rp 25.000 / Paket',
+            paket_infaq: jumatFallback.paketInfaq,
+            file_lampiran: '',
+            file_lampiran_nama: '',
+          },
         },
       },
-    });
+      { headers: CACHE_HEADERS }
+    );
   }
 
-  return NextResponse.json({ error: 'Program tidak ditemukan' }, { status: 404 });
+  return NextResponse.json({ error: 'Program tidak ditemukan' }, { status: 404, headers: CACHE_HEADERS });
 }

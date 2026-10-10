@@ -58,6 +58,9 @@ export function SiteSettingsProvider({
   }, []);
 
   useEffect(() => {
+    // Jika initialSettings sudah tersedia dari SSR, lewati fetch awal di client
+    if (initialSettings) return;
+
     let ignore = false;
     async function load() {
       try {
@@ -77,7 +80,7 @@ export function SiteSettingsProvider({
     return () => {
       ignore = true;
     };
-  }, []);
+  }, [initialSettings]);
 
   const logoUrl =
     settings?.logo_yayasan ||

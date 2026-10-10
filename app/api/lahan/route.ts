@@ -2,6 +2,14 @@ import { NextResponse } from 'next/server';
 import { supabase } from '@/lib/supabase';
 import landFallback from '@/content/land-campaign.json';
 
+export const revalidate = 60;
+
+const CACHE_HEADERS = {
+  'Cache-Control': 'public, s-maxage=60, stale-while-revalidate=600',
+  'CDN-Cache-Control': 'public, s-maxage=60, stale-while-revalidate=600',
+  'Vercel-CDN-Cache-Control': 'public, s-maxage=60, stale-while-revalidate=600',
+};
+
 export async function GET() {
   try {
     const { data: campaignData, error: campaignError } = await supabase
@@ -38,37 +46,43 @@ export async function GET() {
       const luasTargetM2 = Number(campaignData.luas_target_m2) || landFallback.luasTargetM2;
       const hargaPerMeter = Number(campaignData.harga_per_meter) || landFallback.hargaPerMeter;
 
-      return NextResponse.json({
-        campaign: {
-          id: campaignData.id,
-          judul: campaignData.judul || landFallback.judul,
-          subjudul: landFallback.subjudul,
-          lokasi: campaignData.lokasi || landFallback.lokasi,
-          luasTargetM2,
-          hargaPerMeter,
-          targetDana,
-          terkumpul,
-          diperbaruiPada: campaignData.diperbarui_pada || new Date().toISOString().split('T')[0],
+      return NextResponse.json(
+        {
+          campaign: {
+            id: campaignData.id,
+            judul: campaignData.judul || landFallback.judul,
+            subjudul: landFallback.subjudul,
+            lokasi: campaignData.lokasi || landFallback.lokasi,
+            luasTargetM2,
+            hargaPerMeter,
+            targetDana,
+            terkumpul,
+            diperbaruiPada: campaignData.diperbarui_pada || new Date().toISOString().split('T')[0],
+          },
+          updates,
         },
-        updates,
-      });
+        { headers: CACHE_HEADERS }
+      );
     }
   } catch (err) {
     console.error('Failed to load public land data:', err);
   }
 
   // Fallback ke data JSON lokal jika database belum terisi atau koneksi gagal
-  return NextResponse.json({
-    campaign: {
-      judul: landFallback.judul,
-      subjudul: landFallback.subjudul,
-      lokasi: landFallback.lokasi,
-      luasTargetM2: landFallback.luasTargetM2,
-      hargaPerMeter: landFallback.hargaPerMeter,
-      targetDana: landFallback.targetDana,
-      terkumpul: landFallback.terkumpul,
-      diperbaruiPada: landFallback.diperbaruiPada,
+  return NextResponse.json(
+    {
+      campaign: {
+        judul: landFallback.judul,
+        subjudul: landFallback.subjudul,
+        lokasi: landFallback.lokasi,
+        luasTargetM2: landFallback.luasTargetM2,
+        hargaPerMeter: landFallback.hargaPerMeter,
+        targetDana: landFallback.targetDana,
+        terkumpul: landFallback.terkumpul,
+        diperbaruiPada: landFallback.diperbaruiPada,
+      },
+      updates: [],
     },
-    updates: [],
-  });
+    { headers: CACHE_HEADERS }
+  );
 }
