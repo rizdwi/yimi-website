@@ -51,19 +51,23 @@ interface AboutContent {
 
 export default async function TentangPage() {
   let content: AboutContent = aboutData;
+  let logoUrl = '/logo/logo-yimi.svg';
 
   try {
-    const { data } = await supabase
-      .from('static_pages')
-      .select('konten')
-      .eq('kunci', 'tentang')
-      .maybeSingle();
+    const [pageRes, settingsRes] = await Promise.all([
+      supabase.from('static_pages').select('konten').eq('kunci', 'tentang').maybeSingle(),
+      supabase.from('site_settings').select('logo_yayasan, foto_yayasan').limit(1).maybeSingle(),
+    ]);
 
-    if (data?.konten) {
+    if (pageRes.data?.konten) {
       content = {
         ...aboutData,
-        ...(data.konten as AboutContent),
+        ...(pageRes.data.konten as AboutContent),
       };
+    }
+
+    if (settingsRes.data) {
+      logoUrl = settingsRes.data.logo_yayasan || settingsRes.data.foto_yayasan || '/logo/logo-yimi.svg';
     }
   } catch (err) {
     console.error('Failed to load static page dari Supabase:', err);
@@ -309,13 +313,14 @@ export default async function TentangPage() {
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
             {/* Center Logo Showcase */}
             <div className="lg:col-span-5 flex items-center justify-center p-8 bg-yimi-blue-50/50 rounded-3xl border border-yimi-blue-600/15">
-              <div className="w-56 h-56 relative drop-shadow-[0_8px_24px_rgba(31,47,107,0.12)]">
+              <div className="w-56 h-56 relative drop-shadow-[0_8px_24px_rgba(31,47,107,0.12)] flex items-center justify-center">
                 <Image
-                  src="/logo/logo-yimi.svg"
+                  src={logoUrl}
                   alt="Logo Lengkap YIMI"
                   width={224}
                   height={224}
-                  className="object-contain"
+                  unoptimized
+                  className="w-full h-full object-contain"
                 />
               </div>
             </div>

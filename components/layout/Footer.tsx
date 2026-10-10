@@ -1,3 +1,5 @@
+'use client';
+
 import React from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
@@ -7,9 +9,11 @@ import {
   Mail,
   Clock,
 } from 'lucide-react';
+import { useSiteSettings } from '@/context/SiteSettingsContext';
 import siteData from '@/content/site.json';
 
 export function Footer() {
+  const { logoUrl, singkatan, tagline, whatsapp, email, alamat } = useSiteSettings();
   const currentYear = new Date().getFullYear();
 
   return (
@@ -25,18 +29,19 @@ export function Footer() {
           {/* Col 1: Brand & Tagline */}
           <div className="flex flex-col gap-4">
             <div className="flex items-center gap-3">
-              <div className="w-12 h-12 relative shrink-0 bg-white/10 rounded-xl p-1 backdrop-blur-xs">
+              <div className="w-12 h-12 relative shrink-0 bg-white/10 rounded-xl p-1 backdrop-blur-xs flex items-center justify-center">
                 <Image
-                  src="/logo/logo-yimi.svg"
-                  alt="Logo YIMI"
+                  src={logoUrl}
+                  alt={`Logo ${singkatan}`}
                   width={48}
                   height={48}
-                  className="object-contain"
+                  unoptimized
+                  className="w-full h-full object-contain"
                 />
               </div>
               <div className="flex flex-col">
                 <span className="font-extrabold text-xl tracking-tight text-white leading-tight">
-                  {siteData.singkatan}
+                  {singkatan}
                 </span>
                 <span className="text-xs font-semibold text-blue-200 uppercase tracking-wider">
                   Yayasan Dakwah &amp; Pendidikan
@@ -45,7 +50,7 @@ export function Footer() {
             </div>
 
             <p className="text-sm text-blue-100/90 leading-relaxed">
-              {siteData.tagline}
+              {tagline || siteData.tagline}
             </p>
 
             <p className="text-xs text-blue-200/80 leading-relaxed">
@@ -111,26 +116,26 @@ export function Footer() {
             <div className="flex flex-col gap-3 text-sm text-blue-100">
               <div className="flex items-start gap-2.5">
                 <MapPin className="w-4 h-4 text-yimi-green-500 shrink-0 mt-1" />
-                <span className="leading-snug">{siteData.kontak.alamat}</span>
+                <span className="leading-snug">{alamat || siteData.kontak.alamat}</span>
               </div>
               <div className="flex items-center gap-2.5">
                 <Phone className="w-4 h-4 text-yimi-green-500 shrink-0" />
                 <a
-                  href={`https://wa.me/${siteData.kontak.whatsapp}`}
+                  href={`https://wa.me/${whatsapp || siteData.kontak.whatsapp}`}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="hover:text-white hover:underline transition-colors"
                 >
-                  {siteData.kontak.whatsappFormatted} (WhatsApp)
+                  {whatsapp || siteData.kontak.whatsappFormatted} (WhatsApp)
                 </a>
               </div>
               <div className="flex items-center gap-2.5">
                 <Mail className="w-4 h-4 text-yimi-green-500 shrink-0" />
                 <a
-                  href={`mailto:${siteData.kontak.email}`}
+                  href={`mailto:${email || siteData.kontak.email}`}
                   className="hover:text-white hover:underline transition-colors"
                 >
-                  {siteData.kontak.email}
+                  {email || siteData.kontak.email}
                 </a>
               </div>
               <div className="flex items-center gap-2.5">

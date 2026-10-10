@@ -16,6 +16,35 @@ export default function AdminSettingsPage() {
   // Modal konfirmasi khusus perubahan rekening bank
   const [isBankModalOpen, setIsBankModalOpen] = useState(false);
 
+  // Upload Logo Yayasan
+  const [uploadingLogo, setUploadingLogo] = useState(false);
+  const logoInputRef = useRef<HTMLInputElement | null>(null);
+
+  async function uploadLogoYayasan(file: File) {
+    if (!settings) return;
+    setUploadingLogo(true);
+    try {
+      const formData = new FormData();
+      formData.append('file', file);
+      const res = await fetch('/api/admin/upload', {
+        method: 'POST',
+        body: formData,
+      });
+      const data = await res.json();
+      if (!res.ok || !data.url) {
+        throw new Error(data.error || 'Gagal mengunggah logo');
+      }
+      setSettings({
+        ...settings,
+        logo_yayasan: data.url,
+      });
+    } catch (err: unknown) {
+      alert(err instanceof Error ? err.message : 'Gagal mengunggah logo.');
+    } finally {
+      setUploadingLogo(false);
+    }
+  }
+
   // Upload Foto Yayasan
   const [uploadingFoto, setUploadingFoto] = useState(false);
   const fotoInputRef = useRef<HTMLInputElement | null>(null);
@@ -180,6 +209,74 @@ export default function AdminSettingsPage() {
               onChange={(e) => setSettings({ ...settings, tagline: e.target.value })}
               className="w-full text-sm p-2.5 bg-white border border-[#E3E7EE] rounded-lg focus:ring-2 focus:ring-[#3E5FD1]"
             />
+          </div>
+
+          {/* Opsi Ubah Logo Resmi Yayasan */}
+          <div className="pt-3 border-t border-neutral-100">
+            <label className="block text-xs font-semibold text-[#374151] mb-1">
+              Logo Resmi Yayasan (Lambang / Simbol)
+            </label>
+            <p className="text-[11px] text-neutral-500 mb-2.5">
+              Logo ini otomatis tampil di <strong>Hero Section Beranda</strong>, <strong>Navbar</strong>, <strong>Footer</strong>, dan identitas yayasan.
+            </p>
+            <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 p-4 rounded-xl border border-dashed border-neutral-300 bg-neutral-50/60">
+              <div className="relative w-20 h-20 rounded-xl overflow-hidden bg-white border border-neutral-300 shrink-0 shadow-2xs flex items-center justify-center p-2">
+                <Image
+                  src={settings.logo_yayasan || settings.foto_yayasan || '/logo/logo-yimi.svg'}
+                  alt="Logo Yayasan"
+                  width={72}
+                  height={72}
+                  unoptimized
+                  className="w-full h-full object-contain"
+                />
+              </div>
+
+              <div className="space-y-2 flex-1 w-full">
+                <div className="flex flex-wrap items-center gap-2">
+                  <input
+                    ref={logoInputRef}
+                    type="file"
+                    accept="image/*,.svg"
+                    className="hidden"
+                    onChange={async (e) => {
+                      const file = e.target.files?.[0];
+                      if (!file) return;
+                      await uploadLogoYayasan(file);
+                      e.target.value = '';
+                    }}
+                  />
+                  <button
+                    type="button"
+                    disabled={uploadingLogo}
+                    onClick={() => logoInputRef.current?.click()}
+                    className="inline-flex items-center gap-1.5 px-3.5 py-2 bg-white border border-neutral-300 hover:bg-neutral-50 rounded-lg text-xs font-semibold text-neutral-700 transition-colors shadow-2xs cursor-pointer disabled:opacity-50"
+                  >
+                    {uploadingLogo ? (
+                      <Loader2 className="w-3.5 h-3.5 animate-spin text-[#3E5FD1]" />
+                    ) : (
+                      <Upload className="w-3.5 h-3.5 text-[#3E5FD1]" />
+                    )}
+                    <span>{uploadingLogo ? 'Mengunggah Logo...' : 'Pilih Logo dari Perangkat'}</span>
+                  </button>
+                  {settings.logo_yayasan && (
+                    <button
+                      type="button"
+                      onClick={() => setSettings({ ...settings, logo_yayasan: '' })}
+                      className="text-xs text-red-600 hover:underline px-2 py-1 cursor-pointer font-medium"
+                    >
+                      Reset ke Logo Default
+                    </button>
+                  )}
+                </div>
+                <input
+                  type="text"
+                  placeholder="Atau tempel URL logo (https://...)"
+                  value={settings.logo_yayasan || ''}
+                  onChange={(e) => setSettings({ ...settings, logo_yayasan: e.target.value })}
+                  className="w-full text-xs p-2 bg-white border border-neutral-300 rounded-lg text-neutral-600 focus:ring-1 focus:ring-[#3E5FD1]"
+                />
+              </div>
+            </div>
           </div>
 
           {/* Opsi Ubah Foto Profil & Gedung Utama Yayasan */}

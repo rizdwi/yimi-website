@@ -2,13 +2,16 @@
 
 import React from 'react';
 import { MessageCircle } from 'lucide-react';
+import { useSiteSettings } from '@/context/SiteSettingsContext';
 import siteData from '@/content/site.json';
 
 export function WhatsAppFloating() {
+  const { whatsapp } = useSiteSettings();
   const prefilledMessage = encodeURIComponent(
     'Assalamu\'alaikum warahmatullah. Saya ingin bertanya seputar kegiatan dan program Yayasan Insan Muslim Istiqomah (YIMI).'
   );
-  const waUrl = `https://wa.me/${siteData.kontak.whatsapp}?text=${prefilledMessage}`;
+  const waTarget = (whatsapp || siteData.kontak.whatsapp).replace(/[^0-9]/g, '');
+  const waUrl = `https://wa.me/${waTarget}?text=${prefilledMessage}`;
 
   return (
     <aside

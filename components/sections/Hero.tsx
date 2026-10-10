@@ -5,9 +5,11 @@ import Image from 'next/image';
 import { ChevronDown, ArrowRight, Heart } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
 import { ParallaxLayer } from '@/components/motion/ParallaxLayer';
+import { useSiteSettings } from '@/context/SiteSettingsContext';
 import siteData from '@/content/site.json';
 
 export function Hero() {
+  const { logoUrl, namaYayasan } = useSiteSettings();
   const [tagline, setTagline] = useState('Dakwah di Atas Sunnah Sesuai Pemahaman Salafus Shalih');
   const [subtitle, setSubtitle] = useState(
     'Mengajak kaum muslimin kepada pemurnian aqidah dan ibadah, menyemai generasi Qur\'ani, serta menebar kemaslahatan umat berlandaskan Al-Qur\'an dan As-Sunnah.'
@@ -59,13 +61,14 @@ export function Hero() {
       <div className="max-w-[1200px] w-full mx-auto px-5 md:px-8 flex-1 flex flex-col items-center justify-center text-center relative z-10 my-auto">
         {/* Foundation Logo (Entrance scale animation 0.9 -> 1) */}
         <div className="relative mb-6 group">
-          <div className="w-[160px] h-[160px] md:w-[210px] md:h-[210px] relative transition-transform duration-900 ease-out hover:scale-105">
+          <div className="w-[160px] h-[160px] md:w-[210px] md:h-[210px] relative transition-transform duration-900 ease-out hover:scale-105 flex items-center justify-center">
             <Image
-              src="/logo/logo-yimi.svg"
-              alt="Logo Resmi Yayasan Insan Muslim Istiqomah"
+              src={logoUrl}
+              alt={`Logo Resmi ${namaYayasan}`}
               width={210}
               height={210}
               priority
+              unoptimized
               className="w-full h-full object-contain drop-shadow-[0_12px_32px_rgba(31,47,107,0.12)]"
             />
           </div>
@@ -74,7 +77,7 @@ export function Hero() {
         {/* Foundation Eyebrow Label */}
         <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/90 border border-yimi-blue-600/15 text-yimi-blue-800 text-xs md:text-sm font-bold tracking-widest uppercase mb-4 shadow-xs">
           <span className="w-2 h-2 rounded-full bg-yimi-green-500 animate-pulse" />
-          <span>{siteData.namaLengkap}</span>
+          <span>{namaYayasan || siteData.namaLengkap}</span>
         </div>
 
         {/* Hero Title */}

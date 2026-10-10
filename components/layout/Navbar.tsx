@@ -6,6 +6,7 @@ import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 import { Menu, X, Heart } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
+import { useSiteSettings } from '@/context/SiteSettingsContext';
 
 const navLinks = [
   { name: 'Beranda', href: '/' },
@@ -18,6 +19,7 @@ const navLinks = [
 ];
 
 export function Navbar() {
+  const { logoUrl, singkatan, namaYayasan } = useSiteSettings();
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileOpen, setIsMobileOpen] = useState(false);
   const pathname = usePathname();
@@ -68,22 +70,23 @@ export function Navbar() {
             href="/"
             className="flex items-center gap-3 group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-yimi-green-500 rounded-lg"
           >
-            <div className="relative w-11 h-11 shrink-0 transition-transform duration-200 group-hover:scale-105">
+            <div className="relative w-11 h-11 shrink-0 transition-transform duration-200 group-hover:scale-105 flex items-center justify-center">
               <Image
-                src="/logo/logo-yimi.svg"
-                alt="Logo YIMI"
+                src={logoUrl}
+                alt={`Logo ${singkatan}`}
                 width={44}
                 height={44}
                 priority
+                unoptimized
                 className="w-full h-full object-contain"
               />
             </div>
             <div className="flex flex-col">
               <span className="font-extrabold text-base md:text-lg tracking-tight text-yimi-blue-800 leading-tight">
-                YIMI
+                {singkatan}
               </span>
               <span className="text-[11px] font-semibold text-neutral-500 tracking-wider uppercase hidden sm:block">
-                Yayasan Insan Muslim Istiqomah
+                {namaYayasan}
               </span>
             </div>
           </Link>
@@ -159,14 +162,17 @@ export function Navbar() {
           {/* Mobile Header */}
           <div className="flex items-center justify-between pb-6 border-b border-neutral-100">
             <div className="flex items-center gap-2.5">
-              <Image
-                src="/logo/logo-yimi.svg"
-                alt="Logo YIMI"
-                width={36}
-                height={36}
-                className="object-contain"
-              />
-              <span className="font-extrabold text-lg text-yimi-blue-800">YIMI</span>
+              <div className="relative w-9 h-9 shrink-0 flex items-center justify-center">
+                <Image
+                  src={logoUrl}
+                  alt={`Logo ${singkatan}`}
+                  width={36}
+                  height={36}
+                  unoptimized
+                  className="w-full h-full object-contain"
+                />
+              </div>
+              <span className="font-extrabold text-lg text-yimi-blue-800">{singkatan}</span>
             </div>
             <button
               type="button"
