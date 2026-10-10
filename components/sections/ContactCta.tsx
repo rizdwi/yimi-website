@@ -3,9 +3,11 @@
 import React, { useState } from 'react';
 import { Send, MessageCircle, Mail, CheckCircle2 } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
+import { useSiteSettings } from '@/context/SiteSettingsContext';
 import siteData from '@/content/site.json';
 
 export function ContactCta() {
+  const { whatsapp, email } = useSiteSettings();
   const [formData, setFormData] = useState({
     nama: '',
     kontak: '',
@@ -15,23 +17,46 @@ export function ContactCta() {
   });
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [errorMsg, setErrorMsg] = useState<string | null>(null);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     // If bot filled the honeypot, silently reject
     if (formData.honeypot) return;
 
     setLoading(true);
-    setTimeout(() => {
+    setErrorMsg(null);
+    try {
+      const res = await fetch('/api/kontak', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          nama: formData.nama,
+          kontak: formData.kontak,
+          kategori: formData.kategori,
+          pesan: formData.pesan,
+        }),
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        setErrorMsg(data.error || 'Gagal mengirim pesan.');
+      } else {
+        setIsSubmitted(true);
+      }
+    } catch {
+      setErrorMsg('Gagal mengirim pesan. Silakan coba kembali.');
+    } finally {
       setLoading(false);
-      setIsSubmitted(true);
-    }, 600);
+    }
   };
+
+  const activeWa = whatsapp || siteData.kontak.whatsapp;
+  const activeEmail = email || siteData.kontak.email;
 
   const waPrefill = encodeURIComponent(
     `Bismillah, saya ${formData.nama || 'jamaah'} ingin bertanya seputar ${formData.kategori}.\n\nPesan:\n${formData.pesan || 'Mohon informasi seputar program yayasan.'}`
   );
-  const waUrl = `https://wa.me/${siteData.kontak.whatsapp}?text=${waPrefill}`;
+  const waUrl = `https://wa.me/${activeWa}?text=${waPrefill}`;
 
   return (
     <section className="py-20 md:py-24 bg-yimi-blue-50/50 relative overflow-hidden">
@@ -65,12 +90,12 @@ export function ContactCta() {
                     Respons cepat di jam kerja (08.00 – 17.00 WIB)
                   </p>
                   <a
-                    href={`https://wa.me/${siteData.kontak.whatsapp}`}
+                    href={`https://wa.me/${activeWa}`}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="text-sm font-bold text-yimi-blue-600 hover:underline"
                   >
-                    {siteData.kontak.whatsappFormatted}
+                    {activeWa}
                   </a>
                 </div>
               </div>
@@ -87,10 +112,10 @@ export function ContactCta() {
                     Untuk urusan legalitas dan kerja sama resmi
                   </p>
                   <a
-                    href={`mailto:${siteData.kontak.email}`}
+                    href={`mailto:${activeEmail}`}
                     className="text-sm font-bold text-yimi-blue-600 hover:underline"
                   >
-                    {siteData.kontak.email}
+                    {activeEmail}
                   </a>
                 </div>
               </div>
@@ -222,6 +247,12 @@ export function ContactCta() {
                     className="w-full p-4 text-sm rounded-xl border border-neutral-200 focus:border-yimi-blue-600 focus:ring-2 focus:ring-yimi-green-500/30 outline-none transition-colors resize-none"
                   />
                 </div>
+
+                {errorMsg && (
+                  <p className="text-xs text-yimi-red-600 bg-red-50 p-2.5 rounded-lg border border-red-200">
+                    {errorMsg}
+                  </p>
+                )}
 
                 <div className="flex flex-col sm:flex-row gap-3 pt-2">
                   <Button

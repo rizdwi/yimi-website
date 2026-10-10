@@ -19,6 +19,7 @@ import { Button } from '@/components/ui/Button';
 import { ProgressBar } from '@/components/ui/ProgressBar';
 import { CountUp } from '@/components/motion/CountUp';
 import { formatRupiah, formatPersen } from '@/lib/format';
+import { useSiteSettings } from '@/context/SiteSettingsContext';
 import landDataFallback from '@/content/land-campaign.json';
 import siteData from '@/content/site.json';
 
@@ -31,7 +32,14 @@ interface LandUpdateItem {
 }
 
 export default function PembebasanLahanPage() {
+  const { settings, whatsapp } = useSiteSettings();
   const [copied, setCopied] = useState(false);
+
+  const bank1Nama = settings?.bank_1_nama || siteData.donasi.bank;
+  const bank1Rekening = settings?.bank_1_rekening || siteData.donasi.noRekening;
+  const bank1An = settings?.bank_1_an || siteData.donasi.atasNama;
+  const qrisUrl = settings?.qris_image || siteData.donasi.qrisImage;
+  const activeWa = whatsapp || siteData.kontak.whatsapp;
   const [campaign, setCampaign] = useState({
     judul: landDataFallback.judul,
     subjudul: landDataFallback.subjudul,
@@ -80,12 +88,12 @@ export default function PembebasanLahanPage() {
   const percentage = formatPersen(campaign.terkumpul, campaign.targetDana);
 
   const copyRekening = () => {
-    navigator.clipboard.writeText(siteData.donasi.noRekening);
+    navigator.clipboard.writeText(bank1Rekening);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
   };
 
-  const waConfirmUrl = `https://wa.me/${siteData.kontak.whatsapp}?text=${encodeURIComponent(
+  const waConfirmUrl = `https://wa.me/${activeWa}?text=${encodeURIComponent(
     siteData.donasi.waTemplateLahan
   )}`;
 
@@ -427,7 +435,7 @@ export default function PembebasanLahanPage() {
                     Rekening Khusus Wakaf
                   </Badge>
                   <h3 className="text-2xl font-extrabold text-yimi-blue-800">
-                    {siteData.donasi.bank}
+                    {bank1Nama}
                   </h3>
                   <span className="text-xs text-neutral-500">
                     Kode Bank: {siteData.donasi.kodeBank}
@@ -440,7 +448,7 @@ export default function PembebasanLahanPage() {
                       Nomor Rekening:
                     </span>
                     <span className="font-mono text-xl sm:text-2xl font-extrabold text-yimi-blue-800 tracking-wider">
-                      {siteData.donasi.noRekening}
+                      {bank1Rekening}
                     </span>
                   </div>
                   <button
@@ -460,7 +468,7 @@ export default function PembebasanLahanPage() {
 
                 <div className="text-xs text-neutral-600 leading-relaxed space-y-1">
                   <p>
-                    <strong>Atas Nama:</strong> {siteData.donasi.atasNama}
+                    <strong>Atas Nama:</strong> {bank1An}
                   </p>
                   <p className="text-neutral-500 italic">
                     {siteData.donasi.catatan}
@@ -473,10 +481,11 @@ export default function PembebasanLahanPage() {
                 <Badge variant="neutral">Scan Cepat QRIS</Badge>
                 <div className="relative w-48 h-48 bg-white p-3 rounded-2xl border border-neutral-200 shadow-xs flex items-center justify-center">
                   <Image
-                    src={siteData.donasi.qrisImage}
+                    src={qrisUrl}
                     alt="QRIS Donasi YIMI"
                     width={180}
                     height={180}
+                    unoptimized
                     className="w-full h-full object-contain"
                   />
                 </div>

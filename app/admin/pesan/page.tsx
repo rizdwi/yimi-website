@@ -21,9 +21,14 @@ export default function AdminPesanPage() {
           const data = await res.json();
           const list = data.messages || [];
           setMessages(list);
-          if (list.length > 0 && !selectedMessage) {
-            setSelectedMessage(list[0]);
-            setCatatanInput(list[0].catatan_internal || '');
+          if (list.length > 0) {
+            setSelectedMessage((prev) => {
+              if (!prev) {
+                setCatatanInput(list[0].catatan_internal || '');
+                return list[0];
+              }
+              return prev;
+            });
           }
         }
       } catch (err) {

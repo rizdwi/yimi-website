@@ -12,10 +12,21 @@ import {
 } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
 import { Badge } from '@/components/ui/Badge';
+import { useSiteSettings } from '@/context/SiteSettingsContext';
 import siteData from '@/content/site.json';
 
 export default function DonasiPage() {
+  const { settings, whatsapp } = useSiteSettings();
   const [copiedBank, setCopiedBank] = useState<string | null>(null);
+
+  const bank1Nama = settings?.bank_1_nama || siteData.donasi.bank;
+  const bank1Rekening = settings?.bank_1_rekening || siteData.donasi.noRekening;
+  const bank1An = settings?.bank_1_an || siteData.donasi.atasNama;
+  const bank2Nama = settings?.bank_2_nama || siteData.donasi.rekeningLain?.bank || '';
+  const bank2Rekening = settings?.bank_2_rekening || siteData.donasi.rekeningLain?.noRekening || '';
+  const bank2An = settings?.bank_2_an || siteData.donasi.rekeningLain?.atasNama || '';
+  const qrisUrl = settings?.qris_image || siteData.donasi.qrisImage;
+  const activeWa = whatsapp || siteData.kontak.whatsapp;
 
   const copyToClipboard = (accountNo: string, bankName: string) => {
     navigator.clipboard.writeText(accountNo);
@@ -23,7 +34,7 @@ export default function DonasiPage() {
     setTimeout(() => setCopiedBank(null), 2000);
   };
 
-  const waConfirmUrl = `https://wa.me/${siteData.kontak.whatsapp}?text=${encodeURIComponent(
+  const waConfirmUrl = `https://wa.me/${activeWa}?text=${encodeURIComponent(
     'Assalamu’alaikum Warahmatullahi Wabarakatuh, saya ingin konfirmasi donasi/infaq untuk Yayasan Insan Muslim Istiqomah (YIMI).'
   )}`;
 
@@ -73,7 +84,7 @@ export default function DonasiPage() {
                     </div>
                     <div>
                       <h3 className="text-lg font-bold text-yimi-blue-800">
-                        {siteData.donasi.bank}
+                        {bank1Nama}
                       </h3>
                       <span className="text-xs text-neutral-400">
                         Kode Bank: {siteData.donasi.kodeBank}
@@ -89,19 +100,19 @@ export default function DonasiPage() {
                       Nomor Rekening
                     </span>
                     <span className="font-mono text-xl sm:text-2xl font-extrabold text-yimi-blue-800 tracking-wider">
-                      {siteData.donasi.noRekening}
+                      {bank1Rekening}
                     </span>
                   </div>
                   <button
                     type="button"
                     onClick={() =>
-                      copyToClipboard(siteData.donasi.noRekening, siteData.donasi.bank)
+                      copyToClipboard(bank1Rekening, bank1Nama)
                     }
                     className="p-2.5 rounded-xl bg-white border border-neutral-200 hover:bg-yimi-blue-50 text-neutral-600 hover:text-yimi-blue-600 transition-colors cursor-pointer"
                     title="Salin Nomor Rekening"
-                    aria-label={`Salin nomor rekening ${siteData.donasi.bank}`}
+                    aria-label={`Salin nomor rekening ${bank1Nama}`}
                   >
-                    {copiedBank === siteData.donasi.bank ? (
+                    {copiedBank === bank1Nama ? (
                       <Check className="w-5 h-5 text-yimi-green-500" />
                     ) : (
                       <Copy className="w-5 h-5" />
@@ -112,13 +123,13 @@ export default function DonasiPage() {
                 <div className="text-xs text-neutral-600 flex items-center justify-between pt-1">
                   <span>Atas Nama:</span>
                   <strong className="text-neutral-800">
-                    {siteData.donasi.atasNama}
+                    {bank1An}
                   </strong>
                 </div>
               </div>
 
               {/* Muamalat Card */}
-              {siteData.donasi.rekeningLain && (
+              {bank2Nama && bank2Rekening && (
                 <div className="bg-white rounded-3xl p-8 border border-neutral-200/90 shadow-xs flex flex-col gap-5">
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-3">
@@ -127,10 +138,10 @@ export default function DonasiPage() {
                       </div>
                       <div>
                         <h3 className="text-lg font-bold text-yimi-blue-800">
-                          {siteData.donasi.rekeningLain.bank}
+                          {bank2Nama}
                         </h3>
                         <span className="text-xs text-neutral-400">
-                          Kode Bank: {siteData.donasi.rekeningLain.kodeBank}
+                          Kode Bank: {siteData.donasi.rekeningLain?.kodeBank || '147'}
                         </span>
                       </div>
                     </div>
@@ -143,22 +154,22 @@ export default function DonasiPage() {
                         Nomor Rekening
                       </span>
                       <span className="font-mono text-xl sm:text-2xl font-extrabold text-yimi-blue-800 tracking-wider">
-                        {siteData.donasi.rekeningLain.noRekening}
+                        {bank2Rekening}
                       </span>
                     </div>
                     <button
                       type="button"
                       onClick={() =>
                         copyToClipboard(
-                          siteData.donasi.rekeningLain.noRekening,
-                          siteData.donasi.rekeningLain.bank
+                          bank2Rekening,
+                          bank2Nama
                         )
                       }
                       className="p-2.5 rounded-xl bg-white border border-neutral-200 hover:bg-yimi-blue-50 text-neutral-600 hover:text-yimi-blue-600 transition-colors cursor-pointer"
                       title="Salin Nomor Rekening"
-                      aria-label={`Salin nomor rekening ${siteData.donasi.rekeningLain.bank}`}
+                      aria-label={`Salin nomor rekening ${bank2Nama}`}
                     >
-                      {copiedBank === siteData.donasi.rekeningLain.bank ? (
+                      {copiedBank === bank2Nama ? (
                         <Check className="w-5 h-5 text-yimi-green-500" />
                       ) : (
                         <Copy className="w-5 h-5" />
@@ -169,7 +180,7 @@ export default function DonasiPage() {
                   <div className="text-xs text-neutral-600 flex items-center justify-between pt-1">
                     <span>Atas Nama:</span>
                     <strong className="text-neutral-800">
-                      {siteData.donasi.rekeningLain.atasNama}
+                      {bank2An}
                     </strong>
                   </div>
                 </div>
@@ -217,10 +228,11 @@ export default function DonasiPage() {
 
                 <div className="w-full max-w-[280px] aspect-3/4 relative mb-6">
                   <Image
-                    src={siteData.donasi.qrisImage}
+                    src={qrisUrl}
                     alt="QRIS YIMI"
                     width={280}
                     height={360}
+                    unoptimized
                     className="w-full h-auto object-contain rounded-2xl shadow-xs"
                   />
                 </div>

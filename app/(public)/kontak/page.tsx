@@ -11,9 +11,11 @@ import {
   CheckCircle2,
 } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
+import { useSiteSettings } from '@/context/SiteSettingsContext';
 import siteData from '@/content/site.json';
 
 export default function KontakPage() {
+  const { whatsapp, email, alamat } = useSiteSettings();
   const [formData, setFormData] = useState({
     nama: '',
     kontak: '',
@@ -24,19 +26,43 @@ export default function KontakPage() {
 
   const [submitted, setSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [errorMsg, setErrorMsg] = useState<string | null>(null);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (formData.honeypot) return; // Anti-spam bot trap
 
     setLoading(true);
-    setTimeout(() => {
+    setErrorMsg(null);
+    try {
+      const res = await fetch('/api/kontak', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          nama: formData.nama,
+          kontak: formData.kontak,
+          kategori: formData.kategori,
+          pesan: formData.pesan,
+        }),
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        setErrorMsg(data.error || 'Gagal mengirim pesan.');
+      } else {
+        setSubmitted(true);
+      }
+    } catch {
+      setErrorMsg('Gagal mengirimkan pesan. Silakan periksa koneksi internet Anda.');
+    } finally {
       setLoading(false);
-      setSubmitted(true);
-    }, 600);
+    }
   };
 
-  const directWaUrl = `https://wa.me/${siteData.kontak.whatsapp}?text=${encodeURIComponent(
+  const activeWa = whatsapp || siteData.kontak.whatsapp;
+  const activeEmail = email || siteData.kontak.email;
+  const activeAlamat = alamat || siteData.kontak.alamat;
+
+  const directWaUrl = `https://wa.me/${activeWa}?text=${encodeURIComponent(
     'Assalamu’alaikum Warahmatullahi Wabarakatuh Pengurus YIMI, saya ingin bertanya terkait program yayasan.'
   )}`;
 
@@ -88,7 +114,7 @@ export default function KontakPage() {
                       Alamat Sekretariat
                     </h3>
                     <p className="text-xs sm:text-sm text-neutral-600 leading-relaxed">
-                      {siteData.kontak.alamat}
+                      {activeAlamat}
                     </p>
                   </div>
                 </div>
@@ -125,7 +151,7 @@ export default function KontakPage() {
                       className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-yimi-green-500 hover:bg-yimi-green-700 text-yimi-blue-800 hover:text-white font-bold text-xs transition-colors"
                     >
                       <MessageCircle className="w-3.5 h-3.5" />
-                      <span>Chat WhatsApp Pengurus</span>
+                      <span>Chat WhatsApp Pengurus ({activeWa})</span>
                     </a>
                   </div>
                 </div>
@@ -139,7 +165,7 @@ export default function KontakPage() {
                       Surel (Email)
                     </h3>
                     <p className="text-xs sm:text-sm text-neutral-600">
-                      {siteData.kontak.email}
+                      {activeEmail}
                     </p>
                   </div>
                 </div>
@@ -281,6 +307,12 @@ export default function KontakPage() {
                         className="w-full px-4 py-3 bg-neutral-50 border border-neutral-200 rounded-2xl text-xs sm:text-sm text-neutral-800 placeholder-neutral-400 focus:outline-hidden focus:border-yimi-blue-600 focus:bg-white transition-colors resize-none"
                       />
                     </div>
+
+                    {errorMsg && (
+                      <p className="text-xs text-yimi-red-600 bg-red-50 p-3 rounded-xl border border-red-200">
+                        {errorMsg}
+                      </p>
+                    )}
 
                     <div className="pt-2">
                       <Button
