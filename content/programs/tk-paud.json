@@ -1,47 +1,94 @@
 {
   "judul": "Pendidikan TK Islam Insan Muslim Istiqomah",
   "subjudul": "Pendidikan usia dini dengan kurikulum serta adab islami",
-  "deskripsi": "Program pendidikan anak usia dini berbasis aqidah shahihah dan pembiasaan sunnah harian sejak dini.",
+  "deskripsi": "Program pendidikan anak usia dini berbasis aqidah shahihah dan pembiasaan sunnah harian sejak dini. Membimbing ananda dengan penuh kasih sayang dalam suasana belajar yang menyenangkan, aman, dan berkarakter.",
   "targetUsia": "Kelompok Bermain (3 – 4 Tahun) & TK A / TK B (4 – 6 Tahun)",
   "waktuBelajar": "Senin – Kamis: 07.30 – 11.00 WIB | Jumat: 07.30 – 10.00 WIB",
+  "visi": "Membentuk generasi pembelajar yang berkarakter islami, beraqidah lurus, berakhlak mulia, dan unggul dalam potensi diri.",
+  "misi": [
+    "Menanamkan aqidah shahihah dan akhlak mulia sejak dini sesuai manhaj Salaf.",
+    "Menyelenggarakan pembelajaran Al-Qur'an dengan metode tahfidz yang menyenangkan.",
+    "Mengembangkan potensi kecerdasan majemuk (multiple intelligences) anak.",
+    "Membangun sinergi harmonis antara sekolah, orang tua, dan masyarakat."
+  ],
   "keunggulan": [
     {
-      "judul": "Tahfidz Juz 'Amma Terbimbing",
-      "deskripsi": "Target hafalan surat-surat pendek juz 30 dengan makhraj dan tajwid yang tartil melalui metode talaqqi harian yang ceria dan tanpa tekanan."
+      "judul": "Tauhid & Sunnah Sejak Dini",
+      "deskripsi": "Penanaman aqidah murni dan pembiasaan sunnah harian dalam setiap aktivitas anak tanpa doktrinasi kaku."
     },
     {
-      "judul": "Pembiasaan Adab & Doa Nabawi",
-      "deskripsi": "Praktik adab makan, masuk kamar mandi, adab kepada orang tua, wudhu, shalat fardhu berjamaah, dan hafalan doa-doa harian sesuai sunnah."
+      "judul": "Tahfidz Juz 30 & Doa Harian",
+      "deskripsi": "Target hafalan surat-surat pendek juz 30 dengan makhraj tartil melalui metode talaqqi harian yang ceria."
     },
     {
-      "judul": "Sentra Kreativitas Ramah Anak",
-      "deskripsi": "Stimulasi motorik halus, motorik kasar, kemampuan bahasa, dan sains dasar melalui permainan edukatif serta eksperimen sederhana."
+      "judul": "Sentra Bermain & Kreativitas",
+      "deskripsi": "Stimulasi motorik halus, kasar, dan sains dasar melalui permainan edukatif serta eksperimen sederhana."
     },
     {
-      "judul": "Guru Pembimbing Berakhlak & Terlatih",
-      "deskripsi": "Tenaga pendidik akhwat berlatar belakang pendidikan anak usia dini dan memiliki pemahaman syar'i yang amanah dan penyayang."
+      "judul": "Pembiasaan Adab & Akhlak",
+      "deskripsi": "Praktik adab makan, masuk kamar mandi, adab kepada orang tua, guru, wudhu, dan shalat berjamaah."
+    },
+    {
+      "judul": "Pengenalan Bahasa Arab Dasar",
+      "deskripsi": "Mengenalkan kosakata harian bahasa Arab melalui lagu islami, cerita nabi, dan interaksi ceria."
+    },
+    {
+      "judul": "Outing Class & Sosial Umat",
+      "deskripsi": "Pembelajaran kontekstual mengenal alam ciptaan Allah dan menumbuhkan kepedulian berbagi sesama."
+    }
+  ],
+  "fasilitas": [
+    {
+      "nama": "Ruang Kelas Ber-AC & Nyaman",
+      "deskripsi": "Ruang belajar berpendingin udara yang bersih, terang, dan kondusif untuk konsentrasi belajar ananda."
+    },
+    {
+      "nama": "Alat Peraga Edukatif (APE) Lengkap",
+      "deskripsi": "Mainan edukatif berstandar SNI untuk menstimulasi motorik, kognitif, logika, dan imajinasi anak."
+    },
+    {
+      "nama": "Playground & Area Bermain Terbuka",
+      "deskripsi": "Area luar ruangan yang aman dengan rumput sintetis dan wahana bermain motorik kasar anak."
+    },
+    {
+      "nama": "Perpustakaan & Pojok Baca Anak",
+      "deskripsi": "Koleksi buku-buku cerita islami bergambar ramah anak untuk menumbuhkan minat literasi sejak dini."
+    },
+    {
+      "nama": "Musholla Khusus Pembiasaan Ibadah",
+      "deskripsi": "Sarana praktik wudhu dan shalat berjamaah anak dengan bimbingan ustadzah secara intensif."
+    },
+    {
+      "nama": "CCTV & Keamanan Terjaga",
+      "deskripsi": "Lingkungan sekolah berpagar aman dengan pengawasan CCTV demi kenyamanan dan keselamatan santri."
     }
   ],
   "kegiatanHarian": [
-    { "waktu": "07.30 – 08.00", "aktivitas": "Penyambutan santri, salam, dan senam motorik / dzikir pagi" },
-    { "waktu": "08.00 – 08.45", "aktivitas": "Halaqah Qur'an: Talaqqi hafalan dan pembacaan Iqro" },
-    { "waktu": "08.45 – 09.30", "aktivitas": "Materi tematik (kognitif, bahasa, adab harian)" },
+    { "waktu": "07.30 – 08.00", "aktivitas": "Penyambutan santri, salam, dan senam motorik / dzikir pagi ceria" },
+    { "waktu": "08.00 – 08.45", "aktivitas": "Halaqah Qur'an: Talaqqi hafalan juz 30 dan pembacaan Iqro" },
+    { "waktu": "08.45 – 09.30", "aktivitas": "Materi tematik sentra (kognitif, bahasa, adab harian)" },
     { "waktu": "09.30 – 10.00", "aktivitas": "Istirahat, makan bersama dengan adab Islam, bermain luar" },
     { "waktu": "10.00 – 10.45", "aktivitas": "Praktik ibadah (wudhu & simulasi shalat) serta kisah para Nabi" },
-    { "waktu": "10.45 – 11.00", "aktivitas": "Muroja'ah doa harian, refleksi, dan kepulangan" }
+    { "waktu": "10.45 – 11.00", "aktivitas": "Muroja'ah doa harian, refleksi ceria, dan persiapan kepulangan" }
   ],
   "pendaftaran": {
     "status": "Gelombang 1 Telah Dibuka",
     "biayaPendaftaran": "Rp 50.000",
     "biayaSpp": "Rp 70.000 / bulan",
     "syarat": [
-      "Mengisi formulir pendaftaran",
-      "Fotokopi Akta Kelahiran santri (2 lembar)",
+      "Mengisi formulir pendaftaran resmi",
+      "Fotokopi Akta Kelahiran calon santri (2 lembar)",
       "Fotokopi Kartu Keluarga (2 lembar)",
-      "Pasfoto santri 3x4 (3 lembar)",
+      "Pasfoto calon santri ukuran 3x4 (3 lembar)",
       "Wawancara kesepakatan visi pendidikan antara orang tua dan pihak sekolah"
     ],
     "kontakPendaftaran": "6281219362077",
-    "pesanWA": "Bismillah, saya ingin menanyakan informasi pendaftaran Pendidikan TK Islam Insan Muslim Istiqomah untuk ananda."
+    "pesanWA": "Bismillah, saya ingin menanyakan informasi pendaftaran Pendidikan TK Islam Insan Muslim Istiqomah untuk ananda.",
+    "jamPelayanan": "Senin – Jumat: 07.30 – 12.00 WIB",
+    "fileBrosur": "https://fopqfjqztvmktzvahjrh.supabase.co/storage/v1/object/public/yimi-media/1791636588143_1xxxh-PPDB_TK_Islam_Insan_Muslim_Istiqomah.pdf",
+    "fileBrosurNama": "Brosur PPDB TK Islam Insan Muslim Istiqomah (PDF)",
+    "fileFormulir": "https://fopqfjqztvmktzvahjrh.supabase.co/storage/v1/object/public/yimi-media/1791636588143_1xxxh-PPDB_TK_Islam_Insan_Muslim_Istiqomah.pdf",
+    "fileFormulirNama": "Formulir Pendaftaran Santri Baru (PDF)",
+    "alamatSekolah": "Jl. Raya Cilodong No. 45, Kalimulya, Kec. Cilodong, Kota Depok, Jawa Barat 16413"
   }
 }

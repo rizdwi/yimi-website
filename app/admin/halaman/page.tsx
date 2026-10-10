@@ -14,6 +14,7 @@ import {
   BookOpen,
   Users,
   FileText,
+  Compass,
 } from 'lucide-react';
 import { QuoteEditor, QuoteData } from '@/components/admin/QuoteEditor';
 
@@ -21,6 +22,11 @@ interface PengurusItem {
   jabatan: string;
   nama: string;
   peran: string;
+}
+
+interface MaknaItem {
+  elemen: string;
+  makna: string;
 }
 
 export default function AdminHalamanPage() {
@@ -82,6 +88,24 @@ export default function AdminHalamanPage() {
       peran: 'Akuntabilitas keuangan, pelaporan donasi, dan pengelolaan kas operasional yayasan.',
     },
   ]);
+  const [maknaLambang, setMaknaLambang] = useState<MaknaItem[]>([
+    {
+      elemen: 'Bintang 8 Sudut (Khatim / Rub el Hizb)',
+      makna: 'Bentuk geometri Islam melambangkan ketertiban syariat, keindahan arsitektur peradaban Islam, dan komitmen untuk istiqomah meniti sunnah.',
+    },
+    {
+      elemen: 'Kubah Masjid & Bulan Sabit (Hilal)',
+      makna: 'Simbol pusat tauhid dan ibadah umat, sekaligus penegasan arah dakwah untuk memakmurkan rumah Allah dan memancarkan syiar cahaya Islam.',
+    },
+    {
+      elemen: "Al-Qur'an Terbuka",
+      makna: "Menjadi sumber rujukan utama seluruh lini gerak yayasan, lambang ilmu syar'i yang diamalkan dan diajarkan kepada generasi ke generasi.",
+    },
+    {
+      elemen: 'Dua Telapak Tangan',
+      makna: 'Melambangkan doa, tawakal, keikhlasan dalam berkhidmah, serta amanah dalam memegang dan menyalurkan infaq para muhsinin.',
+    },
+  ]);
 
   // --- STATE HALAMAN BERANDA ---
   const [heroTagline, setHeroTagline] = useState(
@@ -120,6 +144,7 @@ export default function AdminHalamanPage() {
             if (c.manhaj?.dalilHadits) setDalilHadits(c.manhaj.dalilHadits);
             if (c.sejarah?.teks) setSejarahTeks(c.sejarah.teks);
             if (Array.isArray(c.strukturPengurus)) setPengurusList(c.strukturPengurus);
+            if (Array.isArray(c.maknaLambang)) setMaknaLambang(c.maknaLambang);
           }
 
           // Load data beranda
@@ -184,6 +209,7 @@ export default function AdminHalamanPage() {
               teks: sejarahTeks,
             },
             strukturPengurus: pengurusList,
+            maknaLambang,
           },
           status: 'terbit',
         }),
@@ -262,6 +288,19 @@ export default function AdminHalamanPage() {
     const updated = [...pengurusList];
     updated[idx] = { ...updated[idx], [field]: val };
     setPengurusList(updated);
+  }
+
+  // Helper untuk edit filosofi makna lambang yayasan
+  function handleAddMakna() {
+    setMaknaLambang([...maknaLambang, { elemen: '', makna: '' }]);
+  }
+  function handleRemoveMakna(idx: number) {
+    setMaknaLambang(maknaLambang.filter((_, i) => i !== idx));
+  }
+  function handleMaknaChange(idx: number, field: keyof MaknaItem, val: string) {
+    const updated = [...maknaLambang];
+    updated[idx] = { ...updated[idx], [field]: val };
+    setMaknaLambang(updated);
   }
 
   if (loading) {
@@ -570,6 +609,70 @@ export default function AdminHalamanPage() {
                     <button
                       type="button"
                       onClick={() => handleRemovePengurus(idx)}
+                      className="p-2 text-[#D7261E] hover:bg-[#FEE2E2] rounded-lg transition"
+                      title="Hapus"
+                    >
+                      <Trash2 className="w-4 h-4" />
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Filosofi & Makna Lambang Yayasan */}
+          <div className="bg-white p-6 rounded-xl border border-[#E3E7EE] shadow-xs space-y-4">
+            <div className="flex items-center justify-between pb-3 border-b border-[#E3E7EE]">
+              <div className="flex items-center space-x-2">
+                <Compass className="w-5 h-5 text-[#3E5FD1]" />
+                <h3 className="font-bold text-base text-[#111827]">
+                  Filosofi &amp; Makna Lambang Yayasan
+                </h3>
+              </div>
+              <button
+                type="button"
+                onClick={handleAddMakna}
+                className="inline-flex items-center space-x-1 text-xs text-[#3E5FD1] hover:underline font-semibold"
+              >
+                <Plus className="w-3.5 h-3.5" />
+                <span>Tambah Elemen Lambang</span>
+              </button>
+            </div>
+
+            <div className="space-y-3">
+              {maknaLambang.map((m, idx) => (
+                <div
+                  key={idx}
+                  className="p-3 bg-[#F5F7FA] rounded-xl border border-[#E3E7EE] grid grid-cols-1 sm:grid-cols-12 gap-3 items-start"
+                >
+                  <div className="sm:col-span-4">
+                    <label className="text-[10px] text-[#6B7280] uppercase font-bold block mb-0.5">
+                      Elemen Simbol / Lambang
+                    </label>
+                    <input
+                      type="text"
+                      value={m.elemen}
+                      onChange={(e) => handleMaknaChange(idx, 'elemen', e.target.value)}
+                      placeholder="Nama elemen lambang..."
+                      className="w-full text-xs p-2 bg-white border border-[#E3E7EE] rounded-lg font-semibold"
+                    />
+                  </div>
+                  <div className="sm:col-span-7">
+                    <label className="text-[10px] text-[#6B7280] uppercase font-bold block mb-0.5">
+                      Arti &amp; Makna Filosofis
+                    </label>
+                    <textarea
+                      rows={2}
+                      value={m.makna}
+                      onChange={(e) => handleMaknaChange(idx, 'makna', e.target.value)}
+                      placeholder="Penjelasan makna filosofis..."
+                      className="w-full text-xs p-2 bg-white border border-[#E3E7EE] rounded-lg"
+                    />
+                  </div>
+                  <div className="sm:col-span-1 flex justify-end pt-5">
+                    <button
+                      type="button"
+                      onClick={() => handleRemoveMakna(idx)}
                       className="p-2 text-[#D7261E] hover:bg-[#FEE2E2] rounded-lg transition"
                       title="Hapus"
                     >
