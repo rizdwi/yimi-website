@@ -16,8 +16,10 @@ export function constructMetadata({
     ? `${title} | ${siteData.singkatan} - ${siteData.namaLengkap}`
     : `${siteData.namaLengkap} (${siteData.singkatan}) | ${siteData.tagline}`;
 
+  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://yimi.or.id';
+
   return {
-    metadataBase: new URL('https://yimi.or.id'),
+    metadataBase: new URL(baseUrl),
     title: fullTitle,
     description,
     openGraph: {

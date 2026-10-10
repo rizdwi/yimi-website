@@ -2,7 +2,7 @@ import { MetadataRoute } from 'next';
 import newsData from '@/content/news/index.json';
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const baseUrl = 'https://yimi.or.id';
+  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://yimi.or.id';
 
   const staticRoutes: MetadataRoute.Sitemap = [
     {
