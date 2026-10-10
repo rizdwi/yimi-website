@@ -16,7 +16,7 @@ export function constructMetadata({
     ? `${title} | ${siteData.singkatan} - ${siteData.namaLengkap}`
     : `${siteData.namaLengkap} (${siteData.singkatan}) | ${siteData.tagline}`;
 
-  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://yimi.or.id';
+  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://yimi.my.id';
 
   return {
     metadataBase: new URL(baseUrl),
