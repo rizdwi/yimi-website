@@ -159,11 +159,41 @@ export async function DELETE(req: NextRequest) {
 
   const { searchParams } = new URL(req.url);
   const id = searchParams.get('id');
+  const deleteAsset = searchParams.get('delete_asset') !== 'false';
+
   if (!id) return NextResponse.json({ error: 'ID foto wajib diisi.' }, { status: 400 });
+
+  // Ambil data foto terlebih dahulu untuk mengetahui URL asetnya
+  const { data: itemToDelete } = await supabase
+    .from('gallery_items')
+    .select('gambar, judul')
+    .eq('id', id)
+    .single();
 
   const { error } = await supabase.from('gallery_items').delete().eq('id', id);
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });
 
-  await createAuditLog(session.email, 'Galeri', `Menghapus foto galeri ID: ${id}`, id);
-  return NextResponse.json({ success: true, message: 'Foto berhasil dihapus.' });
+  // Jika diminta hapus media aset dari storage juga
+  if (deleteAsset && itemToDelete?.gambar && itemToDelete.gambar.includes('yimi-media')) {
+    try {
+      const parts = itemToDelete.gambar.split('yimi-media/');
+      if (parts.length > 1) {
+        const rawFileName = parts[1].split('?')[0];
+        const fileName = decodeURIComponent(rawFileName);
+        if (fileName) {
+          await supabase.storage.from('yimi-media').remove([fileName]);
+        }
+      }
+    } catch (storageErr) {
+      console.warn('Gagal menghapus aset media storage:', storageErr);
+    }
+  }
+
+  await createAuditLog(
+    session.email,
+    'Galeri',
+    `Menghapus foto galeri "${itemToDelete?.judul || id}" dan aset media terkait`,
+    id
+  );
+  return NextResponse.json({ success: true, message: 'Foto dan media aset berhasil dihapus.' });
 }

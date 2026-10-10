@@ -16,7 +16,6 @@ import {
   Layers,
 } from 'lucide-react';
 import { GalleryPhotoItem } from '@/lib/types';
-import { ConfirmModal } from '@/components/admin/ConfirmModal';
 
 interface BatchFileItem {
   id: string;
@@ -29,9 +28,11 @@ export default function AdminGaleriPage() {
   const [photos, setPhotos] = useState<GalleryPhotoItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [activeModal, setActiveModal] = useState<'create' | 'edit' | 'batch' | null>(null);
+  const [isSliderModalOpen, setIsSliderModalOpen] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [uploadingImage, setUploadingImage] = useState(false);
   const [confirmDeleteId, setConfirmDeleteId] = useState<string | null>(null);
+  const [deleteAssetToo, setDeleteAssetToo] = useState(true);
 
   // Single Form State
   const [editingId, setEditingId] = useState<string | null>(null);
@@ -356,7 +357,10 @@ export default function AdminGaleriPage() {
   async function handleDeletePhoto() {
     if (!confirmDeleteId) return;
     try {
-      await fetch(`/api/admin/galeri?id=${confirmDeleteId}`, { method: 'DELETE' });
+      await fetch(
+        `/api/admin/galeri?id=${confirmDeleteId}&delete_asset=${deleteAssetToo}`,
+        { method: 'DELETE' }
+      );
       setConfirmDeleteId(null);
       loadPhotos();
     } catch (err) {
@@ -383,7 +387,18 @@ export default function AdminGaleriPage() {
           </p>
         </div>
 
-        <div className="flex items-center gap-2">
+        <div className="flex flex-wrap items-center gap-2">
+          {/* Tombol Kelola Slider Beranda */}
+          <button
+            type="button"
+            onClick={() => setIsSliderModalOpen(true)}
+            className="inline-flex items-center space-x-1.5 px-3.5 py-2 bg-[#EEF2FC] hover:bg-blue-100 text-[#1F2F6B] text-xs font-bold rounded-lg border border-blue-200 transition cursor-pointer"
+            title="Kelola foto yang aktif di slider otomatis beranda"
+          >
+            <Star className="w-4 h-4 text-[#3E5FD1] fill-[#3E5FD1]" />
+            <span>Kelola Slider ({photos.filter((p) => p.tampil_beranda !== false).length})</span>
+          </button>
+
           {/* Tombol Multiple Upload */}
           <button
             type="button"
@@ -391,18 +406,28 @@ export default function AdminGaleriPage() {
             className="inline-flex items-center space-x-1.5 px-4 py-2 bg-[#2EE05A] hover:bg-[#25B84A] text-[#1F2F6B] text-xs font-bold rounded-lg shadow-sm transition cursor-pointer"
           >
             <UploadCloud className="w-4 h-4" />
-            <span>Upload Banyak Foto (Multiple)</span>
+            <span>Upload Banyak Foto</span>
           </button>
 
           {/* Tombol Tambah 1 Foto */}
           <button
             type="button"
             onClick={handleOpenCreate}
-            className="inline-flex items-center space-x-1.5 px-4 py-2 bg-[#3E5FD1] hover:bg-[#1F2F6B] text-white text-xs font-semibold rounded-lg shadow-sm transition cursor-pointer"
+            className="inline-flex items-center space-x-1.5 px-3.5 py-2 bg-[#3E5FD1] hover:bg-[#1F2F6B] text-white text-xs font-semibold rounded-lg shadow-sm transition cursor-pointer"
           >
             <Plus className="w-4 h-4" />
             <span>Tambah 1 Foto</span>
           </button>
+
+          {/* Link ke Pustaka Aset */}
+          <a
+            href="/admin/media"
+            className="inline-flex items-center space-x-1.5 px-3 py-2 bg-white hover:bg-neutral-50 text-neutral-700 text-xs font-semibold rounded-lg border border-neutral-300 transition"
+            title="Kelola & hapus berkas aset media storage"
+          >
+            <Layers className="w-4 h-4 text-neutral-500" />
+            <span>Pustaka Aset</span>
+          </a>
         </div>
       </div>
 
@@ -978,16 +1003,153 @@ export default function AdminGaleriPage() {
         </div>
       )}
 
-      <ConfirmModal
-        isOpen={Boolean(confirmDeleteId)}
-        title="Hapus Foto Dokumentasi"
-        variant="danger"
-        message="Hapus foto ini secara permanen dari galeri yayasan?"
-        confirmLabel="Hapus"
-        cancelLabel="Batal"
-        onConfirm={handleDeletePhoto}
-        onCancel={() => setConfirmDeleteId(null)}
-      />
+      {/* Modal Kelola Slider Beranda */}
+      {isSliderModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs">
+          <div className="bg-white rounded-2xl w-full max-w-2xl max-h-[85vh] shadow-2xl border border-neutral-200 flex flex-col overflow-hidden animate-in fade-in zoom-in-95 duration-150">
+            <div className="flex items-center justify-between p-4 border-b border-neutral-100 bg-[#F8FAFC]">
+              <div className="flex items-center gap-2">
+                <Star className="w-5 h-5 text-amber-500 fill-amber-500" />
+                <div>
+                  <h3 className="font-bold text-sm text-[#111827]">
+                    Kelola Slider Galeri Beranda Utama
+                  </h3>
+                  <p className="text-[11px] text-neutral-500">
+                    Atur foto mana saja yang berputar otomatis di halaman depan web utama.
+                  </p>
+                </div>
+              </div>
+              <button
+                type="button"
+                onClick={() => setIsSliderModalOpen(false)}
+                className="p-1 rounded-lg hover:bg-neutral-200 text-neutral-500 cursor-pointer"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+
+            <div className="p-4 overflow-y-auto flex-1 space-y-3">
+              <div className="text-xs text-neutral-600 bg-blue-50/70 p-3 rounded-xl border border-blue-100 flex items-center justify-between">
+                <span>
+                  Foto yang dicentang akan otomatis ditampilkan di Carousel Slider halaman beranda.
+                </span>
+                <span className="font-bold text-[#1F2F6B]">
+                  {photos.filter((p) => p.tampil_beranda !== false).length} Aktif
+                </span>
+              </div>
+
+              <div className="divide-y divide-neutral-100">
+                {photos.map((item) => {
+                  const isActiveInSlider = item.tampil_beranda !== false;
+                  return (
+                    <div
+                      key={item.id}
+                      className="py-2.5 flex items-center justify-between gap-3 hover:bg-neutral-50/80 px-2 rounded-xl transition-colors"
+                    >
+                      <div className="flex items-center gap-3 min-w-0">
+                        <div className="relative w-12 h-10 rounded-lg overflow-hidden bg-neutral-200 shrink-0 border border-neutral-200">
+                          <Image
+                            src={item.gambar}
+                            alt={item.judul}
+                            fill
+                            unoptimized
+                            className="object-cover"
+                          />
+                        </div>
+                        <div className="min-w-0">
+                          <p className="text-xs font-semibold text-neutral-800 truncate">
+                            {item.judul}
+                          </p>
+                          <span className="text-[10px] text-neutral-400">
+                            {item.kategori}
+                          </span>
+                        </div>
+                      </div>
+
+                      <div className="flex items-center gap-2 shrink-0">
+                        <button
+                          type="button"
+                          onClick={() => handleToggleBeranda(item)}
+                          className={`px-3 py-1 rounded-lg text-xs font-bold transition-colors cursor-pointer ${
+                            isActiveInSlider
+                              ? 'bg-amber-100 text-amber-800 hover:bg-amber-200'
+                              : 'bg-neutral-100 text-neutral-500 hover:bg-neutral-200'
+                          }`}
+                        >
+                          {isActiveInSlider ? '⭐ Aktif di Slider' : 'Nonaktif'}
+                        </button>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+
+            <div className="p-3 bg-neutral-50 border-t border-neutral-100 flex justify-end">
+              <button
+                type="button"
+                onClick={() => setIsSliderModalOpen(false)}
+                className="px-4 py-2 bg-[#1F2F6B] text-white text-xs font-bold rounded-xl hover:bg-[#3E5FD1] cursor-pointer"
+              >
+                Selesai
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Modal Hapus Foto & Media Aset Storage */}
+      {confirmDeleteId && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs">
+          <div className="bg-white rounded-2xl w-full max-w-md shadow-2xl border border-neutral-200 overflow-hidden animate-in fade-in zoom-in-95 duration-150">
+            <div className="p-5 space-y-3">
+              <h3 className="font-bold text-base text-[#D7261E]">
+                Hapus Foto Dokumentasi Galeri?
+              </h3>
+              <p className="text-xs text-neutral-600">
+                Foto ini akan dihapus dari daftar galeri dan tidak akan ditampilkan lagi di website publik.
+              </p>
+
+              {/* Opsi Hapus Berkas Fisik Media Aset */}
+              <div className="p-3 rounded-xl bg-neutral-50 border border-neutral-200 text-xs">
+                <label className="flex items-start gap-2.5 cursor-pointer">
+                  <input
+                    type="checkbox"
+                    checked={deleteAssetToo}
+                    onChange={(e) => setDeleteAssetToo(e.target.checked)}
+                    className="mt-0.5 rounded text-[#D7261E] focus:ring-[#D7261E]"
+                  />
+                  <div>
+                    <span className="font-bold text-neutral-800">
+                      Hapus juga berkas media fisik dari Supabase Storage
+                    </span>
+                    <p className="text-[11px] text-neutral-500 mt-0.5">
+                      Membersihkan file gambar asli dari bucket penyimpanan agar hemat ruang dan tidak menjadi aset tak terpakai.
+                    </p>
+                  </div>
+                </label>
+              </div>
+            </div>
+
+            <div className="flex items-center justify-end gap-2 p-4 bg-neutral-50 border-t border-neutral-100">
+              <button
+                type="button"
+                onClick={() => setConfirmDeleteId(null)}
+                className="px-4 py-2 text-xs font-semibold text-neutral-600 hover:bg-neutral-200 rounded-xl cursor-pointer"
+              >
+                Batal
+              </button>
+              <button
+                type="button"
+                onClick={handleDeletePhoto}
+                className="px-4 py-2 text-xs font-bold text-white bg-[#D7261E] hover:bg-red-700 rounded-xl cursor-pointer"
+              >
+                Ya, Hapus Foto &amp; Aset
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

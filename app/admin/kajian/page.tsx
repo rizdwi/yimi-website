@@ -1,7 +1,8 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
-import { Plus, Edit2, Trash2, AlertOctagon, CheckCircle2 } from 'lucide-react';
+import React, { useState, useEffect, useRef } from 'react';
+import Image from 'next/image';
+import { Plus, Edit2, Trash2, AlertOctagon, CheckCircle2, Upload, Loader2, ImageIcon, Eye, X } from 'lucide-react';
 import { KajianItem } from '@/lib/types';
 import { AdminStatusBadge } from '@/components/admin/AdminStatusBadge';
 import { ConfirmModal } from '@/components/admin/ConfirmModal';
@@ -15,9 +16,41 @@ export default function AdminKajianPage() {
   const [errorMessage, setErrorMessage] = useState('');
   const [confirmDeleteId, setConfirmDeleteId] = useState<string | null>(null);
 
+  // Upload Flyer State
+  const [uploadingFlyer, setUploadingFlyer] = useState(false);
+  const flyerInputRef = useRef<HTMLInputElement | null>(null);
+
+  // Modal Preview Flyer
+  const [previewFlyerUrl, setPreviewFlyerUrl] = useState<string | null>(null);
+
   // Modal Batal Kajian
   const [batalModalItem, setBatalModalItem] = useState<KajianItem | null>(null);
   const [alasanBatal, setAlasanBatal] = useState('');
+
+  async function handleUploadFlyer(file: File) {
+    setUploadingFlyer(true);
+    setErrorMessage('');
+    try {
+      const formData = new FormData();
+      formData.append('file', file);
+      const res = await fetch('/api/admin/upload', {
+        method: 'POST',
+        body: formData,
+      });
+      const data = await res.json();
+      if (!res.ok || !data.url) {
+        throw new Error(data.error || 'Gagal mengunggah flyer.');
+      }
+      setSelectedKajian((prev) => ({
+        ...prev,
+        flyer_url: data.url,
+      }));
+    } catch (err: unknown) {
+      setErrorMessage(err instanceof Error ? err.message : 'Gagal mengunggah flyer.');
+    } finally {
+      setUploadingFlyer(false);
+    }
+  }
 
   useEffect(() => {
     loadKajian();
@@ -154,8 +187,9 @@ export default function AdminKajianPage() {
           <table className="w-full text-left text-xs">
             <thead className="bg-[#F5F7FA] text-[#6B7280] uppercase tracking-wider font-semibold border-b border-[#E3E7EE]">
               <tr>
-                <th className="py-3 px-4">Waktu & Tanggal</th>
-                <th className="py-3 px-4">Tema Pembahasan & Kitab</th>
+                <th className="py-3 px-4 text-center">Flyer</th>
+                <th className="py-3 px-4">Waktu &amp; Tanggal</th>
+                <th className="py-3 px-4">Tema Pembahasan &amp; Kitab</th>
                 <th className="py-3 px-4">Pemateri</th>
                 <th className="py-3 px-4">Tempat</th>
                 <th className="py-3 px-4 text-center">Status</th>
@@ -178,6 +212,29 @@ export default function AdminKajianPage() {
               ) : (
                 kajianList.map((k) => (
                   <tr key={k.id} className="hover:bg-[#EEF2FC]/40 transition">
+                    <td className="py-3.5 px-4 text-center whitespace-nowrap">
+                      {k.flyer_url || k.gambar ? (
+                        <button
+                          type="button"
+                          onClick={() => setPreviewFlyerUrl(k.flyer_url || k.gambar || null)}
+                          className="relative w-12 h-12 rounded-lg overflow-hidden border border-neutral-200 inline-block group hover:ring-2 hover:ring-[#3E5FD1] transition cursor-pointer"
+                          title="Lihat Flyer"
+                        >
+                          <Image
+                            src={k.flyer_url || k.gambar || ''}
+                            alt={k.tema}
+                            fill
+                            unoptimized
+                            className="object-cover group-hover:scale-105 transition-transform"
+                          />
+                          <div className="absolute inset-0 bg-black/30 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity">
+                            <Eye className="w-3.5 h-3.5 text-white" />
+                          </div>
+                        </button>
+                      ) : (
+                        <span className="text-[11px] text-neutral-400 italic">Tanpa flyer</span>
+                      )}
+                    </td>
                     <td className="py-3.5 px-4 whitespace-nowrap">
                       <span className="font-bold text-[#1F2F6B] block">
                         {k.hari}, {k.tanggal}
@@ -376,6 +433,77 @@ export default function AdminKajianPage() {
                 </div>
               </div>
 
+              {/* Flyer / Poster Kajian */}
+              <div className="p-3.5 rounded-xl border border-dashed border-neutral-300 bg-neutral-50/60 space-y-2">
+                <label className="block font-semibold text-[#374151]">
+                  Flyer / Poster Kajian (Foto / Gambar)
+                </label>
+                <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3">
+                  <div className="relative w-20 h-20 rounded-lg overflow-hidden bg-neutral-200 border border-neutral-300 shrink-0">
+                    {selectedKajian.flyer_url ? (
+                      <Image
+                        src={selectedKajian.flyer_url}
+                        alt="Flyer Kajian"
+                        fill
+                        unoptimized
+                        className="object-cover"
+                      />
+                    ) : (
+                      <div className="w-full h-full flex flex-col items-center justify-center text-neutral-400">
+                        <ImageIcon className="w-5 h-5 text-neutral-400" />
+                        <span className="text-[9px] mt-1 font-medium">Belum ada</span>
+                      </div>
+                    )}
+                  </div>
+
+                  <div className="space-y-1.5 flex-1 w-full">
+                    <div className="flex flex-wrap items-center gap-2">
+                      <input
+                        ref={flyerInputRef}
+                        type="file"
+                        accept="image/*"
+                        className="hidden"
+                        onChange={async (e) => {
+                          const file = e.target.files?.[0];
+                          if (!file) return;
+                          await handleUploadFlyer(file);
+                          e.target.value = '';
+                        }}
+                      />
+                      <button
+                        type="button"
+                        disabled={uploadingFlyer}
+                        onClick={() => flyerInputRef.current?.click()}
+                        className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-white border border-neutral-300 hover:bg-neutral-50 rounded-lg text-xs font-semibold text-neutral-700 transition cursor-pointer disabled:opacity-50"
+                      >
+                        {uploadingFlyer ? (
+                          <Loader2 className="w-3.5 h-3.5 animate-spin text-[#3E5FD1]" />
+                        ) : (
+                          <Upload className="w-3.5 h-3.5 text-[#3E5FD1]" />
+                        )}
+                        <span>{uploadingFlyer ? 'Mengunggah...' : 'Pilih Flyer dari Perangkat'}</span>
+                      </button>
+                      {selectedKajian.flyer_url && (
+                        <button
+                          type="button"
+                          onClick={() => setSelectedKajian({ ...selectedKajian, flyer_url: '' })}
+                          className="text-xs text-red-600 hover:underline px-1.5 py-1 cursor-pointer font-medium"
+                        >
+                          Hapus Flyer
+                        </button>
+                      )}
+                    </div>
+                    <input
+                      type="text"
+                      placeholder="Atau tempel URL flyer (https://...)"
+                      value={selectedKajian.flyer_url || ''}
+                      onChange={(e) => setSelectedKajian({ ...selectedKajian, flyer_url: e.target.value })}
+                      className="w-full text-xs p-1.5 bg-white border border-neutral-300 rounded-lg text-neutral-600 focus:ring-1 focus:ring-[#3E5FD1]"
+                    />
+                  </div>
+                </div>
+              </div>
+
               <div className="flex items-center justify-end space-x-2 pt-4 border-t border-[#E3E7EE]">
                 <button
                   type="button"
@@ -434,6 +562,42 @@ export default function AdminKajianPage() {
                 className="px-4 py-2 bg-[#D7261E] hover:bg-[#B91C1C] text-white text-xs font-bold rounded-lg"
               >
                 Konfirmasi Pembatalan
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Modal Preview Flyer Kajian */}
+      {previewFlyerUrl && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-xs">
+          <div className="relative max-w-lg w-full bg-white rounded-2xl overflow-hidden shadow-2xl border border-neutral-200 animate-in fade-in zoom-in-95 duration-150">
+            <div className="flex items-center justify-between p-3.5 border-b border-neutral-100">
+              <span className="text-xs font-bold text-neutral-800">Pratinjau Flyer Kajian</span>
+              <button
+                type="button"
+                onClick={() => setPreviewFlyerUrl(null)}
+                className="p-1 rounded-lg hover:bg-neutral-100 text-neutral-500 cursor-pointer"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+            <div className="relative w-full aspect-3/4 max-h-[75vh] bg-neutral-900">
+              <Image
+                src={previewFlyerUrl}
+                alt="Flyer Kajian"
+                fill
+                unoptimized
+                className="object-contain"
+              />
+            </div>
+            <div className="p-3 bg-neutral-50 border-t border-neutral-100 flex justify-end">
+              <button
+                type="button"
+                onClick={() => setPreviewFlyerUrl(null)}
+                className="px-3.5 py-1.5 bg-neutral-200 hover:bg-neutral-300 text-neutral-700 text-xs font-semibold rounded-lg cursor-pointer"
+              >
+                Tutup
               </button>
             </div>
           </div>

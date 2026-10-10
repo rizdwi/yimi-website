@@ -2,7 +2,8 @@
 
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { Clock, MapPin, User, CalendarPlus, ArrowRight, AlertOctagon } from 'lucide-react';
+import Image from 'next/image';
+import { Clock, MapPin, User, CalendarPlus, ArrowRight, AlertOctagon, ImageIcon, X } from 'lucide-react';
 import { Badge } from '@/components/ui/Badge';
 import { Card } from '@/components/ui/Card';
 import { Button } from '@/components/ui/Button';
@@ -12,6 +13,7 @@ import kajianScheduleFallback from '@/content/kajian.json';
 
 export function KajianSchedule() {
   const [kajianList, setKajianList] = useState<KajianItem[]>(kajianScheduleFallback as unknown as KajianItem[]);
+  const [activeFlyer, setActiveFlyer] = useState<{ url: string; tema: string } | null>(null);
   const todayStr = new Date().toISOString().split('T')[0];
 
   useEffect(() => {
@@ -192,7 +194,19 @@ export function KajianSchedule() {
                 </div>
 
                 {/* Right: Actions */}
-                <div className="w-full md:w-auto flex items-center justify-end gap-2 pt-3 md:pt-0 border-t md:border-t-0 border-neutral-100">
+                <div className="w-full md:w-auto flex flex-wrap items-center justify-end gap-2 pt-3 md:pt-0 border-t md:border-t-0 border-neutral-100">
+                  {(item.flyer_url || item.gambar) && (
+                    <button
+                      type="button"
+                      onClick={() => setActiveFlyer({ url: item.flyer_url || item.gambar || '', tema: item.tema })}
+                      className="px-3 py-2 rounded-xl bg-yimi-blue-50 hover:bg-yimi-blue-100 text-yimi-blue-800 text-xs font-bold border border-yimi-blue-200/80 transition-colors flex items-center justify-center gap-1.5 cursor-pointer shadow-2xs"
+                      title="Lihat Flyer / Poster Kajian"
+                    >
+                      <ImageIcon className="w-3.5 h-3.5 text-yimi-blue-600" />
+                      <span>Flyer</span>
+                    </button>
+                  )}
+
                   {isBatal ? (
                     <button
                       disabled
@@ -220,6 +234,52 @@ export function KajianSchedule() {
             );
           })}
         </div>
+
+        {/* Modal Lightbox Flyer Kajian */}
+        {activeFlyer && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-xs">
+            <div className="relative max-w-lg w-full bg-white rounded-2xl overflow-hidden shadow-2xl border border-neutral-200 animate-in fade-in zoom-in-95 duration-150">
+              <div className="flex items-center justify-between p-3.5 border-b border-neutral-100 bg-white">
+                <span className="text-xs font-bold text-neutral-800 line-clamp-1">
+                  Flyer: {activeFlyer.tema}
+                </span>
+                <button
+                  type="button"
+                  onClick={() => setActiveFlyer(null)}
+                  className="p-1 rounded-lg hover:bg-neutral-100 text-neutral-500 cursor-pointer"
+                >
+                  <X className="w-4 h-4" />
+                </button>
+              </div>
+              <div className="relative w-full aspect-3/4 max-h-[75vh] bg-neutral-950">
+                <Image
+                  src={activeFlyer.url}
+                  alt={activeFlyer.tema}
+                  fill
+                  unoptimized
+                  className="object-contain"
+                />
+              </div>
+              <div className="p-3 bg-neutral-50 border-t border-neutral-100 flex items-center justify-between">
+                <a
+                  href={activeFlyer.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-xs text-yimi-blue-700 hover:underline font-semibold"
+                >
+                  Buka Gambar Asli
+                </a>
+                <button
+                  type="button"
+                  onClick={() => setActiveFlyer(null)}
+                  className="px-3.5 py-1.5 bg-neutral-200 hover:bg-neutral-300 text-neutral-800 text-xs font-semibold rounded-lg cursor-pointer"
+                >
+                  Tutup
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     </section>
   );

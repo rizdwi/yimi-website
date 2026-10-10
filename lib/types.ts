@@ -15,6 +15,8 @@ export interface SiteSettings {
   alamat: string;
   maps_embed?: string;
   jam_operasional: string;
+  foto_yayasan?: string;
+  logo_yayasan?: string;
   bank_1_nama: string;
   bank_1_rekening: string;
   bank_1_an: string;
@@ -63,6 +65,8 @@ export interface KajianItem {
   is_active: boolean;
   status: KajianStatus;
   alasan_batal?: string;
+  flyer_url?: string;
+  gambar?: string;
   created_at?: string;
 }
 

@@ -10,6 +10,7 @@ import {
   ArrowUpRight,
   PlusCircle,
   Clock,
+  BarChart3,
 } from 'lucide-react';
 import { formatRupiah } from '@/lib/format';
 import { AdminStatusBadge } from '@/components/admin/AdminStatusBadge';
@@ -46,17 +47,39 @@ export default function AdminDashboardPage() {
   const [stats, setStats] = useState<DashboardStats | null>(null);
   const [upcomingKajian, setUpcomingKajian] = useState<KajianItem[]>([]);
   const [recentActivities, setRecentActivities] = useState<ActivityItem[]>([]);
+  const [trafficSummary, setTrafficSummary] = useState<{
+    totalViews: number;
+    uniqueVisitors: number;
+    todayViews: number;
+    todayUniques: number;
+  } | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     async function loadDashboard() {
       try {
-        const res = await fetch('/api/admin/dashboard');
-        if (res.ok) {
-          const data = await res.json();
+        const [dashRes, trafficRes] = await Promise.all([
+          fetch('/api/admin/dashboard'),
+          fetch('/api/admin/traffic').catch(() => null),
+        ]);
+
+        if (dashRes.ok) {
+          const data = await dashRes.json();
           setStats(data.stats);
           setUpcomingKajian(data.upcomingKajian || []);
           setRecentActivities(data.recentActivities || []);
+        }
+
+        if (trafficRes && trafficRes.ok) {
+          const tData = await trafficRes.json();
+          if (tData?.traffic) {
+            setTrafficSummary({
+              totalViews: tData.traffic.totalViews || 0,
+              uniqueVisitors: tData.traffic.uniqueVisitors || 0,
+              todayViews: tData.traffic.todayViews || 0,
+              todayUniques: tData.traffic.todayUniques || 0,
+            });
+          }
         }
       } catch (err) {
         console.error(err);
@@ -304,6 +327,77 @@ export default function AdminDashboardPage() {
             >
               + Tambah Donasi Wakaf Masuk
             </Link>
+          </div>
+        </div>
+      </div>
+
+      {/* Pemantauan Traffic Pengunjung dari Luar */}
+      <div className="bg-white rounded-2xl border border-[#E3E7EE] p-5 shadow-xs">
+        <div className="flex items-center justify-between pb-4 border-b border-[#E3E7EE]">
+          <div className="flex items-center space-x-2.5">
+            <div className="w-8 h-8 rounded-lg bg-blue-50 text-[#3E5FD1] flex items-center justify-center">
+              <BarChart3 className="w-4 h-4" />
+            </div>
+            <div>
+              <h3 className="font-bold text-sm text-[#111827]">
+                Traffic &amp; Pengunjung Website Luar
+              </h3>
+              <p className="text-[11px] text-neutral-500">
+                Data akumulasi pengunjung publik yang mengakses situs web YIMI dari luar secara live.
+              </p>
+            </div>
+          </div>
+          <Link
+            href="/admin/analitik"
+            className="text-xs font-bold text-[#3E5FD1] hover:text-[#1F2F6B] flex items-center gap-1 hover:underline"
+          >
+            <span>Buka Analitik Lengkap</span>
+            <ArrowUpRight className="w-3.5 h-3.5" />
+          </Link>
+        </div>
+
+        <div className="mt-4 grid grid-cols-2 sm:grid-cols-4 gap-3">
+          <div className="p-3.5 rounded-xl bg-neutral-50/80 border border-neutral-200/70">
+            <span className="text-[10px] font-bold uppercase tracking-wider text-neutral-500 block">
+              Total Tayangan
+            </span>
+            <span className="mt-1 text-2xl font-black text-[#1F2F6B] block tabular-nums">
+              {trafficSummary?.totalViews.toLocaleString('id-ID') || 0}
+            </span>
+            <span className="text-[10px] text-neutral-400">Semua Halaman</span>
+          </div>
+
+          <div className="p-3.5 rounded-xl bg-neutral-50/80 border border-neutral-200/70">
+            <span className="text-[10px] font-bold uppercase tracking-wider text-neutral-500 block">
+              Pengunjung Unik
+            </span>
+            <span className="mt-1 text-2xl font-black text-emerald-700 block tabular-nums">
+              {trafficSummary?.uniqueVisitors.toLocaleString('id-ID') || 0}
+            </span>
+            <span className="text-[10px] text-neutral-400">Hash IP Publik</span>
+          </div>
+
+          <div className="p-3.5 rounded-xl bg-neutral-50/80 border border-neutral-200/70">
+            <span className="text-[10px] font-bold uppercase tracking-wider text-neutral-500 block">
+              Hari Ini
+            </span>
+            <span className="mt-1 text-2xl font-black text-amber-700 block tabular-nums">
+              {trafficSummary?.todayViews.toLocaleString('id-ID') || 0}
+            </span>
+            <span className="text-[10px] text-neutral-400">
+              {trafficSummary?.todayUniques || 0} IP unik hari ini
+            </span>
+          </div>
+
+          <div className="p-3.5 rounded-xl bg-neutral-50/80 border border-neutral-200/70">
+            <span className="text-[10px] font-bold uppercase tracking-wider text-neutral-500 block">
+              Status Lacak
+            </span>
+            <div className="mt-1.5 flex items-center gap-1.5">
+              <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+              <span className="text-xs font-bold text-emerald-700">Aktif Real-time</span>
+            </div>
+            <span className="text-[10px] text-neutral-400">Privasi Anonim</span>
           </div>
         </div>
       </div>

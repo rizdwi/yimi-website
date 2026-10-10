@@ -9,8 +9,6 @@ import {
   X,
   ChevronLeft,
   ChevronRight,
-  Play,
-  Pause,
   Images,
 } from 'lucide-react';
 import { Badge } from '@/components/ui/Badge';
@@ -101,7 +99,6 @@ export function GalleryPreview() {
     galleryData.filter((item) => item.izinOrangTua === true)
   );
   const [currentIndex, setCurrentIndex] = useState(0);
-  const [isPlaying, setIsPlaying] = useState(true);
   const [isHovered, setIsHovered] = useState(false);
   const [visibleCount, setVisibleCount] = useState(3);
 
@@ -165,16 +162,16 @@ export function GalleryPreview() {
     setCurrentIndex((prev) => (prev <= 0 ? maxIndex : prev - 1));
   }, [maxIndex]);
 
-  // Otomatis sliding timer (3.5 detik per transisi jika isPlaying dan tidak sedang di-hover)
+  // Otomatis sliding timer (3.5 detik per transisi, jeda hanya saat hover)
   useEffect(() => {
-    if (!isPlaying || isHovered || totalPhotos <= visibleCount) return;
+    if (isHovered || totalPhotos <= visibleCount) return;
 
     const timer = setInterval(() => {
       nextSlide();
     }, 3500);
 
     return () => clearInterval(timer);
-  }, [isPlaying, isHovered, totalPhotos, visibleCount, nextSlide]);
+  }, [isHovered, totalPhotos, visibleCount, nextSlide]);
 
   // Keyboard navigation for lightbox
   useEffect(() => {
@@ -241,26 +238,9 @@ export function GalleryPreview() {
           </div>
 
           <div className="flex items-center gap-3">
-            {/* Auto-Slide Controls */}
+            {/* Auto-Slide Navigation Arrows (Tanpa Tombol Jeda) */}
             {totalPhotos > visibleCount && (
               <div className="flex items-center gap-1.5 bg-white p-1.5 rounded-2xl border border-neutral-200/80 shadow-xs">
-                <button
-                  type="button"
-                  onClick={() => setIsPlaying(!isPlaying)}
-                  className={`w-9 h-9 rounded-xl flex items-center justify-center transition-colors cursor-pointer ${
-                    isPlaying
-                      ? 'bg-yimi-blue-50 text-yimi-blue-700 hover:bg-yimi-blue-100'
-                      : 'bg-neutral-100 text-neutral-600 hover:bg-neutral-200'
-                  }`}
-                  title={isPlaying ? 'Jeda Slide Otomatis' : 'Putar Slide Otomatis'}
-                  aria-label={isPlaying ? 'Jeda Slide Otomatis' : 'Putar Slide Otomatis'}
-                >
-                  {isPlaying ? (
-                    <Pause className="w-4 h-4 fill-current" />
-                  ) : (
-                    <Play className="w-4 h-4 fill-current ml-0.5" />
-                  )}
-                </button>
                 <button
                   type="button"
                   onClick={prevSlide}
@@ -331,12 +311,10 @@ export function GalleryPreview() {
               Menampilkan {currentIndex + 1} -{' '}
               {Math.min(currentIndex + visibleCount, totalPhotos)} dari{' '}
               <span className="text-yimi-blue-800 font-bold">{totalPhotos}</span> foto kegiatan
-              {isPlaying && (
-                <span className="ml-2 inline-flex items-center gap-1 text-[11px] text-yimi-green-700 font-medium">
-                  <span className="w-1.5 h-1.5 rounded-full bg-yimi-green-500 animate-ping" />
-                  Auto-slide aktif
-                </span>
-              )}
+              <span className="ml-2 inline-flex items-center gap-1 text-[11px] text-yimi-green-700 font-medium">
+                <span className="w-1.5 h-1.5 rounded-full bg-yimi-green-500 animate-ping" />
+                Auto-slide aktif
+              </span>
             </div>
 
             {/* Pagination Dots */}

@@ -47,6 +47,8 @@ export async function POST(req: NextRequest) {
       status: body.status || 'aktif',
       is_active: body.status !== 'batal',
       alasan_batal: body.alasan_batal || null,
+      flyer_url: body.flyer_url || body.gambar || null,
+      gambar: body.flyer_url || body.gambar || null,
       created_at: new Date().toISOString(),
     })
     .select()
@@ -85,6 +87,8 @@ export async function PUT(req: NextRequest) {
       status: body.status,
       is_active: body.status !== 'batal',
       alasan_batal: body.alasan_batal,
+      flyer_url: body.flyer_url !== undefined ? body.flyer_url : body.gambar,
+      gambar: body.flyer_url !== undefined ? body.flyer_url : body.gambar,
     })
     .eq('id', body.id)
     .select()

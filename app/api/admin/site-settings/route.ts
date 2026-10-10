@@ -47,6 +47,8 @@ export async function PUT(req: NextRequest) {
           alamat: body.alamat,
           maps_embed: body.maps_embed,
           jam_operasional: body.jam_operasional,
+          foto_yayasan: body.foto_yayasan || null,
+          logo_yayasan: body.logo_yayasan || null,
           bank_1_nama: body.bank_1_nama,
           bank_1_rekening: body.bank_1_rekening,
           bank_1_an: body.bank_1_an,
@@ -62,6 +64,8 @@ export async function PUT(req: NextRequest) {
     } else {
       result = await supabase.from('site_settings').insert({
         ...body,
+        foto_yayasan: body.foto_yayasan || null,
+        logo_yayasan: body.logo_yayasan || null,
         updated_at: new Date().toISOString(),
         updated_by: session.email,
       });
