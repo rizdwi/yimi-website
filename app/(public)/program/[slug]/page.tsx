@@ -19,9 +19,11 @@ import {
   DollarSign,
   PackageCheck,
   ArrowLeft,
+  CheckCircle2,
 } from 'lucide-react';
 import { Badge } from '@/components/ui/Badge';
 import { Button } from '@/components/ui/Button';
+import { Card } from '@/components/ui/Card';
 import { formatRupiah } from '@/lib/format';
 import { useSiteSettings } from '@/context/SiteSettingsContext';
 
@@ -40,6 +42,39 @@ interface PaketInfaqItem {
   deskripsi: string;
 }
 
+interface KeunggulanItem {
+  judul: string;
+  deskripsi: string;
+}
+
+interface KegiatanItem {
+  waktu: string;
+  aktivitas: string;
+}
+
+interface ProgramMetadata {
+  kategori?: string;
+  biaya_label?: string;
+  biaya_pendaftaran?: string;
+  biaya_spp?: string;
+  status_pendaftaran?: string;
+  kontak_wa?: string;
+  pesan_wa?: string;
+  target_usia?: string;
+  waktu_belajar?: string;
+  file_lampiran?: string;
+  file_lampiran_nama?: string;
+  keunggulan_judul?: string;
+  keunggulan_subjudul?: string;
+  keunggulan?: KeunggulanItem[];
+  kegiatan_judul?: string;
+  kegiatan_subjudul?: string;
+  kegiatan_harian?: KegiatanItem[];
+  syarat_judul?: string;
+  syarat_pendaftaran?: string[];
+  paket_infaq?: PaketInfaqItem[];
+}
+
 interface ProgramDetail {
   id: string;
   slug: string;
@@ -52,19 +87,7 @@ interface ProgramDetail {
   gambar?: string;
   highlight?: string;
   targetUsia?: string;
-  metadata?: {
-    kategori?: string;
-    biaya_label?: string;
-    biaya_pendaftaran?: string;
-    biaya_spp?: string;
-    status_pendaftaran?: string;
-    kontak_wa?: string;
-    target_usia?: string;
-    waktu_belajar?: string;
-    file_lampiran?: string;
-    file_lampiran_nama?: string;
-    paket_infaq?: PaketInfaqItem[];
-  };
+  metadata?: ProgramMetadata;
 }
 
 export default function DynamicProgramPage() {
@@ -139,9 +162,8 @@ export default function DynamicProgramPage() {
   const iconKey = (program.ikon || program.icon || 'Layers') as keyof typeof iconMap;
   const IconComponent = iconMap[iconKey] || Layers;
   const waNumber = (meta.kontak_wa || whatsapp || '6281219362077').replace(/[^0-9]/g, '');
-  const waUrl = `https://wa.me/${waNumber}?text=${encodeURIComponent(
-    `Assalamu’alaikum Warahmatullah, saya ingin menanyakan informasi mengenai program: ${program.judul}.`
-  )}`;
+  const waMessage = meta.pesan_wa || `Assalamu’alaikum Warahmatullah, saya ingin menanyakan informasi mengenai program: ${program.judul}.`;
+  const waUrl = `https://wa.me/${waNumber}?text=${encodeURIComponent(waMessage)}`;
 
   return (
     <div className="pt-[72px]">
@@ -225,6 +247,89 @@ export default function DynamicProgramPage() {
                       </div>
                     </div>
                   )}
+                </div>
+              )}
+
+              {/* Seksi Keunggulan Kurikulum jika ada */}
+              {meta.keunggulan && meta.keunggulan.length > 0 && (
+                <div className="space-y-4 pt-4 border-t border-neutral-100">
+                  <div>
+                    <h3 className="text-xl font-extrabold text-yimi-blue-800">
+                      {meta.keunggulan_judul || 'Keunggulan Program'}
+                    </h3>
+                    {meta.keunggulan_subjudul && (
+                      <p className="text-xs text-neutral-600 mt-1">
+                        {meta.keunggulan_subjudul}
+                      </p>
+                    )}
+                  </div>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    {meta.keunggulan.map((item, idx) => (
+                      <Card key={idx} hoverEffect className="p-5 flex items-start gap-3">
+                        <div className="w-8 h-8 rounded-lg bg-yimi-blue-50 text-yimi-green-700 flex items-center justify-center shrink-0">
+                          <CheckCircle2 className="w-4 h-4 text-yimi-green-500" />
+                        </div>
+                        <div>
+                          <h4 className="text-sm font-bold text-yimi-blue-800 mb-1">
+                            {item.judul}
+                          </h4>
+                          <p className="text-xs text-neutral-600 leading-relaxed">
+                            {item.deskripsi}
+                          </p>
+                        </div>
+                      </Card>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* Seksi Jadwal Rutinitas jika ada */}
+              {meta.kegiatan_harian && meta.kegiatan_harian.length > 0 && (
+                <div className="space-y-4 pt-4 border-t border-neutral-100">
+                  <div>
+                    <h3 className="text-xl font-extrabold text-yimi-blue-800">
+                      {meta.kegiatan_judul || 'Jadwal Rutinitas Santri'}
+                    </h3>
+                    {meta.kegiatan_subjudul && (
+                      <p className="text-xs text-neutral-600 mt-1">
+                        {meta.kegiatan_subjudul}
+                      </p>
+                    )}
+                  </div>
+                  <div className="flex flex-col gap-2.5">
+                    {meta.kegiatan_harian.map((item, idx) => (
+                      <div
+                        key={idx}
+                        className="p-3.5 sm:p-4 rounded-xl bg-neutral-50 border border-neutral-100 flex flex-col sm:flex-row sm:items-center justify-between gap-2"
+                      >
+                        <span className="font-mono text-xs font-bold text-yimi-blue-600 bg-yimi-blue-50 px-3 py-1 rounded-full w-fit">
+                          {item.waktu}
+                        </span>
+                        <span className="text-xs sm:text-sm font-semibold text-neutral-800 flex-1 sm:pl-3">
+                          {item.aktivitas}
+                        </span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* Seksi Syarat Pendaftaran jika ada */}
+              {meta.syarat_pendaftaran && meta.syarat_pendaftaran.length > 0 && (
+                <div className="space-y-4 pt-4 border-t border-neutral-100">
+                  <h3 className="text-xl font-extrabold text-yimi-blue-800">
+                    {meta.syarat_judul || 'Syarat Pendaftaran'}
+                  </h3>
+                  <div className="p-5 rounded-2xl bg-[#F8FAFC] border border-neutral-200/80">
+                    <ul className="flex flex-col gap-2.5 text-xs sm:text-sm text-neutral-700">
+                      {meta.syarat_pendaftaran.map((item, idx) => (
+                        <li key={idx} className="flex items-center gap-2">
+                          <CheckCircle2 className="w-4 h-4 text-yimi-green-500 shrink-0" />
+                          <span>{item}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
                 </div>
               )}
             </div>

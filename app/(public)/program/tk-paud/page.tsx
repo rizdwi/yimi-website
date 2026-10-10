@@ -33,10 +33,19 @@ interface TkMeta {
   biaya_spp?: string;
   status_pendaftaran?: string;
   kontak_wa?: string;
+  pesan_wa?: string;
   target_usia?: string;
   waktu_belajar?: string;
   file_lampiran?: string;
   file_lampiran_nama?: string;
+  keunggulan_judul?: string;
+  keunggulan_subjudul?: string;
+  keunggulan?: KeunggulanItem[];
+  kegiatan_judul?: string;
+  kegiatan_subjudul?: string;
+  kegiatan_harian?: KegiatanItem[];
+  syarat_judul?: string;
+  syarat_pendaftaran?: string[];
   paket_infaq?: PaketInfaqItem[];
 }
 
@@ -66,11 +75,20 @@ export default function TkPaudPage() {
     biaya_pendaftaran: 'Rp 50.000',
     biaya_spp: 'Rp 70.000 / bulan',
     status_pendaftaran: 'Gelombang 1 Telah Dibuka',
-    kontak_wa: '6281219362077',
+    kontak_wa: fallbackTkData.pendaftaran.kontakPendaftaran,
+    pesan_wa: fallbackTkData.pendaftaran.pesanWA,
     target_usia: fallbackTkData.targetUsia,
     waktu_belajar: fallbackTkData.waktuBelajar,
     file_lampiran: '',
     file_lampiran_nama: '',
+    keunggulan_judul: 'Keunggulan Pendidikan',
+    keunggulan_subjudul: 'Menyelaraskan nilai-nilai sunnah dengan metode pembelajaran ramah anak yang menyenangkan.',
+    keunggulan: fallbackTkData.keunggulan as KeunggulanItem[],
+    kegiatan_judul: 'Jadwal Rutinitas Santri',
+    kegiatan_subjudul: 'Alur kegiatan harian yang membangun kedisiplinan dan keceriaan ananda.',
+    kegiatan_harian: fallbackTkData.kegiatanHarian as KegiatanItem[],
+    syarat_judul: 'Syarat Pendaftaran',
+    syarat_pendaftaran: fallbackTkData.pendaftaran.syarat,
     paket_infaq: [],
   });
 
@@ -102,9 +120,8 @@ export default function TkPaudPage() {
   }, []);
 
   const waNumber = (meta.kontak_wa || whatsapp || fallbackTkData.pendaftaran.kontakPendaftaran).replace(/[^0-9]/g, '');
-  const waUrl = `https://wa.me/${waNumber}?text=${encodeURIComponent(
-    'Assalamu’alaikum Warahmatullah, saya ingin konsultasi pendaftaran santri baru KB-TK YIMI.'
-  )}`;
+  const waMessage = meta.pesan_wa || fallbackTkData.pendaftaran.pesanWA || 'Assalamu’alaikum Warahmatullah, saya ingin konsultasi pendaftaran santri baru KB-TK YIMI.';
+  const waUrl = `https://wa.me/${waNumber}?text=${encodeURIComponent(waMessage)}`;
 
   return (
     <div className="pt-[72px]">
@@ -277,15 +294,18 @@ export default function TkPaudPage() {
         <div className="max-w-[1200px] w-full mx-auto px-5 md:px-8">
           <div className="text-center max-w-2xl mx-auto mb-12">
             <h2 className="text-2xl sm:text-3xl font-extrabold text-yimi-blue-800 tracking-tight mb-3">
-              Keunggulan Pendidikan
+              {meta.keunggulan_judul || 'Keunggulan Pendidikan'}
             </h2>
             <p className="text-sm text-neutral-600">
-              Menyelaraskan nilai-nilai sunnah dengan metode pembelajaran ramah anak yang menyenangkan.
+              {meta.keunggulan_subjudul || 'Menyelaraskan nilai-nilai sunnah dengan metode pembelajaran ramah anak yang menyenangkan.'}
             </p>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {(fallbackTkData.keunggulan as KeunggulanItem[]).map((item, idx) => (
+            {((meta.keunggulan && meta.keunggulan.length > 0)
+              ? meta.keunggulan
+              : (fallbackTkData.keunggulan as KeunggulanItem[])
+            ).map((item, idx) => (
               <Card key={idx} hoverEffect className="p-6 flex items-start gap-4">
                 <div className="w-10 h-10 rounded-xl bg-yimi-blue-50 text-yimi-green-700 flex items-center justify-center shrink-0">
                   <CheckCircle2 className="w-5 h-5 text-yimi-green-500" />
@@ -310,15 +330,18 @@ export default function TkPaudPage() {
           <div className="max-w-3xl mx-auto">
             <div className="text-center mb-10">
               <h2 className="text-2xl sm:text-3xl font-extrabold text-yimi-blue-800 tracking-tight mb-2">
-                Jadwal Rutinitas Santri
+                {meta.kegiatan_judul || 'Jadwal Rutinitas Santri'}
               </h2>
               <p className="text-sm text-neutral-600">
-                Alur kegiatan harian yang membangun kedisiplinan dan keceriaan ananda.
+                {meta.kegiatan_subjudul || 'Alur kegiatan harian yang membangun kedisiplinan dan keceriaan ananda.'}
               </p>
             </div>
 
             <div className="flex flex-col gap-3">
-              {(fallbackTkData.kegiatanHarian as KegiatanItem[]).map((item, idx) => (
+              {((meta.kegiatan_harian && meta.kegiatan_harian.length > 0)
+                ? meta.kegiatan_harian
+                : (fallbackTkData.kegiatanHarian as KegiatanItem[])
+              ).map((item, idx) => (
                 <div
                   key={idx}
                   className="p-4 sm:p-5 rounded-2xl bg-neutral-50 border border-neutral-100 flex flex-col sm:flex-row sm:items-center justify-between gap-2 hover:border-yimi-blue-600/20 transition-colors"
@@ -343,11 +366,14 @@ export default function TkPaudPage() {
             <div className="flex items-center gap-3 mb-4">
               <FileText className="w-6 h-6 text-yimi-blue-600" />
               <h2 className="text-xl font-bold text-yimi-blue-800">
-                Syarat Pendaftaran
+                {meta.syarat_judul || 'Syarat Pendaftaran'}
               </h2>
             </div>
             <ul className="flex flex-col gap-2.5 text-sm text-neutral-700 mb-6">
-              {fallbackTkData.pendaftaran.syarat.map((item: string, idx: number) => (
+              {((meta.syarat_pendaftaran && meta.syarat_pendaftaran.length > 0)
+                ? meta.syarat_pendaftaran
+                : fallbackTkData.pendaftaran.syarat
+              ).map((item: string, idx: number) => (
                 <li key={idx} className="flex items-center gap-2">
                   <CheckCircle2 className="w-4 h-4 text-yimi-green-500 shrink-0" />
                   <span>{item}</span>
