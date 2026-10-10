@@ -1,27 +1,39 @@
 'use client';
 
 import React, { useState, useEffect, useRef } from 'react';
+import Image from 'next/image';
 import {
   Plus,
   Trash2,
   ShieldCheck,
   Upload,
+  UploadCloud,
   CheckCircle2,
   Star,
   Edit2,
+  X,
+  Loader2,
+  Layers,
 } from 'lucide-react';
 import { GalleryPhotoItem } from '@/lib/types';
 import { ConfirmModal } from '@/components/admin/ConfirmModal';
 
+interface BatchFileItem {
+  id: string;
+  file: File;
+  previewUrl: string;
+  judul: string;
+}
+
 export default function AdminGaleriPage() {
   const [photos, setPhotos] = useState<GalleryPhotoItem[]>([]);
   const [loading, setLoading] = useState(true);
-  const [activeModal, setActiveModal] = useState<'create' | 'edit' | null>(null);
+  const [activeModal, setActiveModal] = useState<'create' | 'edit' | 'batch' | null>(null);
   const [submitting, setSubmitting] = useState(false);
   const [uploadingImage, setUploadingImage] = useState(false);
   const [confirmDeleteId, setConfirmDeleteId] = useState<string | null>(null);
 
-  // Form State
+  // Single Form State
   const [editingId, setEditingId] = useState<string | null>(null);
   const [judul, setJudul] = useState('');
   const [keterangan, setKeterangan] = useState('');
@@ -32,7 +44,16 @@ export default function AdminGaleriPage() {
   const [tampilBeranda, setTampilBeranda] = useState(true);
   const [filterKategori, setFilterKategori] = useState('Semua');
 
+  // Batch Form State
+  const [batchFiles, setBatchFiles] = useState<BatchFileItem[]>([]);
+  const [batchKategori, setBatchKategori] = useState('Kajian');
+  const [batchTampilBeranda, setBatchTampilBeranda] = useState(true);
+  const [batchIzinOrangTua, setBatchIzinOrangTua] = useState(true);
+  const [batchTampilPublik, setBatchTampilPublik] = useState(true);
+  const [batchProgress, setBatchProgress] = useState<{ current: number; total: number } | null>(null);
+
   const fileInputRef = useRef<HTMLInputElement | null>(null);
+  const batchFileInputRef = useRef<HTMLInputElement | null>(null);
 
   useEffect(() => {
     loadPhotos();
@@ -64,6 +85,16 @@ export default function AdminGaleriPage() {
     setActiveModal('create');
   }
 
+  function handleOpenBatch() {
+    setBatchFiles([]);
+    setBatchKategori('Kajian');
+    setBatchTampilBeranda(true);
+    setBatchIzinOrangTua(true);
+    setBatchTampilPublik(true);
+    setBatchProgress(null);
+    setActiveModal('batch');
+  }
+
   function handleOpenEdit(item: GalleryPhotoItem) {
     setEditingId(item.id);
     setJudul(item.judul);
@@ -76,7 +107,7 @@ export default function AdminGaleriPage() {
     setActiveModal('edit');
   }
 
-  async function handleFileSelect(e: React.ChangeEvent<HTMLInputElement>) {
+  async function handleSingleFileSelect(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0];
     if (!file) return;
 
@@ -85,8 +116,8 @@ export default function AdminGaleriPage() {
       return;
     }
 
-    if (file.size > 5 * 1024 * 1024) {
-      alert('Ukuran foto terlalu besar. Maksimal 5 MB.');
+    if (file.size > 10 * 1024 * 1024) {
+      alert('Ukuran foto terlalu besar. Maksimal 10 MB.');
       return;
     }
 
@@ -120,6 +151,133 @@ export default function AdminGaleriPage() {
     } finally {
       setUploadingImage(false);
       if (fileInputRef.current) fileInputRef.current.value = '';
+    }
+  }
+
+  // Handle batch file selection
+  function handleBatchFilesSelect(e: React.ChangeEvent<HTMLInputElement>) {
+    const files = e.target.files;
+    if (!files || files.length === 0) return;
+
+    const newItems: BatchFileItem[] = [];
+
+    Array.from(files).forEach((file) => {
+      if (!file.type.startsWith('image/')) return;
+      if (file.size > 10 * 1024 * 1024) return;
+
+      const autoName = file.name
+        .replace(/\.[^/.]+$/, '')
+        .replace(/[-_]/g, ' ')
+        .replace(/\b\w/g, (c) => c.toUpperCase());
+
+      newItems.push({
+        id: `${file.name}-${Date.now()}-${Math.random()}`,
+        file,
+        previewUrl: URL.createObjectURL(file),
+        judul: autoName,
+      });
+    });
+
+    setBatchFiles((prev) => [...prev, ...newItems]);
+    if (batchFileInputRef.current) batchFileInputRef.current.value = '';
+  }
+
+  function handleRemoveBatchItem(id: string) {
+    setBatchFiles((prev) => {
+      const target = prev.find((i) => i.id === id);
+      if (target?.previewUrl) {
+        URL.revokeObjectURL(target.previewUrl);
+      }
+      return prev.filter((i) => i.id !== id);
+    });
+  }
+
+  function handleUpdateBatchTitle(id: string, newTitle: string) {
+    setBatchFiles((prev) =>
+      prev.map((i) => (i.id === id ? { ...i, judul: newTitle } : i))
+    );
+  }
+
+  // Submit batch upload
+  async function handleSubmitBatch(e: React.FormEvent) {
+    e.preventDefault();
+    if (batchFiles.length === 0) {
+      alert('Pilih setidaknya satu foto untuk diunggah.');
+      return;
+    }
+
+    setSubmitting(true);
+    setBatchProgress({ current: 0, total: batchFiles.length });
+
+    try {
+      const uploadedItems: Array<{
+        gambar: string;
+        judul: string;
+        keterangan: string;
+        kategori: string;
+        izin_orang_tua: boolean;
+        tampil_publik: boolean;
+        tampil_beranda: boolean;
+      }> = [];
+
+      // Unggah foto satu per satu atau batch ke storage
+      for (let i = 0; i < batchFiles.length; i++) {
+        const item = batchFiles[i];
+        setBatchProgress({ current: i + 1, total: batchFiles.length });
+
+        const formData = new FormData();
+        formData.append('file', item.file);
+
+        const resUpload = await fetch('/api/admin/upload', {
+          method: 'POST',
+          body: formData,
+        });
+
+        const dataUpload = await resUpload.json();
+        if (!resUpload.ok || !dataUpload.url) {
+          throw new Error(
+            dataUpload.error || `Gagal mengunggah foto "${item.file.name}"`
+          );
+        }
+
+        uploadedItems.push({
+          gambar: dataUpload.url,
+          judul: item.judul.trim() || item.file.name,
+          keterangan: '',
+          kategori: batchKategori,
+          izin_orang_tua: batchIzinOrangTua,
+          tampil_publik: batchTampilPublik,
+          tampil_beranda: batchTampilBeranda,
+        });
+      }
+
+      // Kirim batch insert ke backend galeri
+      const resBatch = await fetch('/api/admin/galeri', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ items: uploadedItems }),
+      });
+
+      const dataBatch = await resBatch.json();
+      if (!resBatch.ok) {
+        throw new Error(dataBatch.error || 'Gagal menyimpan foto ke database.');
+      }
+
+      // Cleanup preview URLs
+      batchFiles.forEach((i) => URL.revokeObjectURL(i.previewUrl));
+
+      setActiveModal(null);
+      await loadPhotos();
+      alert(
+        `Berhasil mengunggah ${uploadedItems.length} foto ke galeri! Foto kini aktif di slider beranda dan galeri publik.`
+      );
+    } catch (err: unknown) {
+      console.error(err);
+      const msg = err instanceof Error ? err.message : 'Terjadi kesalahan saat batch upload.';
+      alert(`Gagal: ${msg}`);
+    } finally {
+      setSubmitting(false);
+      setBatchProgress(null);
     }
   }
 
@@ -221,16 +379,31 @@ export default function AdminGaleriPage() {
             Dokumentasi Galeri &amp; Jejak Langkah YIMI
           </h2>
           <p className="text-xs text-[#6B7280]">
-            Pilih foto langsung dari perangkat untuk diunggah, atur tampilan di Beranda (Jejak Langkah), dan jaga izin privasi anak.
+            Pilih foto langsung dari perangkat untuk diunggah, atur tampilan di Beranda (Slider Otomatis), dan jaga izin privasi anak.
           </p>
         </div>
-        <button
-          onClick={handleOpenCreate}
-          className="inline-flex items-center space-x-1.5 px-4 py-2 bg-[#3E5FD1] hover:bg-[#1F2F6B] text-white text-xs font-semibold rounded-lg shadow-sm transition"
-        >
-          <Plus className="w-4 h-4" />
-          <span>Tambah Foto Baru</span>
-        </button>
+
+        <div className="flex items-center gap-2">
+          {/* Tombol Multiple Upload */}
+          <button
+            type="button"
+            onClick={handleOpenBatch}
+            className="inline-flex items-center space-x-1.5 px-4 py-2 bg-[#2EE05A] hover:bg-[#25B84A] text-[#1F2F6B] text-xs font-bold rounded-lg shadow-sm transition cursor-pointer"
+          >
+            <UploadCloud className="w-4 h-4" />
+            <span>Upload Banyak Foto (Multiple)</span>
+          </button>
+
+          {/* Tombol Tambah 1 Foto */}
+          <button
+            type="button"
+            onClick={handleOpenCreate}
+            className="inline-flex items-center space-x-1.5 px-4 py-2 bg-[#3E5FD1] hover:bg-[#1F2F6B] text-white text-xs font-semibold rounded-lg shadow-sm transition cursor-pointer"
+          >
+            <Plus className="w-4 h-4" />
+            <span>Tambah 1 Foto</span>
+          </button>
+        </div>
       </div>
 
       {/* Filter Kategori Tab */}
@@ -238,26 +411,30 @@ export default function AdminGaleriPage() {
         {['Semua', 'Beranda', 'Kajian', 'Jumat Berkah', 'Pembebasan Lahan', 'TK & PAUD'].map((kat) => (
           <button
             key={kat}
+            type="button"
             onClick={() => setFilterKategori(kat)}
-            className={`px-3 py-1.5 rounded-lg transition whitespace-nowrap ${
+            className={`px-3 py-1.5 rounded-lg transition whitespace-nowrap cursor-pointer ${
               filterKategori === kat
                 ? 'bg-[#1F2F6B] text-white'
                 : 'bg-white text-[#6B7280] hover:bg-gray-100 border border-[#E3E7EE]'
             }`}
           >
-            {kat === 'Beranda' ? '⭐ Tampil di Beranda' : kat}
+            {kat === 'Beranda' ? '⭐ Tampil di Beranda (Slider)' : kat}
           </button>
         ))}
       </div>
 
       {/* Grid Foto Galeri */}
       {loading ? (
-        <div className="p-8 text-center text-xs text-[#6B7280]">Memuat galeri dokumentasi…</div>
+        <div className="p-8 text-center text-xs text-[#6B7280] flex items-center justify-center gap-2">
+          <Loader2 className="w-4 h-4 animate-spin text-[#3E5FD1]" />
+          <span>Memuat galeri dokumentasi…</span>
+        </div>
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
           {filteredPhotos.length === 0 ? (
             <div className="col-span-full text-center py-12 bg-white rounded-xl border border-[#E3E7EE] text-[#6B7280] text-xs">
-              Belum ada foto dalam kategori ini. Klik &quot;Tambah Foto Baru&quot; untuk mengunggah dari perangkat Anda.
+              Belum ada foto dalam kategori ini. Klik &quot;Upload Banyak Foto&quot; atau &quot;Tambah 1 Foto&quot; untuk mengunggah dari perangkat Anda.
             </div>
           ) : (
             filteredPhotos.map((item) => (
@@ -266,14 +443,16 @@ export default function AdminGaleriPage() {
                 className="bg-white rounded-xl border border-[#E3E7EE] overflow-hidden shadow-xs flex flex-col group"
               >
                 <div className="relative aspect-4/3 bg-gray-100 overflow-hidden">
-                  <img
-                    src={item.gambar}
+                  <Image
+                    src={
+                      item.gambar ||
+                      'https://images.unsplash.com/photo-1542816417-0983c9c9ad53?q=80&w=1200&auto=format&fit=crop'
+                    }
                     alt={item.judul}
-                    className="w-full h-full object-cover group-hover:scale-105 transition duration-200"
-                    onError={(e) => {
-                      (e.target as HTMLImageElement).src =
-                        'https://images.unsplash.com/photo-1542816417-0983c9c9ad53?q=80&w=1200&auto=format&fit=crop';
-                    }}
+                    fill
+                    unoptimized={Boolean(item.gambar && item.gambar.includes('supabase.co'))}
+                    className="object-cover group-hover:scale-105 transition duration-300"
+                    sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
                   />
 
                   {/* Kategori Badge */}
@@ -315,8 +494,8 @@ export default function AdminGaleriPage() {
                     <button
                       type="button"
                       onClick={() => handleToggleBeranda(item)}
-                      title="Klik untuk ubah tampil di Beranda"
-                      className={`text-[11px] font-semibold px-2 py-1 rounded-md border transition flex items-center space-x-1 ${
+                      title="Klik untuk ubah tampil di Beranda Slider"
+                      className={`text-[11px] font-semibold px-2 py-1 rounded-md border transition flex items-center space-x-1 cursor-pointer ${
                         item.tampil_beranda !== false
                           ? 'bg-[#EEF2FC] text-[#3E5FD1] border-[#3E5FD1]/30 hover:bg-[#3E5FD1]/10'
                           : 'bg-gray-50 text-[#6B7280] border-[#E3E7EE] hover:bg-gray-100'
@@ -325,20 +504,22 @@ export default function AdminGaleriPage() {
                       <Star
                         className={`w-3 h-3 ${item.tampil_beranda !== false ? 'fill-[#3E5FD1]' : ''}`}
                       />
-                      <span>{item.tampil_beranda !== false ? 'Di Beranda' : 'Bukan Beranda'}</span>
+                      <span>{item.tampil_beranda !== false ? 'Di Slider Beranda' : 'Non-Aktif Beranda'}</span>
                     </button>
 
                     <div className="flex items-center space-x-1">
                       <button
+                        type="button"
                         onClick={() => handleOpenEdit(item)}
-                        className="p-1.5 text-[#3E5FD1] hover:bg-[#EEF2FC] rounded-md transition"
+                        className="p-1.5 text-[#3E5FD1] hover:bg-[#EEF2FC] rounded-md transition cursor-pointer"
                         title="Edit Info Foto"
                       >
                         <Edit2 className="w-3.5 h-3.5" />
                       </button>
                       <button
+                        type="button"
                         onClick={() => setConfirmDeleteId(item.id)}
-                        className="p-1.5 text-[#D7261E] hover:bg-[#FEE2E2] rounded-md transition"
+                        className="p-1.5 text-[#D7261E] hover:bg-[#FEE2E2] rounded-md transition cursor-pointer"
                         title="Hapus Foto"
                       >
                         <Trash2 className="w-3.5 h-3.5" />
@@ -352,19 +533,269 @@ export default function AdminGaleriPage() {
         </div>
       )}
 
-      {/* Modal Tambah / Edit Foto */}
-      {activeModal && (
+      {/* MODAL MULTIPLE UPLOAD (BATCH) */}
+      {activeModal === 'batch' && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs overflow-y-auto">
+          <div className="w-full max-w-2xl bg-white rounded-2xl shadow-2xl border border-[#E3E7EE] p-6 space-y-5 my-8">
+            <div className="flex items-center justify-between border-b border-[#E3E7EE] pb-3">
+              <div className="flex items-center space-x-2">
+                <div className="w-8 h-8 rounded-lg bg-[#DCFCE7] text-[#166534] flex items-center justify-center">
+                  <UploadCloud className="w-5 h-5" />
+                </div>
+                <div>
+                  <h3 className="text-base font-bold text-[#111827]">
+                    Upload Banyak Foto Sekaligus (Multiple Upload)
+                  </h3>
+                  <p className="text-[11px] text-[#6B7280]">
+                    Pilih beberapa foto dari perangkat Anda untuk langsung diunggah ke galeri dan slider beranda.
+                  </p>
+                </div>
+              </div>
+              <button
+                type="button"
+                onClick={() => setActiveModal(null)}
+                className="p-1.5 text-gray-400 hover:text-gray-600 rounded-lg"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            {/* Hidden Input File Multiple */}
+            <input
+              type="file"
+              ref={batchFileInputRef}
+              onChange={handleBatchFilesSelect}
+              multiple
+              accept="image/jpeg,image/png,image/webp,image/gif,image/svg+xml"
+              className="hidden"
+            />
+
+            <form onSubmit={handleSubmitBatch} className="space-y-4 text-xs">
+              {/* Drop / Select Zone */}
+              <div
+                onClick={() => batchFileInputRef.current?.click()}
+                className="border-2 border-dashed border-[#3E5FD1]/40 hover:border-[#3E5FD1] bg-[#EEF2FC]/40 hover:bg-[#EEF2FC]/70 rounded-2xl p-6 text-center cursor-pointer transition flex flex-col items-center justify-center space-y-2"
+              >
+                <div className="w-12 h-12 rounded-full bg-white shadow-xs text-[#3E5FD1] flex items-center justify-center">
+                  <Layers className="w-6 h-6" />
+                </div>
+                <div>
+                  <span className="font-bold text-[#1F2F6B] text-sm">
+                    Klik di sini untuk memilih banyak foto
+                  </span>
+                  <p className="text-[11px] text-[#6B7280]">
+                    Bisa memilih 5, 10, hingga 30+ foto sekaligus dari galeri HP atau komputer (JPG, PNG, WebP)
+                  </p>
+                </div>
+              </div>
+
+              {/* Daftar Foto yang Dipilih */}
+              {batchFiles.length > 0 && (
+                <div className="space-y-2">
+                  <div className="flex items-center justify-between">
+                    <span className="font-bold text-[#111827]">
+                      {batchFiles.length} Foto Siap Diunggah:
+                    </span>
+                    <button
+                      type="button"
+                      onClick={() => setBatchFiles([])}
+                      className="text-[#D7261E] hover:underline text-[11px]"
+                    >
+                      Hapus Semua Pilihan
+                    </button>
+                  </div>
+
+                  <div className="max-h-56 overflow-y-auto space-y-2 pr-1 divide-y divide-gray-100">
+                    {batchFiles.map((item, idx) => (
+                      <div
+                        key={item.id}
+                        className="pt-2 flex items-center gap-3 bg-gray-50/80 p-2 rounded-xl border border-gray-200"
+                      >
+                        <div className="relative w-12 h-12 rounded-lg overflow-hidden shrink-0 bg-gray-200 border border-gray-300">
+                          {/* eslint-disable-next-line @next/next/no-img-element */}
+                          <img
+                            src={item.previewUrl}
+                            alt="preview"
+                            className="w-full h-full object-cover"
+                          />
+                        </div>
+
+                        <div className="flex-1 min-w-0">
+                          <input
+                            type="text"
+                            value={item.judul}
+                            onChange={(e) => handleUpdateBatchTitle(item.id, e.target.value)}
+                            placeholder="Judul foto..."
+                            className="w-full text-xs p-1.5 bg-white border border-gray-300 rounded font-semibold text-[#111827]"
+                          />
+                          <span className="text-[10px] text-gray-500 truncate block mt-0.5">
+                            {idx + 1}. {item.file.name} ({(item.file.size / 1024).toFixed(0)} KB)
+                          </span>
+                        </div>
+
+                        <button
+                          type="button"
+                          onClick={() => handleRemoveBatchItem(item.id)}
+                          className="p-1.5 text-gray-400 hover:text-[#D7261E] rounded-md transition shrink-0"
+                          title="Hapus dari daftar upload"
+                        >
+                          <Trash2 className="w-4 h-4" />
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* Pengaturan Kolektif Batch */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2 border-t border-[#E3E7EE]">
+                <div>
+                  <label className="block font-semibold text-[#374151] mb-1">
+                    Kategori untuk Semua Foto
+                  </label>
+                  <select
+                    value={batchKategori}
+                    onChange={(e) => setBatchKategori(e.target.value)}
+                    className="w-full p-2.5 bg-white border border-[#E3E7EE] rounded-lg"
+                  >
+                    <option value="Kajian">Kajian</option>
+                    <option value="Jumat Berkah">Jumat Berkah</option>
+                    <option value="Pembebasan Lahan">Pembebasan Lahan</option>
+                    <option value="TK & PAUD">TK &amp; PAUD</option>
+                    <option value="Sosial">Bakti Sosial</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label className="block font-semibold text-[#374151] mb-1">
+                    Visibilitas Publik
+                  </label>
+                  <select
+                    value={batchTampilPublik ? 'true' : 'false'}
+                    onChange={(e) => setBatchTampilPublik(e.target.value === 'true')}
+                    className="w-full p-2.5 bg-white border border-[#E3E7EE] rounded-lg"
+                  >
+                    <option value="true">Tampil di Galeri Publik</option>
+                    <option value="false">Simpan Privat</option>
+                  </select>
+                </div>
+              </div>
+
+              {/* Tampilkan di Slider Beranda (Checked by Default) */}
+              <div className="p-3 bg-[#EEF2FC]/70 border border-[#3E5FD1]/25 rounded-xl space-y-1">
+                <div className="flex items-center space-x-2">
+                  <input
+                    type="checkbox"
+                    id="batch_tampil_beranda"
+                    checked={batchTampilBeranda}
+                    onChange={(e) => setBatchTampilBeranda(e.target.checked)}
+                    className="rounded text-[#3E5FD1]"
+                  />
+                  <label
+                    htmlFor="batch_tampil_beranda"
+                    className="font-bold text-[#1F2F6B] cursor-pointer"
+                  >
+                    ⭐ Tampilkan Semua di Slider Otomatis Beranda Utama
+                  </label>
+                </div>
+                <p className="text-[11px] text-[#4B5563] pl-5">
+                  Foto-foto ini akan langsung masuk ke komponen carousel beranda yang bergerak otomatis agar pengunjung melihat banyak foto kegiatan.
+                </p>
+              </div>
+
+              {/* Izin Wali Murid / Anak (F-FOTO-03) */}
+              <div
+                className={`p-3 rounded-xl border text-xs space-y-1 ${
+                  batchKategori === 'TK & PAUD' || batchKategori === 'TK/PAUD'
+                    ? 'bg-[#FEF3C7] border-[#FDE68A] text-[#92400E]'
+                    : 'bg-[#F5F7FA] border-[#E3E7EE] text-[#4B5563]'
+                }`}
+              >
+                <div className="flex items-start space-x-2">
+                  <input
+                    type="checkbox"
+                    id="batch_izin_anak"
+                    checked={batchIzinOrangTua}
+                    onChange={(e) => setBatchIzinOrangTua(e.target.checked)}
+                    className="mt-0.5 rounded text-[#3E5FD1]"
+                  />
+                  <label htmlFor="batch_izin_anak" className="font-semibold cursor-pointer">
+                    Ada Izin Wali / Orang Tua Santri untuk Dokumentasi Ini
+                  </label>
+                </div>
+                {(batchKategori === 'TK & PAUD' || batchKategori === 'TK/PAUD') &&
+                  !batchIzinOrangTua && (
+                    <p className="text-[11px] text-[#D7261E] font-medium pl-5">
+                      Peringatan Privasi: Jika tidak dicentang, foto kategori TK/PAUD tidak akan dimunculkan ke publik demi melindungi privasi santri.
+                    </p>
+                  )}
+              </div>
+
+              {/* Progress Bar saat Mengunggah */}
+              {batchProgress && (
+                <div className="space-y-1.5 p-3 bg-gray-50 rounded-xl border border-gray-200">
+                  <div className="flex items-center justify-between text-xs font-bold text-[#111827]">
+                    <span>Sedang Mengunggah Foto ke Supabase Cloud...</span>
+                    <span>
+                      {batchProgress.current} / {batchProgress.total} foto
+                    </span>
+                  </div>
+                  <div className="w-full bg-gray-200 rounded-full h-2.5 overflow-hidden">
+                    <div
+                      className="bg-[#2EE05A] h-2.5 rounded-full transition-all duration-300"
+                      style={{
+                        width: `${(batchProgress.current / batchProgress.total) * 100}%`,
+                      }}
+                    />
+                  </div>
+                </div>
+              )}
+
+              {/* Action Buttons */}
+              <div className="flex items-center justify-end space-x-2 pt-2 border-t border-[#E3E7EE]">
+                <button
+                  type="button"
+                  onClick={() => setActiveModal(null)}
+                  disabled={submitting}
+                  className="px-4 py-2 border border-[#E3E7EE] rounded-lg text-[#374151] hover:bg-gray-50 cursor-pointer disabled:opacity-50"
+                >
+                  Batal
+                </button>
+                <button
+                  type="submit"
+                  disabled={submitting || batchFiles.length === 0}
+                  className="px-5 py-2.5 bg-[#2EE05A] hover:bg-[#25B84A] text-[#1F2F6B] rounded-lg font-bold flex items-center space-x-2 disabled:opacity-50 cursor-pointer shadow-sm"
+                >
+                  {submitting ? (
+                    <Loader2 className="w-4 h-4 animate-spin text-[#1F2F6B]" />
+                  ) : (
+                    <UploadCloud className="w-4 h-4" />
+                  )}
+                  <span>
+                    {submitting
+                      ? 'Mengunggah ke Cloud…'
+                      : `Unggah & Terbitkan ${batchFiles.length} Foto`}
+                  </span>
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* MODAL TAMBAH 1 / EDIT FOTO */}
+      {(activeModal === 'create' || activeModal === 'edit') && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs overflow-y-auto">
           <div className="w-full max-w-lg bg-white rounded-2xl shadow-2xl border border-[#E3E7EE] p-6 space-y-4 my-8">
             <h3 className="text-base font-bold text-[#111827]">
-              {activeModal === 'create' ? 'Tambah Foto Dokumentasi Baru' : 'Edit Foto Dokumentasi'}
+              {activeModal === 'create' ? 'Tambah 1 Foto Dokumentasi Baru' : 'Edit Foto Dokumentasi'}
             </h3>
 
             {/* Input Tersembunyi untuk Pilih Berkas Gambar */}
             <input
               type="file"
               ref={fileInputRef}
-              onChange={handleFileSelect}
+              onChange={handleSingleFileSelect}
               accept="image/jpeg,image/png,image/webp,image/gif,image/svg+xml"
               className="hidden"
             />
@@ -384,7 +815,7 @@ export default function AdminGaleriPage() {
                     className="w-full sm:w-auto px-4 py-2.5 bg-[#EEF2FC] hover:bg-[#3E5FD1]/15 text-[#3E5FD1] border border-[#3E5FD1]/30 rounded-xl font-bold flex items-center justify-center space-x-2 transition cursor-pointer"
                   >
                     {uploadingImage ? (
-                      <div className="w-4 h-4 border-2 border-[#3E5FD1] border-t-transparent rounded-full animate-spin" />
+                      <Loader2 className="w-4 h-4 animate-spin text-[#3E5FD1]" />
                     ) : (
                       <Upload className="w-4 h-4" />
                     )}
@@ -399,14 +830,13 @@ export default function AdminGaleriPage() {
                 {/* Preview Thumbnail jika sudah ada foto */}
                 {gambar && (
                   <div className="relative aspect-video max-h-48 rounded-xl overflow-hidden border border-[#E3E7EE] bg-gray-50 flex items-center justify-center mt-2 group">
-                    <img
+                    <Image
                       src={gambar}
                       alt="Preview"
-                      className="w-full h-full object-cover"
-                      onError={(e) => {
-                        (e.target as HTMLImageElement).src =
-                          'https://images.unsplash.com/photo-1542816417-0983c9c9ad53?q=80&w=1200&auto=format&fit=crop';
-                      }}
+                      fill
+                      unoptimized={Boolean(gambar.includes('supabase.co'))}
+                      className="object-cover"
+                      sizes="400px"
                     />
                     <div className="absolute top-2 right-2 bg-black/60 text-white text-[10px] px-2 py-0.5 rounded-md flex items-center space-x-1">
                       <CheckCircle2 className="w-3 h-3 text-[#2EE05A]" />
@@ -491,11 +921,11 @@ export default function AdminGaleriPage() {
                     className="rounded text-[#3E5FD1]"
                   />
                   <label htmlFor="tampil_beranda" className="font-bold text-[#1F2F6B] cursor-pointer">
-                    Tampilkan di Bagian &quot;Galeri Jejak Langkah YIMI&quot; (Beranda)
+                    ⭐ Tampilkan di Slider Otomatis &quot;Galeri Jejak Langkah YIMI&quot; (Beranda)
                   </label>
                 </div>
                 <p className="text-[11px] text-[#4B5563] pl-5">
-                  Foto ini akan tampil pada 6 grid cuplikan kegiatan di halaman utama website.
+                  Foto ini akan tampil pada slider carousel beranda utama yang bergerak otomatis.
                 </p>
               </div>
 
@@ -530,15 +960,16 @@ export default function AdminGaleriPage() {
                 <button
                   type="button"
                   onClick={() => setActiveModal(null)}
-                  className="px-4 py-2 border border-[#E3E7EE] rounded-lg text-[#374151] hover:bg-gray-50"
+                  className="px-4 py-2 border border-[#E3E7EE] rounded-lg text-[#374151] hover:bg-gray-50 cursor-pointer"
                 >
                   Batal
                 </button>
                 <button
                   type="submit"
                   disabled={submitting || uploadingImage}
-                  className="px-5 py-2.5 bg-[#3E5FD1] hover:bg-[#1F2F6B] text-white rounded-lg font-bold flex items-center space-x-1.5 disabled:opacity-60"
+                  className="px-5 py-2.5 bg-[#3E5FD1] hover:bg-[#1F2F6B] text-white rounded-lg font-bold flex items-center space-x-1.5 disabled:opacity-60 cursor-pointer"
                 >
+                  {submitting && <Loader2 className="w-4 h-4 animate-spin" />}
                   <span>{submitting ? 'Menyimpan…' : 'Simpan Foto'}</span>
                 </button>
               </div>

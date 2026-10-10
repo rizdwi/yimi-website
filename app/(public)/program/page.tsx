@@ -1,33 +1,70 @@
-import React from 'react';
-import type { Metadata } from 'next';
+'use client';
+
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import {
   GraduationCap,
   HeartHandshake,
   BookOpen,
   Landmark,
+  Utensils,
+  Heart,
   ArrowRight,
   Layers,
 } from 'lucide-react';
 import { Card } from '@/components/ui/Card';
 import { Badge } from '@/components/ui/Badge';
-import { constructMetadata } from '@/lib/seo';
-import programsData from '@/content/programs/index.json';
-
-export const metadata: Metadata = constructMetadata({
-  title: 'Program Dakwah, Pendidikan, & Sosial',
-  description:
-    'Rangkaian program Yayasan Insan Muslim Istiqomah: TK/PAUD Islam Istiqomah, Jumat Berkah, Kajian Islam Ilmiah, dan Pembebasan Lahan Wakaf.',
-});
+import fallbackPrograms from '@/content/programs/index.json';
 
 const iconMap = {
   GraduationCap,
   HeartHandshake,
   BookOpen,
   Landmark,
+  Utensils,
+  Heart,
 };
 
+interface ProgramDetailItem {
+  id: string;
+  slug: string;
+  judul: string;
+  ringkasan: string;
+  kategori: string;
+  tag: string;
+  ikon?: string;
+  icon?: string;
+  targetUsia: string;
+  highlight: string;
+  href: string;
+}
+
 export default function ProgramIndexPage() {
+  const [programs, setPrograms] = useState<ProgramDetailItem[]>(
+    fallbackPrograms.map((p) => ({
+      ...p,
+      ikon: p.icon,
+    }))
+  );
+
+  useEffect(() => {
+    async function fetchLivePrograms() {
+      try {
+        const res = await fetch('/api/programs');
+        if (res.ok) {
+          const data = await res.json();
+          if (Array.isArray(data.programs) && data.programs.length > 0) {
+            setPrograms(data.programs);
+          }
+        }
+      } catch (err) {
+        console.error('Gagal mengambil daftar program:', err);
+      }
+    }
+
+    fetchLivePrograms();
+  }, []);
+
   return (
     <div className="pt-[72px]">
       {/* Hero 320px */}
@@ -54,9 +91,9 @@ export default function ProgramIndexPage() {
       <section className="py-20 bg-white">
         <div className="max-w-[1200px] w-full mx-auto px-5 md:px-8">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            {programsData.map((item) => {
-              const IconComponent =
-                iconMap[item.icon as keyof typeof iconMap] || BookOpen;
+            {programs.map((item) => {
+              const iconKey = (item.ikon || item.icon || 'BookOpen') as keyof typeof iconMap;
+              const IconComponent = iconMap[iconKey] || BookOpen;
 
               return (
                 <Card

@@ -1,24 +1,74 @@
-import React from 'react';
+'use client';
+
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import {
   GraduationCap,
   HeartHandshake,
   BookOpen,
   Landmark,
+  Utensils,
+  Heart,
   ArrowRight,
 } from 'lucide-react';
 import { Card } from '@/components/ui/Card';
 import { Badge } from '@/components/ui/Badge';
-import programsData from '@/content/programs/index.json';
+import fallbackPrograms from '@/content/programs/index.json';
 
 const iconMap = {
   GraduationCap,
   HeartHandshake,
   BookOpen,
   Landmark,
+  Utensils,
+  Heart,
 };
 
+interface ProgramCardItem {
+  id: string;
+  slug: string;
+  judul: string;
+  ringkasan: string;
+  kategori: string;
+  ikon?: string;
+  icon?: string;
+  highlight: string;
+  href: string;
+  tampil_beranda?: boolean;
+}
+
 export function ProgramCards() {
+  const [programs, setPrograms] = useState<ProgramCardItem[]>(
+    fallbackPrograms.map((p) => ({
+      ...p,
+      tampil_beranda: true,
+      ikon: p.icon,
+    }))
+  );
+
+  useEffect(() => {
+    async function fetchLivePrograms() {
+      try {
+        const res = await fetch('/api/programs');
+        if (res.ok) {
+          const data = await res.json();
+          if (Array.isArray(data.programs) && data.programs.length > 0) {
+            const filtered = data.programs.filter(
+              (p: ProgramCardItem) => p.tampil_beranda !== false
+            );
+            if (filtered.length > 0) {
+              setPrograms(filtered);
+            }
+          }
+        }
+      } catch (err) {
+        console.error('Gagal mengambil daftar program live:', err);
+      }
+    }
+
+    fetchLivePrograms();
+  }, []);
+
   return (
     <section className="py-20 md:py-24 bg-neutral-100/60 relative">
       <div className="max-w-[1200px] w-full mx-auto px-5 md:px-8">
@@ -40,9 +90,9 @@ export function ProgramCards() {
 
         {/* 4 Program Cards Grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-          {programsData.map((item) => {
-            const IconComponent =
-              iconMap[item.icon as keyof typeof iconMap] || BookOpen;
+          {programs.map((item) => {
+            const iconKey = (item.ikon || item.icon || 'BookOpen') as keyof typeof iconMap;
+            const IconComponent = iconMap[iconKey] || BookOpen;
 
             return (
               <Card
@@ -70,12 +120,12 @@ export function ProgramCards() {
                 </div>
 
                 <div className="pt-4 border-t border-neutral-100 flex items-center justify-between">
-                  <span className="text-xs font-semibold text-neutral-500">
+                  <span className="text-xs font-semibold text-neutral-500 truncate max-w-[140px]">
                     {item.highlight}
                   </span>
                   <Link
                     href={item.href}
-                    className="inline-flex items-center gap-1 text-sm font-bold text-yimi-blue-600 group-hover:text-yimi-blue-800 transition-colors"
+                    className="inline-flex items-center gap-1 text-sm font-bold text-yimi-blue-600 group-hover:text-yimi-blue-800 transition-colors shrink-0"
                   >
                     <span>Detail</span>
                     <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />

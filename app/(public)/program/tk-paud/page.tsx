@@ -1,28 +1,71 @@
-import React from 'react';
-import type { Metadata } from 'next';
+'use client';
+
+import React, { useState, useEffect } from 'react';
 import {
   GraduationCap,
   Sparkles,
+  Calendar,
   Clock,
-  CheckCircle2,
   Phone,
+  CheckCircle2,
   FileText,
+  Download,
+  DollarSign,
 } from 'lucide-react';
 import { Card } from '@/components/ui/Card';
-import { Button } from '@/components/ui/Button';
 import { Badge } from '@/components/ui/Badge';
-import { constructMetadata } from '@/lib/seo';
-import tkData from '@/content/programs/tk-paud.json';
+import { Button } from '@/components/ui/Button';
+import fallbackTkData from '@/content/programs/tk-paud.json';
 
-export const metadata: Metadata = constructMetadata({
-  title: 'TK & PAUD Islam Istiqomah',
-  description:
-    'Pendidikan anak usia dini berlandaskan aqidah shahihah, adab sunnah, dan tahfidz juz 30 di bawah naungan Yayasan Insan Muslim Istiqomah.',
-});
+interface TkMeta {
+  biaya_pendaftaran?: string;
+  biaya_spp?: string;
+  status_pendaftaran?: string;
+  kontak_wa?: string;
+  file_lampiran?: string;
+  file_lampiran_nama?: string;
+}
+
+interface KeunggulanItem {
+  judul: string;
+  deskripsi: string;
+}
+
+interface KegiatanItem {
+  waktu: string;
+  aktivitas: string;
+}
 
 export default function TkPaudPage() {
-  const waUrl = `https://wa.me/${tkData.pendaftaran.kontakPendaftaran}?text=${encodeURIComponent(
-    tkData.pendaftaran.pesanWA
+  const [meta, setMeta] = useState<TkMeta>({
+    biaya_pendaftaran: 'Rp 350.000',
+    biaya_spp: 'Rp 250.000 / bulan',
+    status_pendaftaran: 'Gelombang Inden Telah Dibuka',
+    kontak_wa: '6281234567890',
+    file_lampiran: '',
+    file_lampiran_nama: '',
+  });
+
+  useEffect(() => {
+    async function loadLiveTk() {
+      try {
+        const res = await fetch('/api/programs/tk-paud');
+        if (res.ok) {
+          const json = await res.json();
+          if (json.program && json.program.metadata) {
+            setMeta(json.program.metadata as TkMeta);
+          }
+        }
+      } catch (err) {
+        console.error('Gagal memuat data live TK:', err);
+      }
+    }
+    loadLiveTk();
+  }, []);
+
+  const waNumber = meta.kontak_wa || '6281234567890';
+  const waUrl = `https://wa.me/${waNumber.replace(/[^0-9]/g, '')}?text=${encodeURIComponent(
+    'Assalamu’alaikum Warahmatullah, saya ingin konsultasi pendaftaran santri baru KB-TK YIMI.'
   )}`;
 
   return (
@@ -36,51 +79,60 @@ export default function TkPaudPage() {
         <div className="max-w-[1200px] w-full mx-auto px-5 md:px-8 text-center relative z-10">
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 text-yimi-yellow-400 text-xs font-bold uppercase tracking-wider mb-3">
             <GraduationCap className="w-3.5 h-3.5" />
-            <span>Pendidikan Usia Dini</span>
+            <span>Pendidikan Anak Usia Dini</span>
           </div>
           <h1 className="text-3xl sm:text-4xl md:text-5xl font-extrabold tracking-tight text-white mb-3">
-            {tkData.judul}
+            {fallbackTkData.judul}
           </h1>
           <p className="text-base text-blue-100 max-w-xl mx-auto">
-            {tkData.subjudul}
+            {fallbackTkData.subjudul}
           </p>
         </div>
       </section>
 
-      {/* Deskripsi & Ringkasan */}
+      {/* Program Summary & Pendaftaran */}
       <section className="py-20 bg-white">
         <div className="max-w-[1200px] w-full mx-auto px-5 md:px-8">
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-start">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-10">
+            {/* Deskripsi & Ringkasan */}
             <div className="lg:col-span-8 flex flex-col gap-6">
-              <h2 className="text-2xl sm:text-3xl font-extrabold text-yimi-blue-800">
-                Pondasi Aqidah &amp; Adab Sejak Usia Emas
+              <div className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-yimi-green-700">
+                <Sparkles className="w-4 h-4 text-yimi-green-500" />
+                <span>Membina Generasi Rabbani Sejak Dini</span>
+              </div>
+              <h2 className="text-2xl sm:text-3xl font-extrabold text-yimi-blue-800 tracking-tight">
+                Kurikulum Berbasis Karakter Islami &amp; Sunnah
               </h2>
               <p className="text-base sm:text-lg text-neutral-700 leading-relaxed">
-                {tkData.deskripsi}
+                {fallbackTkData.deskripsi}
               </p>
 
-              {/* Info Bar */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2">
-                <div className="p-4 rounded-2xl bg-neutral-50 border border-neutral-100 flex items-start gap-3">
-                  <Sparkles className="w-5 h-5 text-yimi-green-500 shrink-0 mt-0.5" />
+              {/* Target Usia & Waktu */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-4">
+                <div className="p-5 rounded-2xl bg-neutral-50 border border-neutral-100 flex items-start gap-4">
+                  <div className="w-10 h-10 rounded-xl bg-yimi-blue-50 text-yimi-blue-600 flex items-center justify-center shrink-0">
+                    <Calendar className="w-5 h-5" />
+                  </div>
                   <div>
-                    <h3 className="text-xs font-bold uppercase text-neutral-500">
-                      Target Kelompok Usia
+                    <h3 className="text-xs font-bold text-neutral-500 uppercase tracking-wider mb-1">
+                      Jenjang &amp; Usia
                     </h3>
                     <p className="text-sm font-bold text-yimi-blue-800">
-                      {tkData.targetUsia}
+                      {fallbackTkData.targetUsia}
                     </p>
                   </div>
                 </div>
 
-                <div className="p-4 rounded-2xl bg-neutral-50 border border-neutral-100 flex items-start gap-3">
-                  <Clock className="w-5 h-5 text-yimi-blue-600 shrink-0 mt-0.5" />
+                <div className="p-5 rounded-2xl bg-neutral-50 border border-neutral-100 flex items-start gap-4">
+                  <div className="w-10 h-10 rounded-xl bg-yimi-blue-50 text-yimi-blue-600 flex items-center justify-center shrink-0">
+                    <Clock className="w-5 h-5" />
+                  </div>
                   <div>
-                    <h3 className="text-xs font-bold uppercase text-neutral-500">
+                    <h3 className="text-xs font-bold text-neutral-500 uppercase tracking-wider mb-1">
                       Waktu Kegiatan Belajar
                     </h3>
                     <p className="text-sm font-bold text-yimi-blue-800">
-                      {tkData.waktuBelajar}
+                      {fallbackTkData.waktuBelajar}
                     </p>
                   </div>
                 </div>
@@ -90,11 +142,45 @@ export default function TkPaudPage() {
             {/* Pendaftaran Quick Card */}
             <div className="lg:col-span-4 bg-yimi-blue-50/80 border border-yimi-blue-600/20 rounded-3xl p-6 sm:p-8 flex flex-col gap-4 shadow-xs">
               <Badge variant="green" className="w-fit">
-                {tkData.pendaftaran.status}
+                {meta.status_pendaftaran || fallbackTkData.pendaftaran.status}
               </Badge>
               <h3 className="text-xl font-bold text-yimi-blue-800">
                 Informasi &amp; Pendaftaran Santri Baru
               </h3>
+
+              {/* Rincian Biaya Live dari CMS */}
+              <div className="p-4 rounded-2xl bg-white border border-yimi-blue-600/20 flex flex-col gap-2.5">
+                <div className="flex items-center gap-2 text-xs font-bold text-yimi-blue-800 uppercase tracking-wider border-b border-neutral-100 pb-2">
+                  <DollarSign className="w-4 h-4 text-yimi-green-600" />
+                  <span>Rincian Biaya Pendidikan</span>
+                </div>
+                <div className="flex items-center justify-between text-xs">
+                  <span className="text-neutral-500">Biaya Pendaftaran:</span>
+                  <span className="font-bold text-yimi-blue-800">
+                    {meta.biaya_pendaftaran || 'Rp 350.000'}
+                  </span>
+                </div>
+                <div className="flex items-center justify-between text-xs">
+                  <span className="text-neutral-500">Infaq SPP Bulanan:</span>
+                  <span className="font-bold text-yimi-green-700">
+                    {meta.biaya_spp || 'Rp 250.000 / bulan'}
+                  </span>
+                </div>
+              </div>
+
+              {/* Tombol Unduh Brosur jika diupload di CMS */}
+              {meta.file_lampiran && (
+                <a
+                  href={meta.file_lampiran}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-white border border-yimi-blue-600 text-yimi-blue-700 hover:bg-yimi-blue-50 text-xs font-bold transition-all shadow-xs"
+                >
+                  <Download className="w-4 h-4 text-yimi-blue-600" />
+                  <span>Unduh Brosur / Formulir (PDF)</span>
+                </a>
+              )}
+
               <p className="text-xs text-neutral-600 leading-relaxed">
                 Hubungi panitia pendaftaran untuk konsultasi observasi calon santri dan ketersediaan kuota kelas.
               </p>
@@ -127,7 +213,7 @@ export default function TkPaudPage() {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {tkData.keunggulan.map((item, idx) => (
+            {(fallbackTkData.keunggulan as KeunggulanItem[]).map((item, idx) => (
               <Card key={idx} hoverEffect className="p-6 flex items-start gap-4">
                 <div className="w-10 h-10 rounded-xl bg-yimi-blue-50 text-yimi-green-700 flex items-center justify-center shrink-0">
                   <CheckCircle2 className="w-5 h-5 text-yimi-green-500" />
@@ -160,7 +246,7 @@ export default function TkPaudPage() {
             </div>
 
             <div className="flex flex-col gap-3">
-              {tkData.kegiatanHarian.map((item, idx) => (
+              {(fallbackTkData.kegiatanHarian as KegiatanItem[]).map((item, idx) => (
                 <div
                   key={idx}
                   className="p-4 sm:p-5 rounded-2xl bg-neutral-50 border border-neutral-100 flex flex-col sm:flex-row sm:items-center justify-between gap-2 hover:border-yimi-blue-600/20 transition-colors"
@@ -189,21 +275,32 @@ export default function TkPaudPage() {
               </h2>
             </div>
             <ul className="flex flex-col gap-2.5 text-sm text-neutral-700 mb-6">
-              {tkData.pendaftaran.syarat.map((item, idx) => (
+              {fallbackTkData.pendaftaran.syarat.map((item: string, idx: number) => (
                 <li key={idx} className="flex items-center gap-2">
                   <CheckCircle2 className="w-4 h-4 text-yimi-green-500 shrink-0" />
                   <span>{item}</span>
                 </li>
               ))}
             </ul>
-            <div className="border-t border-neutral-100 pt-6">
+            <div className="border-t border-neutral-100 pt-6 flex flex-col sm:flex-row gap-3">
+              {meta.file_lampiran && (
+                <a
+                  href={meta.file_lampiran}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex-1 flex items-center justify-center gap-2 px-5 py-3 rounded-xl border border-yimi-blue-600 text-yimi-blue-700 hover:bg-yimi-blue-50 text-sm font-bold transition-all text-center"
+                >
+                  <Download className="w-4 h-4" />
+                  <span>Unduh Brosur &amp; Formulir</span>
+                </a>
+              )}
               <Button
                 href={waUrl}
                 variant="primary"
                 size="md"
-                className="w-full flex items-center justify-center gap-2"
+                className="flex-1 flex items-center justify-center gap-2"
               >
-                <span>Konsultasikan via WhatsApp Pengurus</span>
+                <span>Konsultasikan via WhatsApp</span>
               </Button>
             </div>
           </div>

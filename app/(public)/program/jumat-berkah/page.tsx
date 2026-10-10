@@ -1,19 +1,76 @@
-import React from 'react';
-import type { Metadata } from 'next';
-import { HeartHandshake, Utensils, Heart } from 'lucide-react';
+'use client';
+
+import React, { useState, useEffect } from 'react';
+import { HeartHandshake, Utensils, Heart, Download } from 'lucide-react';
 import { Card } from '@/components/ui/Card';
 import { Button } from '@/components/ui/Button';
-import { constructMetadata } from '@/lib/seo';
 import { formatRupiah } from '@/lib/format';
-import jumatData from '@/content/programs/jumat-berkah.json';
+import fallbackJumatData from '@/content/programs/jumat-berkah.json';
 
-export const metadata: Metadata = constructMetadata({
-  title: 'Program Sedekah Jumat Berkah & Sosial Umat',
-  description:
-    'Penyaluran sedekah makanan dan paket pangan setiap hari Jumat untuk dhuafa, musafir, santri, dan jamaah masjid binaan Yayasan Insan Muslim Istiqomah.',
-});
+interface PaketInfaqItem {
+  nama: string;
+  nominal: number;
+  deskripsi: string;
+}
+
+interface MekanismePenyaluranItem {
+  tahap: string;
+  rincian: string;
+}
+
+interface LandasanDalil {
+  arab: string;
+  terjemahan: string;
+  sumber: string;
+}
+
+interface JumatData {
+  judul: string;
+  subjudul: string;
+  deskripsi: string;
+  ajakan: string;
+  landasanDalil: LandasanDalil;
+  paketInfaq: PaketInfaqItem[];
+  mekanismePenyaluran: MekanismePenyaluranItem[];
+}
 
 export default function JumatBerkahPage() {
+  const [jumatData, setJumatData] = useState<JumatData>(fallbackJumatData as JumatData);
+  const [paketInfaq, setPaketInfaq] = useState<PaketInfaqItem[]>(fallbackJumatData.paketInfaq);
+  const [fileLampiran, setFileLampiran] = useState<string>('');
+
+  useEffect(() => {
+    async function loadLiveJumat() {
+      try {
+        const res = await fetch('/api/programs/jumat-berkah');
+        if (res.ok) {
+          const json = await res.json();
+          if (json.program) {
+            if (
+              json.program.metadata?.paket_infaq &&
+              Array.isArray(json.program.metadata.paket_infaq)
+            ) {
+              setPaketInfaq(json.program.metadata.paket_infaq as PaketInfaqItem[]);
+            }
+            if (json.program.metadata?.file_lampiran) {
+              setFileLampiran(json.program.metadata.file_lampiran);
+            }
+            if (json.program.judul) {
+              setJumatData((prev) => ({
+                ...prev,
+                judul: json.program.judul,
+                deskripsi: json.program.deskripsi || prev.deskripsi,
+              }));
+            }
+          }
+        }
+      } catch (err) {
+        console.error('Gagal memuat data live Jumat Berkah:', err);
+      }
+    }
+    loadLiveJumat();
+  }, []);
+
   return (
     <div className="pt-[72px]">
       {/* Subpage Hero */}
@@ -50,6 +107,20 @@ export default function JumatBerkahPage() {
               <p className="text-sm text-neutral-600 leading-relaxed">
                 {jumatData.ajakan}
               </p>
+
+              {fileLampiran && (
+                <div className="pt-2">
+                  <a
+                    href={fileLampiran}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-yimi-blue-50 text-yimi-blue-700 hover:bg-yimi-blue-100 border border-yimi-blue-200 text-xs font-bold transition-all shadow-xs"
+                  >
+                    <Download className="w-4 h-4 text-yimi-blue-600" />
+                    <span>Unduh Brosur &amp; Laporan Penyaluran (PDF)</span>
+                  </a>
+                </div>
+              )}
             </div>
 
             {/* Dalil Box */}
@@ -88,7 +159,7 @@ export default function JumatBerkahPage() {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {jumatData.paketInfaq.map((paket, idx) => (
+            {paketInfaq.map((paket: PaketInfaqItem, idx: number) => (
               <Card
                 key={idx}
                 hoverEffect
@@ -137,22 +208,24 @@ export default function JumatBerkahPage() {
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            {jumatData.mekanismePenyaluran.map((item, idx) => (
-              <div
-                key={idx}
-                className="p-6 rounded-2xl bg-neutral-50 border border-neutral-100 flex flex-col gap-3"
-              >
-                <span className="w-8 h-8 rounded-xl bg-yimi-green-500 text-yimi-blue-800 font-bold text-sm flex items-center justify-center">
-                  {idx + 1}
-                </span>
-                <h3 className="text-base font-bold text-yimi-blue-800">
-                  {item.tahap}
-                </h3>
-                <p className="text-xs text-neutral-600 leading-relaxed">
-                  {item.rincian}
-                </p>
-              </div>
-            ))}
+            {jumatData.mekanismePenyaluran.map(
+              (item: MekanismePenyaluranItem, idx: number) => (
+                <div
+                  key={idx}
+                  className="p-6 rounded-2xl bg-neutral-50 border border-neutral-100 flex flex-col gap-3"
+                >
+                  <span className="w-8 h-8 rounded-xl bg-yimi-green-500 text-yimi-blue-800 font-bold text-sm flex items-center justify-center">
+                    {idx + 1}
+                  </span>
+                  <h3 className="text-base font-bold text-yimi-blue-800">
+                    {item.tahap}
+                  </h3>
+                  <p className="text-xs text-neutral-600 leading-relaxed">
+                    {item.rincian}
+                  </p>
+                </div>
+              )
+            )}
           </div>
         </div>
       </section>

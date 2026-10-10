@@ -3,6 +3,17 @@ import { getAdminSessionFromRequest } from '@/lib/auth';
 import { supabase } from '@/lib/supabase';
 import { createAuditLog } from '@/lib/audit';
 
+interface GalleryBatchItemInput {
+  judul?: string;
+  keterangan?: string;
+  gambar: string;
+  kategori?: string;
+  urutan?: number;
+  izin_orang_tua?: boolean;
+  tampil_publik?: boolean;
+  tampil_beranda?: boolean;
+}
+
 export async function GET(req: NextRequest) {
   const session = await getAdminSessionFromRequest(req);
   if (!session) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
@@ -22,6 +33,48 @@ export async function POST(req: NextRequest) {
 
   const body = await req.json();
 
+  // Support batch upload / multiple photos insertion
+  if (Array.isArray(body.items) && body.items.length > 0) {
+    const validItems = (body.items as GalleryBatchItemInput[]).filter((i) => i && i.gambar);
+    if (validItems.length === 0) {
+      return NextResponse.json({ error: 'Tidak ada data foto yang valid.' }, { status: 400 });
+    }
+
+    const rows = validItems.map((item) => {
+      let tampilPublik = item.tampil_publik !== false;
+      if (item.kategori === 'TK/PAUD' && !item.izin_orang_tua) {
+        tampilPublik = false;
+      }
+      return {
+        judul: item.judul || 'Dokumentasi Kegiatan YIMI',
+        keterangan: item.keterangan || '',
+        gambar: item.gambar,
+        kategori: item.kategori || 'Kajian',
+        urutan: typeof item.urutan === 'number' ? item.urutan : 0,
+        izin_orang_tua: item.izin_orang_tua !== false,
+        tampil_publik: tampilPublik,
+        tampil_beranda: item.tampil_beranda !== false,
+        created_at: new Date().toISOString(),
+      };
+    });
+
+    const { data, error } = await supabase
+      .from('gallery_items')
+      .insert(rows)
+      .select();
+
+    if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+
+    await createAuditLog(
+      session.email,
+      'Galeri',
+      `Menambahkan ${rows.length} foto galeri secara batch/sekaligus`
+    );
+
+    return NextResponse.json({ success: true, count: rows.length, items: data });
+  }
+
+  // Single item insert
   if (!body.gambar) {
     return NextResponse.json({ error: 'URL atau file gambar wajib diisi.' }, { status: 400 });
   }

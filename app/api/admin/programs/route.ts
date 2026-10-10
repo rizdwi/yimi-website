@@ -12,7 +12,7 @@ export async function GET(req: NextRequest) {
     .select('*')
     .order('urutan', { ascending: true });
 
-  if (error) return NextResponse.json({ error: 'Database error' }, { status: 500 });
+  if (error) return NextResponse.json({ error: 'Database error: ' + error.message }, { status: 500 });
   return NextResponse.json({ programs: data || [] });
 }
 
@@ -29,12 +29,12 @@ export async function POST(req: NextRequest) {
     .from('programs')
     .insert({
       judul: body.judul,
-      slug: body.slug,
+      slug: body.slug.toLowerCase().trim(),
       ringkasan: body.ringkasan || '',
       deskripsi: body.deskripsi || '',
       ikon: body.ikon || 'BookOpen',
       gambar: body.gambar || '',
-      urutan: body.urutan || 0,
+      urutan: Number(body.urutan) || 0,
       tampil_beranda: body.tampil_beranda !== false,
       is_archived: false,
       metadata: body.metadata || {},
@@ -59,28 +59,31 @@ export async function PUT(req: NextRequest) {
     return NextResponse.json({ error: 'ID program wajib diisi.' }, { status: 400 });
   }
 
+  const updatePayload: Record<string, unknown> = {
+    updated_at: new Date().toISOString(),
+  };
+
+  if (body.judul !== undefined) updatePayload.judul = body.judul;
+  if (body.slug !== undefined) updatePayload.slug = body.slug.toLowerCase().trim();
+  if (body.ringkasan !== undefined) updatePayload.ringkasan = body.ringkasan;
+  if (body.deskripsi !== undefined) updatePayload.deskripsi = body.deskripsi;
+  if (body.ikon !== undefined) updatePayload.ikon = body.ikon;
+  if (body.gambar !== undefined) updatePayload.gambar = body.gambar;
+  if (body.urutan !== undefined) updatePayload.urutan = Number(body.urutan);
+  if (body.tampil_beranda !== undefined) updatePayload.tampil_beranda = Boolean(body.tampil_beranda);
+  if (body.is_archived !== undefined) updatePayload.is_archived = Boolean(body.is_archived);
+  if (body.metadata !== undefined) updatePayload.metadata = body.metadata;
+
   const { data, error } = await supabase
     .from('programs')
-    .update({
-      judul: body.judul,
-      slug: body.slug,
-      ringkasan: body.ringkasan,
-      deskripsi: body.deskripsi,
-      ikon: body.ikon,
-      gambar: body.gambar,
-      urutan: body.urutan,
-      tampil_beranda: body.tampil_beranda,
-      is_archived: body.is_archived,
-      metadata: body.metadata,
-      updated_at: new Date().toISOString(),
-    })
+    .update(updatePayload)
     .eq('id', body.id)
     .select()
     .single();
 
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });
 
-  await createAuditLog(session.email, 'Program', `Memperbarui program: ${body.judul}`, body.id);
+  await createAuditLog(session.email, 'Program', `Memperbarui program: ${body.judul || body.id}`, body.id);
   return NextResponse.json({ success: true, program: data });
 }
 

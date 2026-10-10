@@ -15,7 +15,8 @@ export async function GET(req: NextRequest) {
       .order('created_at', { ascending: false });
 
     if (berandaOnly) {
-      query = query.eq('tampil_beranda', true).limit(6);
+      // Ambil hingga 50 foto pilihan untuk slider beranda utama
+      query = query.eq('tampil_beranda', true).limit(50);
     }
 
     const { data, error } = await query;
@@ -33,7 +34,7 @@ export async function GET(req: NextRequest) {
 
   // Fallback to gallery.json
   const fallback = galleryFallback.filter((i) => i.izinOrangTua === true);
-  const items = berandaOnly ? fallback.slice(0, 6) : fallback;
+  const items = berandaOnly ? fallback : fallback;
   return NextResponse.json({
     items: items.map((f) => ({
       id: f.id,
