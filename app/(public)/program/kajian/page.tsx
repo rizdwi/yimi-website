@@ -23,6 +23,11 @@ import kajianProgramData from '@/content/programs/kajian.json';
 import kajianScheduleFallback from '@/content/kajian.json';
 
 export default function KajianProgramPage() {
+  const [programData, setProgramData] = useState({
+    judul: kajianProgramData.judul,
+    subjudul: kajianProgramData.subjudul,
+    deskripsi: kajianProgramData.deskripsi,
+  });
   const [kajianList, setKajianList] = useState<KajianItem[]>(
     kajianScheduleFallback as unknown as KajianItem[]
   );
@@ -30,9 +35,27 @@ export default function KajianProgramPage() {
   const todayStr = new Date().toISOString().split('T')[0];
 
   useEffect(() => {
+    async function fetchProgramData() {
+      try {
+        const res = await fetch('/api/programs/kajian', { cache: 'no-store' });
+        if (res.ok) {
+          const data = await res.json();
+          if (data.program) {
+            setProgramData({
+              judul: data.program.judul || kajianProgramData.judul,
+              subjudul: data.program.ringkasan || kajianProgramData.subjudul,
+              deskripsi: data.program.deskripsi || kajianProgramData.deskripsi,
+            });
+          }
+        }
+      } catch (err) {
+        console.error('Gagal mengambil data program kajian live:', err);
+      }
+    }
+
     async function fetchKajian() {
       try {
-        const res = await fetch('/api/kajian');
+        const res = await fetch('/api/kajian', { cache: 'no-store' });
         if (res.ok) {
           const data = await res.json();
           if (Array.isArray(data.kajian) && data.kajian.length > 0) {
@@ -44,6 +67,7 @@ export default function KajianProgramPage() {
       }
     }
 
+    fetchProgramData();
     fetchKajian();
   }, []);
 
@@ -61,10 +85,10 @@ export default function KajianProgramPage() {
             <span>Majelis Talabul &apos;Ilmi</span>
           </div>
           <h1 className="text-3xl sm:text-4xl md:text-5xl font-extrabold tracking-tight text-white mb-3">
-            {kajianProgramData.judul}
+            {programData.judul}
           </h1>
           <p className="text-base text-blue-100 max-w-xl mx-auto">
-            {kajianProgramData.subjudul}
+            {programData.subjudul}
           </p>
         </div>
       </section>
@@ -77,8 +101,8 @@ export default function KajianProgramPage() {
               <h2 className="text-2xl sm:text-3xl font-extrabold text-yimi-blue-800">
                 Pentingnya Menuntut Ilmu Syar&apos;i yang Murni
               </h2>
-              <p className="text-base sm:text-lg text-neutral-700 leading-relaxed">
-                {kajianProgramData.deskripsi}
+              <p className="text-base sm:text-lg text-neutral-700 leading-relaxed whitespace-pre-line">
+                {programData.deskripsi}
               </p>
             </div>
 

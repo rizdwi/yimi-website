@@ -11,19 +11,33 @@ import {
   FileText,
   Download,
   DollarSign,
+  PackageCheck,
 } from 'lucide-react';
 import { Card } from '@/components/ui/Card';
 import { Badge } from '@/components/ui/Badge';
 import { Button } from '@/components/ui/Button';
+import { formatRupiah } from '@/lib/format';
+import { useSiteSettings } from '@/context/SiteSettingsContext';
 import fallbackTkData from '@/content/programs/tk-paud.json';
 
+interface PaketInfaqItem {
+  nama: string;
+  nominal: number;
+  deskripsi: string;
+}
+
 interface TkMeta {
+  kategori?: string;
+  biaya_label?: string;
   biaya_pendaftaran?: string;
   biaya_spp?: string;
   status_pendaftaran?: string;
   kontak_wa?: string;
+  target_usia?: string;
+  waktu_belajar?: string;
   file_lampiran?: string;
   file_lampiran_nama?: string;
+  paket_infaq?: PaketInfaqItem[];
 }
 
 interface KeunggulanItem {
@@ -37,13 +51,27 @@ interface KegiatanItem {
 }
 
 export default function TkPaudPage() {
+  const { whatsapp } = useSiteSettings();
+  const [program, setProgram] = useState<{
+    judul?: string;
+    ringkasan?: string;
+    deskripsi?: string;
+  }>({
+    judul: fallbackTkData.judul,
+    ringkasan: fallbackTkData.subjudul,
+    deskripsi: fallbackTkData.deskripsi,
+  });
+
   const [meta, setMeta] = useState<TkMeta>({
-    biaya_pendaftaran: 'Rp 350.000',
-    biaya_spp: 'Rp 250.000 / bulan',
-    status_pendaftaran: 'Gelombang Inden Telah Dibuka',
-    kontak_wa: '6281234567890',
+    biaya_pendaftaran: 'Rp 50.000',
+    biaya_spp: 'Rp 70.000 / bulan',
+    status_pendaftaran: 'Gelombang 1 Telah Dibuka',
+    kontak_wa: '6281219362077',
+    target_usia: fallbackTkData.targetUsia,
+    waktu_belajar: fallbackTkData.waktuBelajar,
     file_lampiran: '',
     file_lampiran_nama: '',
+    paket_infaq: [],
   });
 
   useEffect(() => {
@@ -52,8 +80,18 @@ export default function TkPaudPage() {
         const res = await fetch('/api/programs/tk-paud', { cache: 'no-store' });
         if (res.ok) {
           const json = await res.json();
-          if (json.program && json.program.metadata) {
-            setMeta(json.program.metadata as TkMeta);
+          if (json.program) {
+            setProgram({
+              judul: json.program.judul || fallbackTkData.judul,
+              ringkasan: json.program.ringkasan || fallbackTkData.subjudul,
+              deskripsi: json.program.deskripsi || fallbackTkData.deskripsi,
+            });
+            if (json.program.metadata) {
+              setMeta((prev) => ({
+                ...prev,
+                ...(json.program.metadata as TkMeta),
+              }));
+            }
           }
         }
       } catch (err) {
@@ -63,8 +101,8 @@ export default function TkPaudPage() {
     loadLiveTk();
   }, []);
 
-  const waNumber = meta.kontak_wa || '6281234567890';
-  const waUrl = `https://wa.me/${waNumber.replace(/[^0-9]/g, '')}?text=${encodeURIComponent(
+  const waNumber = (meta.kontak_wa || whatsapp || fallbackTkData.pendaftaran.kontakPendaftaran).replace(/[^0-9]/g, '');
+  const waUrl = `https://wa.me/${waNumber}?text=${encodeURIComponent(
     'Assalamu’alaikum Warahmatullah, saya ingin konsultasi pendaftaran santri baru KB-TK YIMI.'
   )}`;
 
@@ -82,10 +120,10 @@ export default function TkPaudPage() {
             <span>Pendidikan Anak Usia Dini</span>
           </div>
           <h1 className="text-3xl sm:text-4xl md:text-5xl font-extrabold tracking-tight text-white mb-3">
-            {fallbackTkData.judul}
+            {program.judul || fallbackTkData.judul}
           </h1>
           <p className="text-base text-blue-100 max-w-xl mx-auto">
-            {fallbackTkData.subjudul}
+            {program.ringkasan || fallbackTkData.subjudul}
           </p>
         </div>
       </section>
@@ -103,8 +141,8 @@ export default function TkPaudPage() {
               <h2 className="text-2xl sm:text-3xl font-extrabold text-yimi-blue-800 tracking-tight">
                 Kurikulum Berbasis Karakter Islami &amp; Sunnah
               </h2>
-              <p className="text-base sm:text-lg text-neutral-700 leading-relaxed">
-                {fallbackTkData.deskripsi}
+              <p className="text-base sm:text-lg text-neutral-700 leading-relaxed whitespace-pre-line">
+                {program.deskripsi || fallbackTkData.deskripsi}
               </p>
 
               {/* Target Usia & Waktu */}
@@ -118,7 +156,7 @@ export default function TkPaudPage() {
                       Jenjang &amp; Usia
                     </h3>
                     <p className="text-sm font-bold text-yimi-blue-800">
-                      {fallbackTkData.targetUsia}
+                      {meta.target_usia || fallbackTkData.targetUsia}
                     </p>
                   </div>
                 </div>
@@ -132,7 +170,7 @@ export default function TkPaudPage() {
                       Waktu Kegiatan Belajar
                     </h3>
                     <p className="text-sm font-bold text-yimi-blue-800">
-                      {fallbackTkData.waktuBelajar}
+                      {meta.waktu_belajar || fallbackTkData.waktuBelajar}
                     </p>
                   </div>
                 </div>
@@ -157,15 +195,47 @@ export default function TkPaudPage() {
                 <div className="flex items-center justify-between text-xs">
                   <span className="text-neutral-500">Biaya Pendaftaran:</span>
                   <span className="font-bold text-yimi-blue-800">
-                    {meta.biaya_pendaftaran || 'Rp 350.000'}
+                    {meta.biaya_pendaftaran || 'Rp 50.000'}
                   </span>
                 </div>
                 <div className="flex items-center justify-between text-xs">
                   <span className="text-neutral-500">Infaq SPP Bulanan:</span>
                   <span className="font-bold text-yimi-green-700">
-                    {meta.biaya_spp || 'Rp 250.000 / bulan'}
+                    {meta.biaya_spp || 'Rp 70.000 / bulan'}
                   </span>
                 </div>
+
+                {/* Paket Sarana & Kelengkapan (jika ada di CMS) */}
+                {meta.paket_infaq && meta.paket_infaq.length > 0 && (
+                  <div className="mt-2 pt-2 border-t border-neutral-100 space-y-2">
+                    <div className="flex items-center gap-1.5 text-[11px] font-bold text-[#1F2F6B]">
+                      <PackageCheck className="w-3.5 h-3.5 text-[#3E5FD1]" />
+                      <span>Paket Sarana / Seragam / Buku:</span>
+                    </div>
+                    <div className="space-y-1.5">
+                      {meta.paket_infaq.map((paket, idx) => (
+                        <div
+                          key={idx}
+                          className="flex items-center justify-between text-[11px] p-2 bg-[#F8FAFC] rounded-lg border border-[#E3E7EE]"
+                        >
+                          <div className="pr-2">
+                            <span className="font-semibold text-[#111827] block">
+                              {paket.nama}
+                            </span>
+                            {paket.deskripsi && (
+                              <span className="text-[10px] text-[#6B7280] block">
+                                {paket.deskripsi}
+                              </span>
+                            )}
+                          </div>
+                          <span className="font-mono font-bold text-[#166534] shrink-0">
+                            {formatRupiah(paket.nominal)}
+                          </span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
               </div>
 
               {/* Tombol Unduh Brosur jika diupload di CMS */}
@@ -177,7 +247,9 @@ export default function TkPaudPage() {
                   className="w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-white border border-yimi-blue-600 text-yimi-blue-700 hover:bg-yimi-blue-50 text-xs font-bold transition-all shadow-xs"
                 >
                   <Download className="w-4 h-4 text-yimi-blue-600" />
-                  <span>Unduh Brosur / Formulir (PDF)</span>
+                  <span className="truncate max-w-[220px]">
+                    {meta.file_lampiran_nama ? `Unduh ${meta.file_lampiran_nama}` : 'Unduh Brosur / Formulir (PDF)'}
+                  </span>
                 </a>
               )}
 
@@ -291,7 +363,9 @@ export default function TkPaudPage() {
                   className="flex-1 flex items-center justify-center gap-2 px-5 py-3 rounded-xl border border-yimi-blue-600 text-yimi-blue-700 hover:bg-yimi-blue-50 text-sm font-bold transition-all text-center"
                 >
                   <Download className="w-4 h-4" />
-                  <span>Unduh Brosur &amp; Formulir</span>
+                  <span className="truncate max-w-[200px]">
+                    {meta.file_lampiran_nama ? `Unduh ${meta.file_lampiran_nama}` : 'Unduh Brosur & Formulir'}
+                  </span>
                 </a>
               )}
               <Button

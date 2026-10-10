@@ -424,9 +424,13 @@ export default function AdminProgramPage() {
                         {prog.urutan}
                       </td>
                       <td className="py-3.5 px-4">
-                        <span className="font-bold text-[#111827] block text-sm">
+                        <button
+                          type="button"
+                          onClick={() => handleOpenEdit(prog)}
+                          className="font-bold text-[#111827] hover:text-[#3E5FD1] text-left block text-sm transition cursor-pointer"
+                        >
                           {prog.judul}
-                        </span>
+                        </button>
                         <div className="flex items-center gap-2 mt-0.5">
                           <span className="px-1.5 py-0.5 rounded-sm bg-[#EEF2FC] text-[#3E5FD1] text-[10px] font-semibold">
                             {meta.kategori || 'Umum'}
@@ -481,7 +485,15 @@ export default function AdminProgramPage() {
                         <AdminStatusBadge status={prog.is_archived ? 'arsip' : 'terbit'} />
                       </td>
                       <td className="py-3.5 px-4 text-right">
-                        <div className="flex items-center justify-end space-x-1">
+                        <div className="flex items-center justify-end space-x-1.5">
+                          <button
+                            onClick={() => handleOpenEdit(prog)}
+                            title="Edit Program"
+                            className="inline-flex items-center gap-1 px-2.5 py-1 text-xs font-semibold text-[#3E5FD1] bg-[#EEF2FC] hover:bg-[#3E5FD1] hover:text-white rounded-md transition cursor-pointer"
+                          >
+                            <Edit2 className="w-3.5 h-3.5" />
+                            <span>Edit</span>
+                          </button>
                           <a
                             href={
                               prog.slug === 'pembebasan-lahan'
@@ -491,17 +503,10 @@ export default function AdminProgramPage() {
                             target="_blank"
                             rel="noopener noreferrer"
                             title="Buka Halaman Publik"
-                            className="p-1.5 text-[#6B7280] hover:text-[#3E5FD1] rounded-md transition"
+                            className="p-1.5 text-[#6B7280] hover:text-[#3E5FD1] hover:bg-gray-100 rounded-md transition"
                           >
                             <ExternalLink className="w-4 h-4" />
                           </a>
-                          <button
-                            onClick={() => handleOpenEdit(prog)}
-                            title="Edit Program"
-                            className="p-1.5 text-[#3E5FD1] hover:bg-[#EEF2FC] rounded-md transition cursor-pointer"
-                          >
-                            <Edit2 className="w-4 h-4" />
-                          </button>
                           <button
                             onClick={() => handleArchiveProgram(prog)}
                             title={prog.is_archived ? 'Aktifkan kembali' : 'Arsipkan program'}
@@ -826,10 +831,10 @@ export default function AdminProgramPage() {
                   </div>
                 </div>
 
-                {/* Sub-form Khusus Rincian Biaya TK-PAUD / Pendidikan */}
+                {/* Sub-form Khusus Rincian Biaya TK & PAUD / Pendidikan */}
                 <div className="p-4 rounded-xl border border-[#E3E7EE] bg-white space-y-3">
                   <h5 className="font-bold text-xs text-[#1F2F6B]">
-                    Rincian Biaya Pendidikan (Untuk TK &amp; PAUD / Kelas Belajar):
+                    Rincian Biaya &amp; Informasi Pendidikan (Untuk TK &amp; PAUD / Kelas Belajar):
                   </h5>
                   <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                     <div>
@@ -842,7 +847,7 @@ export default function AdminProgramPage() {
                         onChange={(e) =>
                           setProgramMeta({ ...programMeta, biaya_pendaftaran: e.target.value })
                         }
-                        placeholder="Contoh: Rp 350.000"
+                        placeholder="Contoh: Rp 50.000"
                         className="w-full text-xs p-2 bg-white border border-[#E3E7EE] rounded-lg font-semibold"
                       />
                     </div>
@@ -857,7 +862,7 @@ export default function AdminProgramPage() {
                         onChange={(e) =>
                           setProgramMeta({ ...programMeta, biaya_spp: e.target.value })
                         }
-                        placeholder="Contoh: Rp 250.000 / bulan"
+                        placeholder="Contoh: Rp 70.000 / bulan"
                         className="w-full text-xs p-2 bg-white border border-[#E3E7EE] rounded-lg font-semibold"
                       />
                     </div>
@@ -872,7 +877,54 @@ export default function AdminProgramPage() {
                         onChange={(e) =>
                           setProgramMeta({ ...programMeta, status_pendaftaran: e.target.value })
                         }
-                        placeholder="Contoh: Gelombang Inden Dibuka"
+                        placeholder="Contoh: Gelombang 1 Telah Dibuka"
+                        className="w-full text-xs p-2 bg-white border border-[#E3E7EE] rounded-lg"
+                      />
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-2 border-t border-gray-100">
+                    <div>
+                      <label className="block font-medium text-[#4B5563] mb-1">
+                        Jenjang &amp; Sasaran Usia
+                      </label>
+                      <input
+                        type="text"
+                        value={programMeta.target_usia || ''}
+                        onChange={(e) =>
+                          setProgramMeta({ ...programMeta, target_usia: e.target.value })
+                        }
+                        placeholder="Contoh: Kelompok Bermain (3 – 4 Thn) & TK A/B (4 – 6 Thn)"
+                        className="w-full text-xs p-2 bg-white border border-[#E3E7EE] rounded-lg"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block font-medium text-[#4B5563] mb-1">
+                        Waktu Belajar / Jadwal Kegiatan
+                      </label>
+                      <input
+                        type="text"
+                        value={programMeta.waktu_belajar || ''}
+                        onChange={(e) =>
+                          setProgramMeta({ ...programMeta, waktu_belajar: e.target.value })
+                        }
+                        placeholder="Contoh: Senin – Kamis: 07.30 – 11.00 WIB | Jumat: 07.30 – 10.00 WIB"
+                        className="w-full text-xs p-2 bg-white border border-[#E3E7EE] rounded-lg"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block font-medium text-[#4B5563] mb-1">
+                        WhatsApp Khusus Program
+                      </label>
+                      <input
+                        type="text"
+                        value={programMeta.kontak_wa || ''}
+                        onChange={(e) =>
+                          setProgramMeta({ ...programMeta, kontak_wa: e.target.value })
+                        }
+                        placeholder="Contoh: 6281219362077"
                         className="w-full text-xs p-2 bg-white border border-[#E3E7EE] rounded-lg"
                       />
                     </div>

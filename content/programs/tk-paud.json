@@ -1,7 +1,7 @@
 {
-  "judul": "TK & PAUD Islam Istiqomah",
-  "subjudul": "Menumbuhkan Fitrah Keimanan, Adab Islami, dan Kecintaan pada Al-Qur'an Sejak Dini",
-  "deskripsi": "TK & PAUD Islam Istiqomah di bawah naungan YIMI didirikan dengan komitmen memberikan pondasi pendidikan usia dini yang kokoh di atas nilai-nilai tauhid dan sunnah Nabi Muhammad ﷺ. Kami memadukan kurikulum pendidikan nasional usia dini dengan penguatan keagamaan yang intensif, ramah anak, dan bebas dari doktrin menyimpang.",
+  "judul": "Pendidikan TK Islam Insan Muslim Istiqomah",
+  "subjudul": "Pendidikan usia dini dengan kurikulum serta adab islami",
+  "deskripsi": "Program pendidikan anak usia dini berbasis aqidah shahihah dan pembiasaan sunnah harian sejak dini.",
   "targetUsia": "Kelompok Bermain (3 – 4 Tahun) & TK A / TK B (4 – 6 Tahun)",
   "waktuBelajar": "Senin – Kamis: 07.30 – 11.00 WIB | Jumat: 07.30 – 10.00 WIB",
   "keunggulan": [
@@ -31,8 +31,9 @@
     { "waktu": "10.45 – 11.00", "aktivitas": "Muroja'ah doa harian, refleksi, dan kepulangan" }
   ],
   "pendaftaran": {
-    "status": "Gelombang Inden Telah Dibuka",
-    "biaya": "[TBD: Rincian biaya pendaftaran dan SPP resmi pengurus]",
+    "status": "Gelombang 1 Telah Dibuka",
+    "biayaPendaftaran": "Rp 50.000",
+    "biayaSpp": "Rp 70.000 / bulan",
     "syarat": [
       "Mengisi formulir pendaftaran",
       "Fotokopi Akta Kelahiran santri (2 lembar)",
@@ -40,7 +41,7 @@
       "Pasfoto santri 3x4 (3 lembar)",
       "Wawancara kesepakatan visi pendidikan antara orang tua dan pihak sekolah"
     ],
-    "kontakPendaftaran": "6281234567890",
-    "pesanWA": "Bismillah, saya ingin menanyakan informasi pendaftaran TK & PAUD Islam Istiqomah YIMI untuk ananda."
+    "kontakPendaftaran": "6281219362077",
+    "pesanWA": "Bismillah, saya ingin menanyakan informasi pendaftaran Pendidikan TK Islam Insan Muslim Istiqomah untuk ananda."
   }
 }

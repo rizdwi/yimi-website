@@ -59,6 +59,7 @@ export default function JumatBerkahPage() {
               setJumatData((prev) => ({
                 ...prev,
                 judul: json.program.judul,
+                subjudul: json.program.ringkasan || prev.subjudul,
                 deskripsi: json.program.deskripsi || prev.deskripsi,
               }));
             }

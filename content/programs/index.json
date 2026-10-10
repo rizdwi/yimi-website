@@ -1,38 +1,38 @@
 [
   {
     "id": "tk-paud",
-    "judul": "TK & PAUD Islam Istiqomah",
+    "judul": "Pendidikan TK Islam Insan Muslim Istiqomah",
     "slug": "tk-paud",
-    "ringkasan": "Pendidikan anak usia dini berbasis aqidah shahihah, pembiasaan adab sunnah, dan tahfidz Al-Qur'an dengan suasana belajar yang ramah anak.",
+    "ringkasan": "Pendidikan usia dini dengan kurikulum serta adab islami",
     "kategori": "Pendidikan",
     "tag": "Generasi Qur'ani",
     "icon": "GraduationCap",
-    "targetUsia": "3 – 6 Tahun",
-    "highlight": "Hafalan Juz 30 & Doa Harian",
+    "targetUsia": "Kelompok Bermain (3 – 4 Tahun) & TK A / TK B (4 – 6 Tahun)",
+    "highlight": "Infak Pendaftaran & SPP Terjangkau",
     "href": "/program/tk-paud"
   },
   {
     "id": "jumat-berkah",
-    "judul": "Jumat Berkah & Sosial",
+    "judul": "Sedekah Jumat Berkah",
     "slug": "jumat-berkah",
-    "ringkasan": "Program penyaluran makanan siap santap dan paket logistik setiap hari Jumat kepada jamaah shalat Jumat, dhuafa, dan santri penghafal Quran.",
+    "ringkasan": "Distribusi makanan siap saji dan sembako berkualitas untuk yatim piatu, dhuafa, dan jamaah shalat Jumat.",
     "kategori": "Sosial",
     "tag": "Berbagi Kebaikan",
     "icon": "HeartHandshake",
     "targetUsia": "Umum",
-    "highlight": "Mulai Rp 25.000 / Paket",
+    "highlight": "Mulai Rp 20.000 / Paket",
     "href": "/program/jumat-berkah"
   },
   {
     "id": "kajian",
-    "judul": "Kajian Islam Ilmiah Pekanan",
+    "judul": "Kajian Ilmiah Salaf",
     "slug": "kajian",
-    "ringkasan": "Kajian rutin tematik dan bedah kitab bersama asatidzah ahlus sunnah, membahas aqidah, fiqih ibadah, adab, dan tazkiyatun nufus.",
+    "ringkasan": "Majelis taklim rutin membahas kitab-kitab aqidah, fiqih, tafsir, dan muamalah bersama asatidzah ahlus sunnah.",
     "kategori": "Dakwah",
     "tag": "Menuntut Ilmu Syar'i",
     "icon": "BookOpen",
     "targetUsia": "Ikhwan & Akhwat",
-    "highlight": "Tiap Sabtu & Ahad",
+    "highlight": "Gratis & Terbuka untuk Umum",
     "href": "/program/kajian"
   },
   {
