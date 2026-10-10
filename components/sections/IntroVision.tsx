@@ -1,9 +1,37 @@
-import React from 'react';
+'use client';
+
+import React, { useState, useEffect } from 'react';
 import { StarOrnament } from '@/components/ui/StarOrnament';
 import aboutData from '@/content/about.json';
 
 export function IntroVision() {
-  const { dalilQuran } = aboutData.manhaj;
+  const [dalilQuran, setDalilQuran] = useState({
+    arab: aboutData.manhaj.dalilQuran.arab,
+    terjemahan: aboutData.manhaj.dalilQuran.terjemahan,
+    sumber: aboutData.manhaj.dalilQuran.sumber,
+  });
+
+  useEffect(() => {
+    async function loadIntro() {
+      try {
+        const res = await fetch('/api/halaman?kunci=tentang', { cache: 'no-store' });
+        if (res.ok) {
+          const data = await res.json();
+          const q = data.page?.konten?.manhaj?.dalilQuran;
+          if (q) {
+            setDalilQuran({
+              arab: q.arab || q.teksArab || aboutData.manhaj.dalilQuran.arab,
+              terjemahan: q.terjemahan || aboutData.manhaj.dalilQuran.terjemahan,
+              sumber: q.sumber || aboutData.manhaj.dalilQuran.sumber,
+            });
+          }
+        }
+      } catch (err) {
+        console.error('Failed to load intro vision dalil:', err);
+      }
+    }
+    loadIntro();
+  }, []);
 
   return (
     <section id="pengantar" className="py-20 md:py-24 bg-white relative overflow-hidden">

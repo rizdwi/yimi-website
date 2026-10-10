@@ -50,7 +50,7 @@ export function ContactCta() {
     }
   };
 
-  const activeWa = whatsapp || siteData.kontak.whatsapp;
+  const activeWa = (whatsapp || siteData.kontak.whatsapp).replace(/[^0-9]/g, '');
   const activeEmail = email || siteData.kontak.email;
 
   const waPrefill = encodeURIComponent(

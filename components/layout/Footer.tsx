@@ -13,8 +13,28 @@ import { useSiteSettings } from '@/context/SiteSettingsContext';
 import siteData from '@/content/site.json';
 
 export function Footer() {
-  const { logoUrl, singkatan, tagline, whatsapp, email, alamat } = useSiteSettings();
+  const {
+    logoUrl,
+    singkatan,
+    namaYayasan,
+    tagline,
+    whatsapp,
+    email,
+    alamat,
+    jamOperasional,
+    bank1Nama,
+    bank1Rekening,
+    bank1An,
+    bank2Nama,
+    bank2Rekening,
+    bank2An,
+    sosmed,
+    settings,
+  } = useSiteSettings();
   const currentYear = new Date().getFullYear();
+
+  // Helper untuk cek link sosmed aktif
+  const hasLink = (url?: string) => url && url.trim() !== '' && url.trim() !== '-';
 
   return (
     <footer className="bg-yimi-blue-800 text-white relative overflow-hidden">
@@ -49,12 +69,14 @@ export function Footer() {
               </div>
             </div>
 
-            <p className="text-sm text-blue-100/90 leading-relaxed">
+            <p className="text-sm text-blue-100/90 leading-relaxed font-medium">
               {tagline || siteData.tagline}
             </p>
 
             <p className="text-xs text-blue-200/80 leading-relaxed">
-              Mengajak kaum muslimin kembali kepada pemurnian aqidah dan ibadah berlandaskan Al-Qur&apos;an dan As-Sunnah sesuai pemahaman Salafus Shalih.
+              {settings?.tagline && settings.tagline !== tagline
+                ? settings.tagline
+                : 'Mengajak kaum muslimin kembali kepada pemurnian aqidah dan ibadah berlandaskan Al-Qur\'an dan As-Sunnah sesuai pemahaman Salafus Shalih.'}
             </p>
           </div>
 
@@ -121,7 +143,7 @@ export function Footer() {
               <div className="flex items-center gap-2.5">
                 <Phone className="w-4 h-4 text-yimi-green-500 shrink-0" />
                 <a
-                  href={`https://wa.me/${whatsapp || siteData.kontak.whatsapp}`}
+                  href={`https://wa.me/${(whatsapp || siteData.kontak.whatsapp).replace(/[^0-9]/g, '')}`}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="hover:text-white hover:underline transition-colors"
@@ -140,7 +162,7 @@ export function Footer() {
               </div>
               <div className="flex items-center gap-2.5">
                 <Clock className="w-4 h-4 text-yimi-green-500 shrink-0" />
-                <span>{siteData.kontak.jamOperasional}</span>
+                <span>{jamOperasional || siteData.kontak.jamOperasional}</span>
               </div>
             </div>
           </div>
@@ -152,68 +174,90 @@ export function Footer() {
             </h3>
             <div className="p-3.5 rounded-xl bg-white/10 border border-white/15 text-xs text-blue-100 flex flex-col gap-1">
               <span className="font-bold text-white text-sm">
-                {siteData.donasi.bank}
+                {bank1Nama || siteData.donasi.bank}
               </span>
               <span className="font-mono text-sm tracking-wider font-semibold text-yimi-yellow-400">
-                {siteData.donasi.noRekening}
+                {bank1Rekening || siteData.donasi.noRekening}
               </span>
               <span className="text-blue-200">
-                a.n. {siteData.donasi.atasNama}
+                a.n. {bank1An || siteData.donasi.atasNama}
               </span>
             </div>
+
+            {hasLink(bank2Rekening) && bank2Rekening !== '-' && (
+              <div className="p-3.5 rounded-xl bg-white/10 border border-white/15 text-xs text-blue-100 flex flex-col gap-1">
+                <span className="font-bold text-white text-sm">
+                  {bank2Nama || siteData.donasi.rekeningLain.bank}
+                </span>
+                <span className="font-mono text-sm tracking-wider font-semibold text-yimi-yellow-400">
+                  {bank2Rekening}
+                </span>
+                <span className="text-blue-200">
+                  a.n. {bank2An || siteData.donasi.rekeningLain.atasNama}
+                </span>
+              </div>
+            )}
 
             <div className="flex flex-col gap-2 pt-2">
               <span className="text-xs font-semibold text-blue-200">
                 Ikuti Media Dakwah Kami:
               </span>
               <div className="flex items-center gap-2.5">
-                <a
-                  href={siteData.sosmed.instagram}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="w-9 h-9 rounded-lg bg-white/10 hover:bg-white/20 flex items-center justify-center text-white transition-colors"
-                  aria-label="Instagram YIMI"
-                >
-                  <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                    <rect width="20" height="20" x="2" y="2" rx="5" ry="5"/>
-                    <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/>
-                    <line x1="17.5" x2="17.51" y1="6.5" y2="6.5"/>
-                  </svg>
-                </a>
-                <a
-                  href={siteData.sosmed.youtube}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="w-9 h-9 rounded-lg bg-white/10 hover:bg-white/20 flex items-center justify-center text-white transition-colors"
-                  aria-label="YouTube YIMI"
-                >
-                  <svg className="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
-                    <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>
-                  </svg>
-                </a>
-                <a
-                  href={siteData.sosmed.facebook}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="w-9 h-9 rounded-lg bg-white/10 hover:bg-white/20 flex items-center justify-center text-white transition-colors"
-                  aria-label="Facebook YIMI"
-                >
-                  <svg className="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
-                    <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
-                  </svg>
-                </a>
-                <a
-                  href={siteData.sosmed.telegram}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="w-9 h-9 rounded-lg bg-white/10 hover:bg-white/20 flex items-center justify-center text-white transition-colors"
-                  aria-label="Telegram YIMI"
-                >
-                  <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                    <line x1="22" x2="11" y1="2" y2="13"/>
-                    <polygon points="22 2 15 22 11 13 2 9 22 2"/>
-                  </svg>
-                </a>
+                {hasLink(sosmed?.instagram) && (
+                  <a
+                    href={sosmed.instagram}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="w-9 h-9 rounded-lg bg-white/10 hover:bg-white/20 flex items-center justify-center text-white transition-colors"
+                    aria-label="Instagram YIMI"
+                  >
+                    <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <rect width="20" height="20" x="2" y="2" rx="5" ry="5"/>
+                      <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/>
+                      <line x1="17.5" x2="17.51" y1="6.5" y2="6.5"/>
+                    </svg>
+                  </a>
+                )}
+                {hasLink(sosmed?.youtube) && (
+                  <a
+                    href={sosmed.youtube}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="w-9 h-9 rounded-lg bg-white/10 hover:bg-white/20 flex items-center justify-center text-white transition-colors"
+                    aria-label="YouTube YIMI"
+                  >
+                    <svg className="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
+                      <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>
+                    </svg>
+                  </a>
+                )}
+                {hasLink(sosmed?.facebook) && (
+                  <a
+                    href={sosmed.facebook}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="w-9 h-9 rounded-lg bg-white/10 hover:bg-white/20 flex items-center justify-center text-white transition-colors"
+                    aria-label="Facebook YIMI"
+                  >
+                    <svg className="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
+                      <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
+                    </svg>
+                  </a>
+                )}
+                {hasLink(sosmed?.telegram) && (
+                  <a
+                    href={sosmed.telegram}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="w-9 h-9 rounded-lg bg-white/10 hover:bg-white/20 flex items-center justify-center text-white transition-colors"
+                    aria-label="Telegram YIMI"
+                  >
+                    <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <line x1="22" x2="11" y1="2" y2="13"/>
+                      <polygon points="22 2 15 22 11 13 2 9 22 2"/>
+                    </svg>
+                  </a>
+                )}
               </div>
             </div>
           </div>
@@ -222,7 +266,7 @@ export function Footer() {
         {/* Bottom Bar: Copyright & Policy */}
         <div className="pt-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-blue-200/80">
           <p>
-            &copy; {currentYear} {siteData.namaLengkap} ({siteData.singkatan}). Seluruh hak cipta dilindungi.
+            &copy; {currentYear} {namaYayasan || siteData.namaLengkap} ({singkatan || siteData.singkatan}). Seluruh hak cipta dilindungi.
           </p>
           <div className="flex items-center gap-6">
             <span>Dakwah di atas Sunnah</span>

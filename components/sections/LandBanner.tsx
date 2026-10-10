@@ -21,7 +21,7 @@ export function LandBanner() {
   useEffect(() => {
     async function fetchLiveLand() {
       try {
-        const res = await fetch('/api/lahan');
+        const res = await fetch('/api/lahan', { cache: 'no-store' });
         if (res.ok) {
           const data = await res.json();
           if (data.campaign) {

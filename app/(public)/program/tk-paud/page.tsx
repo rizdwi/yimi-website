@@ -49,7 +49,7 @@ export default function TkPaudPage() {
   useEffect(() => {
     async function loadLiveTk() {
       try {
-        const res = await fetch('/api/programs/tk-paud');
+        const res = await fetch('/api/programs/tk-paud', { cache: 'no-store' });
         if (res.ok) {
           const json = await res.json();
           if (json.program && json.program.metadata) {

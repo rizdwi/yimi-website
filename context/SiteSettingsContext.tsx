@@ -14,6 +14,21 @@ interface SiteSettingsContextType {
   whatsapp: string;
   email: string;
   alamat: string;
+  jamOperasional: string;
+  mapsEmbed: string;
+  bank1Nama: string;
+  bank1Rekening: string;
+  bank1An: string;
+  bank2Nama: string;
+  bank2Rekening: string;
+  bank2An: string;
+  qrisImage: string;
+  sosmed: {
+    youtube?: string;
+    instagram?: string;
+    telegram?: string;
+    facebook?: string;
+  };
   refreshSettings: () => Promise<void>;
 }
 
@@ -27,6 +42,16 @@ const defaultContext: SiteSettingsContextType = {
   whatsapp: siteFallback.kontak.whatsapp,
   email: siteFallback.kontak.email,
   alamat: siteFallback.kontak.alamat,
+  jamOperasional: siteFallback.kontak.jamOperasional,
+  mapsEmbed: siteFallback.kontak.mapsEmbed,
+  bank1Nama: siteFallback.donasi.bank,
+  bank1Rekening: siteFallback.donasi.noRekening,
+  bank1An: siteFallback.donasi.atasNama,
+  bank2Nama: siteFallback.donasi.rekeningLain.bank,
+  bank2Rekening: siteFallback.donasi.rekeningLain.noRekening,
+  bank2An: siteFallback.donasi.rekeningLain.atasNama,
+  qrisImage: siteFallback.donasi.qrisImage,
+  sosmed: siteFallback.sosmed,
   refreshSettings: async () => {},
 };
 
@@ -45,7 +70,7 @@ export function SiteSettingsProvider({
 
   const refreshSettings = useCallback(async () => {
     try {
-      const res = await fetch('/api/site-settings');
+      const res = await fetch('/api/site-settings', { cache: 'no-store' });
       if (res.ok) {
         const data = await res.json();
         if (data.settings) {
@@ -58,13 +83,10 @@ export function SiteSettingsProvider({
   }, []);
 
   useEffect(() => {
-    // Jika initialSettings sudah tersedia dari SSR, lewati fetch awal di client
-    if (initialSettings) return;
-
     let ignore = false;
     async function load() {
       try {
-        const res = await fetch('/api/site-settings');
+        const res = await fetch('/api/site-settings', { cache: 'no-store' });
         if (res.ok && !ignore) {
           const data = await res.json();
           if (data.settings) {
@@ -80,7 +102,7 @@ export function SiteSettingsProvider({
     return () => {
       ignore = true;
     };
-  }, [initialSettings]);
+  }, []);
 
   const logoUrl =
     settings?.logo_yayasan ||
@@ -94,6 +116,19 @@ export function SiteSettingsProvider({
   const whatsapp = settings?.whatsapp || siteFallback.kontak.whatsapp;
   const email = settings?.email || siteFallback.kontak.email;
   const alamat = settings?.alamat || siteFallback.kontak.alamat;
+  const jamOperasional = settings?.jam_operasional || siteFallback.kontak.jamOperasional;
+  const mapsEmbed = settings?.maps_embed || siteFallback.kontak.mapsEmbed;
+
+  const bank1Nama = settings?.bank_1_nama || siteFallback.donasi.bank;
+  const bank1Rekening = settings?.bank_1_rekening || siteFallback.donasi.noRekening;
+  const bank1An = settings?.bank_1_an || siteFallback.donasi.atasNama;
+
+  const bank2Nama = settings?.bank_2_nama || siteFallback.donasi.rekeningLain.bank;
+  const bank2Rekening = settings?.bank_2_rekening || siteFallback.donasi.rekeningLain.noRekening;
+  const bank2An = settings?.bank_2_an || siteFallback.donasi.rekeningLain.atasNama;
+
+  const qrisImage = settings?.qris_image || siteFallback.donasi.qrisImage;
+  const sosmed = settings?.sosmed || siteFallback.sosmed;
 
   return (
     <SiteSettingsContext.Provider
@@ -107,6 +142,16 @@ export function SiteSettingsProvider({
         whatsapp,
         email,
         alamat,
+        jamOperasional,
+        mapsEmbed,
+        bank1Nama,
+        bank1Rekening,
+        bank1An,
+        bank2Nama,
+        bank2Rekening,
+        bank2An,
+        qrisImage,
+        sosmed,
         refreshSettings,
       }}
     >

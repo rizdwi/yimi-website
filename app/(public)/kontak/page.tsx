@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   MapPin,
   Phone,
@@ -15,7 +15,30 @@ import { useSiteSettings } from '@/context/SiteSettingsContext';
 import siteData from '@/content/site.json';
 
 export default function KontakPage() {
-  const { whatsapp, email, alamat } = useSiteSettings();
+  const { whatsapp, email, alamat, jamOperasional, mapsEmbed } = useSiteSettings();
+  const [pageKontak, setPageKontak] = useState<{
+    alamat?: string;
+    jamOperasional?: string;
+    mapsEmbed?: string;
+  }>({});
+
+  useEffect(() => {
+    async function loadPageKontak() {
+      try {
+        const res = await fetch('/api/halaman?kunci=kontak', { cache: 'no-store' });
+        if (res.ok) {
+          const data = await res.json();
+          if (data.page?.konten) {
+            setPageKontak(data.page.konten);
+          }
+        }
+      } catch (err) {
+        console.error('Failed to load page kontak:', err);
+      }
+    }
+    loadPageKontak();
+  }, []);
+
   const [formData, setFormData] = useState({
     nama: '',
     kontak: '',
@@ -60,9 +83,11 @@ export default function KontakPage() {
 
   const activeWa = whatsapp || siteData.kontak.whatsapp;
   const activeEmail = email || siteData.kontak.email;
-  const activeAlamat = alamat || siteData.kontak.alamat;
+  const activeAlamat = pageKontak.alamat || alamat || siteData.kontak.alamat;
+  const activeJam = pageKontak.jamOperasional || jamOperasional || siteData.kontak.jamOperasional;
+  const activeMaps = pageKontak.mapsEmbed || mapsEmbed || siteData.kontak.mapsEmbed;
 
-  const directWaUrl = `https://wa.me/${activeWa}?text=${encodeURIComponent(
+  const directWaUrl = `https://wa.me/${activeWa.replace(/[^0-9]/g, '')}?text=${encodeURIComponent(
     'Assalamu’alaikum Warahmatullahi Wabarakatuh Pengurus YIMI, saya ingin bertanya terkait program yayasan.'
   )}`;
 
@@ -128,7 +153,7 @@ export default function KontakPage() {
                       Jam Operasional Kantor
                     </h3>
                     <p className="text-xs sm:text-sm text-neutral-600 leading-relaxed">
-                      {siteData.kontak.jamOperasional}
+                      {activeJam}
                     </p>
                   </div>
                 </div>
@@ -175,7 +200,7 @@ export default function KontakPage() {
               <div className="rounded-3xl overflow-hidden border border-neutral-200/80 shadow-xs aspect-16/9 bg-neutral-200 relative">
                 <iframe
                   title="Peta Lokasi Yayasan Insan Muslim Istiqomah"
-                  src={siteData.kontak.mapsEmbed}
+                  src={activeMaps}
                   width="100%"
                   height="100%"
                   style={{ border: 0 }}

@@ -75,6 +75,34 @@ export async function PUT(req: NextRequest) {
       return NextResponse.json({ error: 'Gagal memperbarui pengaturan situs.' }, { status: 500 });
     }
 
+    // Sinkronkan ke static_pages (kunci 'kontak') agar kedua menu selalu selaras
+    try {
+      const { data: pageKontak } = await supabase
+        .from('static_pages')
+        .select('*')
+        .eq('kunci', 'kontak')
+        .maybeSingle();
+
+      const newKontakContent = {
+        ...(pageKontak?.konten || {}),
+        alamat: body.alamat || pageKontak?.konten?.alamat,
+        jamOperasional: body.jam_operasional || pageKontak?.konten?.jamOperasional,
+        mapsEmbed: body.maps_embed || pageKontak?.konten?.mapsEmbed,
+      };
+
+      if (pageKontak?.id) {
+        await supabase
+          .from('static_pages')
+          .update({
+            konten: newKontakContent,
+            updated_at: new Date().toISOString(),
+          })
+          .eq('id', pageKontak.id);
+      }
+    } catch (syncErr) {
+      console.warn('Gagal menyinkronkan static_pages kontak:', syncErr);
+    }
+
     await createAuditLog(
       session.email,
       'Pengaturan Situs',

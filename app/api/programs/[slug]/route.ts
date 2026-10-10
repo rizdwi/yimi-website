@@ -3,12 +3,13 @@ import { supabase } from '@/lib/supabase';
 import tkFallback from '@/content/programs/tk-paud.json';
 import jumatFallback from '@/content/programs/jumat-berkah.json';
 
-export const revalidate = 60;
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
 
 const CACHE_HEADERS = {
-  'Cache-Control': 'public, s-maxage=60, stale-while-revalidate=600',
-  'CDN-Cache-Control': 'public, s-maxage=60, stale-while-revalidate=600',
-  'Vercel-CDN-Cache-Control': 'public, s-maxage=60, stale-while-revalidate=600',
+  'Cache-Control': 'no-cache, no-store, must-revalidate',
+  'CDN-Cache-Control': 'no-cache, no-store, must-revalidate',
+  'Vercel-CDN-Cache-Control': 'no-cache, no-store, must-revalidate',
 };
 
 type RouteContext = {

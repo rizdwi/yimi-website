@@ -3,12 +3,13 @@ import { supabase } from '@/lib/supabase';
 import aboutFallback from '@/content/about.json';
 import siteFallback from '@/content/site.json';
 
-export const revalidate = 60;
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
 
 const CACHE_HEADERS = {
-  'Cache-Control': 'public, s-maxage=60, stale-while-revalidate=600',
-  'CDN-Cache-Control': 'public, s-maxage=60, stale-while-revalidate=600',
-  'Vercel-CDN-Cache-Control': 'public, s-maxage=60, stale-while-revalidate=600',
+  'Cache-Control': 'no-cache, no-store, must-revalidate',
+  'CDN-Cache-Control': 'no-cache, no-store, must-revalidate',
+  'Vercel-CDN-Cache-Control': 'no-cache, no-store, must-revalidate',
 };
 
 export async function GET(req: NextRequest) {
@@ -59,6 +60,23 @@ export async function GET(req: NextRequest) {
             heroTagline: 'Dakwah di Atas Sunnah Sesuai Pemahaman Salafus Shalih',
             heroSubtitle:
               'Mengajak kaum muslimin kepada pemurnian aqidah dan ibadah, menyemai generasi Qur\'ani, serta menebar kemaslahatan umat berlandaskan Al-Qur\'an dan As-Sunnah.',
+          },
+        },
+      },
+      { headers: CACHE_HEADERS }
+    );
+  }
+
+  if (kunci === 'kontak') {
+    return NextResponse.json(
+      {
+        page: {
+          kunci: 'kontak',
+          judul: 'Informasi Kontak & Lokasi',
+          konten: {
+            alamat: siteFallback.kontak.alamat,
+            jamOperasional: siteFallback.kontak.jamOperasional,
+            mapsEmbed: siteFallback.kontak.mapsEmbed,
           },
         },
       },

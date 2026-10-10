@@ -50,7 +50,7 @@ export default function ProgramIndexPage() {
   useEffect(() => {
     async function fetchLivePrograms() {
       try {
-        const res = await fetch('/api/programs');
+        const res = await fetch('/api/programs', { cache: 'no-store' });
         if (res.ok) {
           const data = await res.json();
           if (Array.isArray(data.programs) && data.programs.length > 0) {

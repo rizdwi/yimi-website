@@ -34,7 +34,7 @@ export default function DonasiPage() {
     setTimeout(() => setCopiedBank(null), 2000);
   };
 
-  const waConfirmUrl = `https://wa.me/${activeWa}?text=${encodeURIComponent(
+  const waConfirmUrl = `https://wa.me/${activeWa.replace(/[^0-9]/g, '')}?text=${encodeURIComponent(
     'Assalamu’alaikum Warahmatullahi Wabarakatuh, saya ingin konfirmasi donasi/infaq untuk Yayasan Insan Muslim Istiqomah (YIMI).'
   )}`;
 

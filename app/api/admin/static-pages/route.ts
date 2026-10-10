@@ -48,6 +48,31 @@ export async function POST(req: NextRequest) {
 
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });
 
+  // Jika kunci adalah 'kontak', sinkronkan juga ke site_settings
+  if (body.kunci === 'kontak' && body.konten) {
+    try {
+      const { data: currentSettings } = await supabase
+        .from('site_settings')
+        .select('id')
+        .limit(1)
+        .maybeSingle();
+
+      if (currentSettings?.id) {
+        await supabase
+          .from('site_settings')
+          .update({
+            alamat: body.konten.alamat,
+            jam_operasional: body.konten.jamOperasional,
+            maps_embed: body.konten.mapsEmbed,
+            updated_at: new Date().toISOString(),
+          })
+          .eq('id', currentSettings.id);
+      }
+    } catch (syncErr) {
+      console.warn('Gagal sinkronisasi site_settings dari static-pages:', syncErr);
+    }
+  }
+
   await createAuditLog(
     session.email,
     'Halaman Statis',

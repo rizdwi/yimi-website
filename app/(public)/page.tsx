@@ -7,6 +7,9 @@ import { LatestNews } from '@/components/sections/LatestNews';
 import { GalleryPreview } from '@/components/sections/GalleryPreview';
 import { ContactCta } from '@/components/sections/ContactCta';
 
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
 export default function HomePage() {
   return (
     <>

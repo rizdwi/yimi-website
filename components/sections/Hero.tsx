@@ -18,7 +18,7 @@ export function Hero() {
   useEffect(() => {
     async function fetchHomeContent() {
       try {
-        const res = await fetch('/api/halaman?kunci=beranda');
+        const res = await fetch('/api/halaman?kunci=beranda', { cache: 'no-store' });
         if (res.ok) {
           const data = await res.json();
           if (data.page?.konten) {

@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 import Image from 'next/image';
-import { Save, Building, CreditCard, Phone, Share2, Upload, Loader2 } from 'lucide-react';
+import { Save, Building, CreditCard, Phone, Share2, Upload, Loader2, MapPin } from 'lucide-react';
 import { SiteSettings } from '@/lib/types';
 import { ConfirmModal } from '@/components/admin/ConfirmModal';
 
@@ -23,6 +23,7 @@ export default function AdminSettingsPage() {
   async function uploadLogoYayasan(file: File) {
     if (!settings) return;
     setUploadingLogo(true);
+    setMessage(null);
     try {
       const formData = new FormData();
       formData.append('file', file);
@@ -34,11 +35,34 @@ export default function AdminSettingsPage() {
       if (!res.ok || !data.url) {
         throw new Error(data.error || 'Gagal mengunggah logo');
       }
-      setSettings({
+
+      const updatedSettings = {
         ...settings,
         logo_yayasan: data.url,
         foto_yayasan: data.url,
+      };
+
+      setSettings(updatedSettings);
+
+      // Otomatis simpan ke database agar logo langsung aktif di web publik!
+      const saveRes = await fetch('/api/admin/site-settings', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(updatedSettings),
       });
+
+      if (saveRes.ok) {
+        setInitialSettings(updatedSettings);
+        setMessage({
+          type: 'success',
+          text: 'Logo resmi yayasan berhasil diunggah dan langsung tersimpan ke sistem!',
+        });
+      } else {
+        setMessage({
+          type: 'error',
+          text: 'Logo berhasil diunggah tapi belum tersimpan otomatis. Silakan klik tombol Simpan Pengaturan di bawah.',
+        });
+      }
     } catch (err: unknown) {
       alert(err instanceof Error ? err.message : 'Gagal mengunggah logo.');
     } finally {
@@ -457,6 +481,64 @@ export default function AdminSettingsPage() {
                 }
                 className="w-full text-sm p-2.5 bg-white border border-[#E3E7EE] rounded-lg"
               />
+            </div>
+
+            <div>
+              <label className="block text-xs text-[#6B7280] mb-1">Facebook Fanpage URL</label>
+              <input
+                type="text"
+                value={settings.sosmed?.facebook || ''}
+                onChange={(e) =>
+                  setSettings({
+                    ...settings,
+                    sosmed: { ...settings.sosmed, facebook: e.target.value },
+                  })
+                }
+                placeholder="https://facebook.com/..."
+                className="w-full text-sm p-2.5 bg-white border border-[#E3E7EE] rounded-lg"
+              />
+            </div>
+          </div>
+        </div>
+
+        {/* 5. Google Maps & Pembayaran QRIS */}
+        <div className="bg-white p-6 rounded-xl border border-[#E3E7EE] shadow-xs space-y-4">
+          <div className="flex items-center space-x-2 pb-3 border-b border-[#E3E7EE]">
+            <MapPin className="w-5 h-5 text-[#3E5FD1]" />
+            <h3 className="font-bold text-base text-[#111827]">Google Maps &amp; Gambar Barcode QRIS</h3>
+          </div>
+
+          <div className="space-y-4">
+            <div>
+              <label className="block text-xs font-semibold text-[#374151] mb-1">
+                URL Embed Google Maps (Iframe Source URL)
+              </label>
+              <input
+                type="text"
+                value={settings.maps_embed || ''}
+                onChange={(e) => setSettings({ ...settings, maps_embed: e.target.value })}
+                placeholder="https://www.google.com/maps/embed?pb=..."
+                className="w-full text-sm p-2.5 bg-white border border-[#E3E7EE] rounded-lg font-mono text-xs"
+              />
+              <p className="text-[11px] text-[#6B7280] mt-1">
+                Buka Google Maps &gt; Bagikan &gt; Sematkan Peta &gt; Ambil link di dalam <code>src=&quot;...&quot;</code>.
+              </p>
+            </div>
+
+            <div>
+              <label className="block text-xs font-semibold text-[#374151] mb-1">
+                URL Gambar Barcode QRIS Infaq
+              </label>
+              <input
+                type="text"
+                value={settings.qris_image || ''}
+                onChange={(e) => setSettings({ ...settings, qris_image: e.target.value })}
+                placeholder="/images/qris-yimi.svg atau https://..."
+                className="w-full text-sm p-2.5 bg-white border border-[#E3E7EE] rounded-lg font-mono text-xs"
+              />
+              <p className="text-[11px] text-[#6B7280] mt-1">
+                Gambar barcode QRIS yang tampil di halaman Donasi &amp; Pembebasan Lahan.
+              </p>
             </div>
           </div>
         </div>

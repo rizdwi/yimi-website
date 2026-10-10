@@ -56,7 +56,7 @@ export default function PembebasanLahanPage() {
   useEffect(() => {
     async function fetchLiveData() {
       try {
-        const res = await fetch('/api/lahan');
+        const res = await fetch('/api/lahan', { cache: 'no-store' });
         if (res.ok) {
           const data = await res.json();
           if (data.campaign) {
@@ -93,7 +93,7 @@ export default function PembebasanLahanPage() {
     setTimeout(() => setCopied(false), 2000);
   };
 
-  const waConfirmUrl = `https://wa.me/${activeWa}?text=${encodeURIComponent(
+  const waConfirmUrl = `https://wa.me/${activeWa.replace(/[^0-9]/g, '')}?text=${encodeURIComponent(
     siteData.donasi.waTemplateLahan
   )}`;
 

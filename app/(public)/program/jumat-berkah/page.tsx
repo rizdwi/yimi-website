@@ -42,7 +42,7 @@ export default function JumatBerkahPage() {
   useEffect(() => {
     async function loadLiveJumat() {
       try {
-        const res = await fetch('/api/programs/jumat-berkah');
+        const res = await fetch('/api/programs/jumat-berkah', { cache: 'no-store' });
         if (res.ok) {
           const json = await res.json();
           if (json.program) {
