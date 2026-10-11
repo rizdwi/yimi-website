@@ -59,6 +59,29 @@ body {
   font-family: var(--font-arabic);
 }
 
+/* Tombol donasi: efek glow kuning berdenyut halus.
+   Hanya menganimasikan opacity (pseudo-element) agar ringan dan
+   mematuhi aturan animasi proyek. */
+@keyframes yimi-glow-pulse {
+  0%, 100% { opacity: 0.35; }
+  50% { opacity: 0.9; }
+}
+.btn-glow {
+  position: relative;
+  isolation: isolate;
+}
+.btn-glow::after {
+  content: "";
+  position: absolute;
+  inset: -3px;
+  border-radius: inherit;
+  box-shadow: 0 0 22px 6px rgba(255, 242, 0, 0.55);
+  opacity: 0.6;
+  animation: yimi-glow-pulse 2.6s ease-in-out infinite;
+  pointer-events: none;
+  z-index: -1;
+}
+
 /* Accessibility: Reduced motion */
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {
