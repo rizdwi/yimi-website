@@ -10,6 +10,9 @@ import { formatTanggal } from '@/lib/format';
 import { constructMetadata } from '@/lib/seo';
 import { supabase } from '@/lib/supabase';
 import newsData from '@/content/news/index.json';
+import siteData from '@/content/site.json';
+
+const FALLBACK_IMAGE = '/images/og-default.jpg';
 
 type Props = {
   params: Promise<{ slug: string }>;
@@ -72,7 +75,7 @@ async function getArticle(slug: string): Promise<ArticleItem | null> {
         kategori: post.kategori || 'Umum',
         gambar:
           post.gambar_utama ||
-          'https://images.unsplash.com/photo-1542816417-0983c9c9ad53?q=80&w=1200&auto=format&fit=crop',
+          FALLBACK_IMAGE,
         ringkasan:
           post.ringkasan ||
           (post.isi ? post.isi.slice(0, 160) + '...' : 'Warta kegiatan dan dakwah Yayasan Insan Muslim Istiqomah.'),
@@ -111,7 +114,7 @@ async function getRelatedArticles(currentSlug: string): Promise<ArticleItem[]> {
         kategori: post.kategori || 'Umum',
         gambar:
           post.gambar_utama ||
-          'https://images.unsplash.com/photo-1542816417-0983c9c9ad53?q=80&w=1200&auto=format&fit=crop',
+          FALLBACK_IMAGE,
         ringkasan: post.ringkasan || '',
         konten: [],
       }));
@@ -141,10 +144,21 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     };
   }
 
+  let publishedTime: string | undefined;
+  try {
+    const d = new Date(article.tanggal);
+    if (!isNaN(d.getTime())) publishedTime = d.toISOString();
+  } catch {
+    publishedTime = undefined;
+  }
+
   return constructMetadata({
     title: article.judul,
     description: article.ringkasan,
     image: article.gambar,
+    canonical: `/berita/${article.slug}`,
+    ogType: 'article',
+    publishedTime,
   });
 }
 
@@ -159,8 +173,40 @@ export default async function BeritaDetailPage({ params }: Props) {
   const relatedArticles = await getRelatedArticles(article.slug);
   const shareText = encodeURIComponent(`${article.judul}\n\nBaca selengkapnya di Website Resmi YIMI:`);
 
+  // Schema.org NewsArticle: membantu Google memahami artikel sebagai berita.
+  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://yimi.my.id';
+  const articleImage = article.gambar.startsWith('http')
+    ? article.gambar
+    : `${baseUrl}${article.gambar}`;
+  let datePublished: string | undefined;
+  try {
+    const d = new Date(article.tanggal);
+    if (!isNaN(d.getTime())) datePublished = d.toISOString();
+  } catch {
+    datePublished = undefined;
+  }
+  const newsJsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'NewsArticle',
+    headline: article.judul,
+    description: article.ringkasan,
+    image: [articleImage],
+    ...(datePublished ? { datePublished } : {}),
+    author: { '@type': 'Organization', name: article.penulis },
+    publisher: {
+      '@type': 'Organization',
+      name: siteData.namaLengkap,
+      logo: { '@type': 'ImageObject', url: `${baseUrl}/logo/logo-yimi.svg` },
+    },
+    mainEntityOfPage: `${baseUrl}/berita/${article.slug}`,
+  };
+
   return (
     <div className="pt-[72px] pb-24 bg-white">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(newsJsonLd) }}
+      />
       {/* Top Breadcrumb & Title Bar */}
       <section className="bg-neutral-100/70 border-b border-neutral-200/80 py-8">
         <div className="max-w-[800px] w-full mx-auto px-5">
