@@ -108,6 +108,7 @@ export async function PUT(req: NextRequest) {
   if (body.harga_per_meter !== undefined) updateData.harga_per_meter = Number(body.harga_per_meter);
   if (body.target_dana !== undefined) updateData.target_dana = Number(body.target_dana);
   if (body.terkumpul !== undefined) updateData.terkumpul = Number(body.terkumpul);
+  if (body.metadata !== undefined) updateData.metadata = body.metadata;
 
   const { data, error } = await supabase
     .from('wakaf_lahan')

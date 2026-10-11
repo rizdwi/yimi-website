@@ -31,6 +31,23 @@ interface LandUpdateItem {
   gambarUrl?: string | null;
 }
 
+interface PaketWakafItem {
+  nama: string;
+  nominal: number;
+  deskripsi: string;
+}
+
+interface TahapanItem {
+  nama: string;
+  status: string;
+  keterangan: string;
+}
+
+interface FaqItem {
+  pertanyaan: string;
+  jawaban: string;
+}
+
 export default function PembebasanLahanPage() {
   const { settings, whatsapp } = useSiteSettings();
   const [copied, setCopied] = useState(false);
@@ -49,6 +66,12 @@ export default function PembebasanLahanPage() {
     targetDana: landDataFallback.targetDana,
     terkumpul: landDataFallback.terkumpul,
     diperbaruiPada: landDataFallback.diperbaruiPada,
+    paketWakaf: landDataFallback.paketWakaf as PaketWakafItem[],
+    paketJudul: 'Pilihan Paket Wakaf Tanah',
+    paketSubjudul: 'Pahala jariyah yang abadi untuk Anda dan orang tua tercinta.',
+    rencanaPenggunaan: landDataFallback.rencanaPenggunaan as string[],
+    tahapan: landDataFallback.tahapan as TahapanItem[],
+    faq: landDataFallback.faq as FaqItem[],
   });
   const [updates, setUpdates] = useState<LandUpdateItem[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -60,15 +83,22 @@ export default function PembebasanLahanPage() {
         if (res.ok) {
           const data = await res.json();
           if (data.campaign) {
+            const c = data.campaign;
             setCampaign({
-              judul: data.campaign.judul || landDataFallback.judul,
-              subjudul: data.campaign.subjudul || landDataFallback.subjudul,
-              lokasi: data.campaign.lokasi || landDataFallback.lokasi,
-              luasTargetM2: Number(data.campaign.luasTargetM2) || landDataFallback.luasTargetM2,
-              hargaPerMeter: Number(data.campaign.hargaPerMeter) || landDataFallback.hargaPerMeter,
-              targetDana: Number(data.campaign.targetDana) || landDataFallback.targetDana,
-              terkumpul: Number(data.campaign.terkumpul) || 0,
-              diperbaruiPada: data.campaign.diperbaruiPada || landDataFallback.diperbaruiPada,
+              judul: c.judul || landDataFallback.judul,
+              subjudul: c.subjudul || landDataFallback.subjudul,
+              lokasi: c.lokasi || landDataFallback.lokasi,
+              luasTargetM2: Number(c.luasTargetM2) || landDataFallback.luasTargetM2,
+              hargaPerMeter: Number(c.hargaPerMeter) || landDataFallback.hargaPerMeter,
+              targetDana: Number(c.targetDana) || landDataFallback.targetDana,
+              terkumpul: Number(c.terkumpul) || 0,
+              diperbaruiPada: c.diperbaruiPada || landDataFallback.diperbaruiPada,
+              paketWakaf: Array.isArray(c.paketWakaf) ? c.paketWakaf : (landDataFallback.paketWakaf as PaketWakafItem[]),
+              paketJudul: c.paketJudul || 'Pilihan Paket Wakaf Tanah',
+              paketSubjudul: c.paketSubjudul || 'Pahala jariyah yang abadi untuk Anda dan orang tua tercinta.',
+              rencanaPenggunaan: Array.isArray(c.rencanaPenggunaan) ? c.rencanaPenggunaan : (landDataFallback.rencanaPenggunaan as string[]),
+              tahapan: Array.isArray(c.tahapan) ? c.tahapan : (landDataFallback.tahapan as TahapanItem[]),
+              faq: Array.isArray(c.faq) ? c.faq : (landDataFallback.faq as FaqItem[]),
             });
           }
           if (Array.isArray(data.updates)) {
@@ -294,125 +324,131 @@ export default function PembebasanLahanPage() {
       </section>
 
       {/* Rencana Penggunaan Lahan */}
-      <section className="py-20 bg-neutral-100/60">
-        <div className="max-w-[1200px] w-full mx-auto px-5 md:px-8">
-          <div className="text-center max-w-2xl mx-auto mb-12">
-            <h2 className="text-2xl sm:text-3xl font-extrabold text-yimi-blue-800 tracking-tight mb-3">
-              Peruntukan &amp; Rencana Pembangunan
-            </h2>
-            <p className="text-sm text-neutral-600">
-              Setiap jengkal tanah wakaf ini akan dimakmurkan untuk ibadah dan kaderisasi generasi Islam.
-            </p>
-          </div>
+      {campaign.rencanaPenggunaan && campaign.rencanaPenggunaan.length > 0 && (
+        <section className="py-20 bg-neutral-100/60">
+          <div className="max-w-[1200px] w-full mx-auto px-5 md:px-8">
+            <div className="text-center max-w-2xl mx-auto mb-12">
+              <h2 className="text-2xl sm:text-3xl font-extrabold text-yimi-blue-800 tracking-tight mb-3">
+                Peruntukan &amp; Rencana Pembangunan
+              </h2>
+              <p className="text-sm text-neutral-600">
+                Setiap jengkal tanah wakaf ini akan dimakmurkan untuk ibadah dan kaderisasi generasi Islam.
+              </p>
+            </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-            {landDataFallback.rencanaPenggunaan.map((item, idx) => (
-              <Card key={idx} hoverEffect className="p-6 flex items-start gap-4">
-                <div className="w-10 h-10 rounded-xl bg-yimi-blue-50 text-yimi-green-700 flex items-center justify-center shrink-0">
-                  <CheckCircle2 className="w-5 h-5 text-yimi-green-500" />
-                </div>
-                <p className="text-sm sm:text-base font-semibold text-neutral-800 leading-relaxed pt-1">
-                  {item}
-                </p>
-              </Card>
-            ))}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+              {campaign.rencanaPenggunaan.map((item, idx) => (
+                <Card key={idx} hoverEffect className="p-6 flex items-start gap-4">
+                  <div className="w-10 h-10 rounded-xl bg-yimi-blue-50 text-yimi-green-700 flex items-center justify-center shrink-0">
+                    <CheckCircle2 className="w-5 h-5 text-yimi-green-500" />
+                  </div>
+                  <p className="text-sm sm:text-base font-semibold text-neutral-800 leading-relaxed pt-1">
+                    {item}
+                  </p>
+                </Card>
+              ))}
+            </div>
           </div>
-        </div>
-      </section>
+        </section>
+      )}
 
       {/* Tahapan Pembebasan Lahan */}
-      <section className="py-20 bg-white">
-        <div className="max-w-[1200px] w-full mx-auto px-5 md:px-8">
-          <div className="text-center max-w-2xl mx-auto mb-12">
-            <h2 className="text-2xl sm:text-3xl font-extrabold text-yimi-blue-800 tracking-tight mb-3">
-              Tahapan Eksekusi Lahan
-            </h2>
-            <p className="text-sm text-neutral-600">
-              Transparansi progres pengikatan dan legalitas tanah wakaf yayasan.
-            </p>
-          </div>
+      {campaign.tahapan && campaign.tahapan.length > 0 && (
+        <section className="py-20 bg-white">
+          <div className="max-w-[1200px] w-full mx-auto px-5 md:px-8">
+            <div className="text-center max-w-2xl mx-auto mb-12">
+              <h2 className="text-2xl sm:text-3xl font-extrabold text-yimi-blue-800 tracking-tight mb-3">
+                Tahapan Eksekusi Lahan
+              </h2>
+              <p className="text-sm text-neutral-600">
+                Transparansi progres pengikatan dan legalitas tanah wakaf yayasan.
+              </p>
+            </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            {landDataFallback.tahapan.map((tahap, idx) => (
-              <div
-                key={idx}
-                className="p-6 rounded-2xl bg-neutral-50 border border-neutral-200/80 flex flex-col justify-between"
-              >
-                <div>
-                  <div className="flex items-center justify-between mb-4">
-                    <span className="text-xs font-bold text-neutral-400 font-mono">
-                      0{idx + 1}
-                    </span>
-                    <Badge
-                      variant={
-                        tahap.status === 'Selesai'
-                          ? 'green'
-                          : tahap.status === 'Sedang Berjalan'
-                          ? 'yellow'
-                          : 'neutral'
-                      }
-                    >
-                      {tahap.status}
-                    </Badge>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+              {campaign.tahapan.map((tahap, idx) => (
+                <div
+                  key={idx}
+                  className="p-6 rounded-2xl bg-neutral-50 border border-neutral-200/80 flex flex-col justify-between"
+                >
+                  <div>
+                    <div className="flex items-center justify-between mb-4">
+                      <span className="text-xs font-bold text-neutral-400 font-mono">
+                        0{idx + 1}
+                      </span>
+                      <Badge
+                        variant={
+                          tahap.status === 'Selesai'
+                            ? 'green'
+                            : tahap.status === 'Sedang Berjalan'
+                            ? 'yellow'
+                            : 'neutral'
+                        }
+                      >
+                        {tahap.status}
+                      </Badge>
+                    </div>
+                    <h3 className="text-base font-bold text-yimi-blue-800 mb-2">
+                      {tahap.nama}
+                    </h3>
+                    <p className="text-xs text-neutral-600 leading-relaxed">
+                      {tahap.keterangan}
+                    </p>
                   </div>
-                  <h3 className="text-base font-bold text-yimi-blue-800 mb-2">
-                    {tahap.nama}
-                  </h3>
-                  <p className="text-xs text-neutral-600 leading-relaxed">
-                    {tahap.keterangan}
-                  </p>
                 </div>
-              </div>
-            ))}
+              ))}
+            </div>
           </div>
-        </div>
-      </section>
+        </section>
+      )}
 
       {/* Pilihan Paket Wakaf */}
-      <section className="py-20 bg-neutral-100/60">
-        <div className="max-w-[1200px] w-full mx-auto px-5 md:px-8">
-          <div className="text-center max-w-2xl mx-auto mb-12">
-            <h2 className="text-2xl sm:text-3xl font-extrabold text-yimi-blue-800 tracking-tight mb-3">
-              Pilihan Paket Wakaf Tanah
-            </h2>
-            <p className="text-sm text-neutral-600">
-              Pahala jariyah yang abadi untuk Anda dan orang tua tercinta.
-            </p>
-          </div>
+      {campaign.paketWakaf && campaign.paketWakaf.length > 0 && (
+        <section className="py-20 bg-neutral-100/60">
+          <div className="max-w-[1200px] w-full mx-auto px-5 md:px-8">
+            <div className="text-center max-w-2xl mx-auto mb-12">
+              <h2 className="text-2xl sm:text-3xl font-extrabold text-yimi-blue-800 tracking-tight mb-3">
+                {campaign.paketJudul}
+              </h2>
+              <p className="text-sm text-neutral-600">
+                {campaign.paketSubjudul}
+              </p>
+            </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            {landDataFallback.paketWakaf.map((paket, idx) => (
-              <Card
-                key={idx}
-                hoverEffect
-                className="p-6 flex flex-col justify-between border-neutral-200/80 group"
-              >
-                <div>
-                  <Sparkles className="w-6 h-6 text-yimi-green-500 mb-4" />
-                  <h3 className="text-lg font-bold text-yimi-blue-800 mb-1">
-                    {paket.nama}
-                  </h3>
-                  <p className="text-2xl font-extrabold text-yimi-blue-600 font-mono my-3">
-                    {paket.nominal > 0 ? formatRupiah(paket.nominal) : 'Nominal Bebas'}
-                  </p>
-                  <p className="text-xs text-neutral-600 leading-relaxed mb-6">
-                    {paket.deskripsi}
-                  </p>
-                </div>
-
-                <Button
-                  href="#rekening"
-                  variant="primary"
-                  size="sm"
-                  className="w-full"
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+              {campaign.paketWakaf.map((paket, idx) => (
+                <Card
+                  key={idx}
+                  hoverEffect
+                  className="p-6 flex flex-col justify-between border-neutral-200/80 group"
                 >
-                  Pilih Paket
-                </Button>
-              </Card>
-            ))}
+                  <div>
+                    <Sparkles className="w-6 h-6 text-yimi-green-500 mb-4" />
+                    <h3 className="text-lg font-bold text-yimi-blue-800 mb-1">
+                      {paket.nama}
+                    </h3>
+                    <p className="text-2xl font-extrabold text-yimi-blue-600 font-mono my-3">
+                      {paket.nominal > 0 ? formatRupiah(paket.nominal) : 'Nominal Bebas'}
+                    </p>
+                    <p className="text-xs text-neutral-600 leading-relaxed mb-6">
+                      {paket.deskripsi}
+                    </p>
+                  </div>
+
+                  <Button
+                    href="#rekening"
+                    variant="primary"
+                    size="sm"
+                    className="w-full"
+                  >
+                    Pilih Paket
+                  </Button>
+                </Card>
+              ))}
+            </div>
           </div>
-        </div>
-      </section>
+        </section>
+      )}
 
       {/* Rekening Transfer & QRIS Statis */}
       <section id="rekening" className="py-20 bg-white">
@@ -508,31 +544,33 @@ export default function PembebasanLahanPage() {
       </section>
 
       {/* FAQ Pembebasan Lahan */}
-      <section className="py-20 bg-neutral-100/60">
-        <div className="max-w-[1200px] w-full mx-auto px-5 md:px-8">
-          <div className="text-center max-w-2xl mx-auto mb-12">
-            <h2 className="text-2xl sm:text-3xl font-extrabold text-yimi-blue-800 tracking-tight mb-3">
-              Pertanyaan yang Sering Diajukan
-            </h2>
-            <p className="text-sm text-neutral-600">
-              Seputar pelaksanaan dan transparansi program wakaf tanah yayasan.
-            </p>
-          </div>
+      {campaign.faq && campaign.faq.length > 0 && (
+        <section className="py-20 bg-neutral-100/60">
+          <div className="max-w-[1200px] w-full mx-auto px-5 md:px-8">
+            <div className="text-center max-w-2xl mx-auto mb-12">
+              <h2 className="text-2xl sm:text-3xl font-extrabold text-yimi-blue-800 tracking-tight mb-3">
+                Pertanyaan yang Sering Diajukan
+              </h2>
+              <p className="text-sm text-neutral-600">
+                Seputar pelaksanaan dan transparansi program wakaf tanah yayasan.
+              </p>
+            </div>
 
-          <div className="max-w-3xl mx-auto space-y-4">
-            {landDataFallback.faq.map((item, idx) => (
-              <Card key={idx} className="p-6">
-                <h3 className="text-base font-bold text-yimi-blue-800 mb-2">
-                  {item.pertanyaan}
-                </h3>
-                <p className="text-sm text-neutral-600 leading-relaxed">
-                  {item.jawaban}
-                </p>
-              </Card>
-            ))}
+            <div className="max-w-3xl mx-auto space-y-4">
+              {campaign.faq.map((item, idx) => (
+                <Card key={idx} className="p-6">
+                  <h3 className="text-base font-bold text-yimi-blue-800 mb-2">
+                    {item.pertanyaan}
+                  </h3>
+                  <p className="text-sm text-neutral-600 leading-relaxed">
+                    {item.jawaban}
+                  </p>
+                </Card>
+              ))}
+            </div>
           </div>
-        </div>
-      </section>
+        </section>
+      )}
     </div>
   );
 }
