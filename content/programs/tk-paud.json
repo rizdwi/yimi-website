@@ -63,14 +63,7 @@
       "deskripsi": "Lingkungan sekolah berpagar aman dengan pengawasan CCTV demi kenyamanan dan keselamatan santri."
     }
   ],
-  "kegiatanHarian": [
-    { "waktu": "07.30 – 08.00", "aktivitas": "Penyambutan santri, salam, dan senam motorik / dzikir pagi ceria" },
-    { "waktu": "08.00 – 08.45", "aktivitas": "Halaqah Qur'an: Talaqqi hafalan juz 30 dan pembacaan Iqro" },
-    { "waktu": "08.45 – 09.30", "aktivitas": "Materi tematik sentra (kognitif, bahasa, adab harian)" },
-    { "waktu": "09.30 – 10.00", "aktivitas": "Istirahat, makan bersama dengan adab Islam, bermain luar" },
-    { "waktu": "10.00 – 10.45", "aktivitas": "Praktik ibadah (wudhu & simulasi shalat) serta kisah para Nabi" },
-    { "waktu": "10.45 – 11.00", "aktivitas": "Muroja'ah doa harian, refleksi ceria, dan persiapan kepulangan" }
-  ],
+  "kegiatanHarian": [],
   "pendaftaran": {
     "status": "Gelombang 1 Telah Dibuka",
     "biayaPendaftaran": "Rp 50.000",

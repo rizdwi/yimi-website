@@ -114,7 +114,7 @@ export default function TkPaudPage() {
     banner_pendaftaran_subjudul: 'Kuota terbatas untuk setiap jenjang kelas (KB & TK). Daftarkan putra-putri tercinta untuk membentuk pondasi aqidah dan karakter islami yang kokoh sejak dini.',
     kegiatan_judul: 'Jadwal Rutinitas Santri',
     kegiatan_subjudul: 'Alur kegiatan harian yang membangun kedisiplinan dan keceriaan ananda.',
-    kegiatan_harian: fallbackTkData.kegiatanHarian as KegiatanItem[],
+    kegiatan_harian: [],
     syarat_judul: 'Syarat Pendaftaran',
     syarat_pendaftaran: fallbackTkData.pendaftaran.syarat,
     paket_infaq: [],
@@ -157,11 +157,11 @@ export default function TkPaudPage() {
   const waMessage = meta.pesan_wa || fallbackTkData.pendaftaran.pesanWA || 'Assalamu’alaikum Warahmatullah, saya ingin konsultasi pendaftaran santri baru KB-TK YIMI.';
   const waUrl = `https://wa.me/${waNumber}?text=${encodeURIComponent(waMessage)}`;
 
-  const misiList = meta.misi_sekolah && meta.misi_sekolah.length > 0 ? meta.misi_sekolah : fallbackTkData.misi;
-  const keunggulanList = meta.keunggulan && meta.keunggulan.length > 0 ? meta.keunggulan : (fallbackTkData.keunggulan as KeunggulanItem[]);
-  const fasilitasList = meta.fasilitas && meta.fasilitas.length > 0 ? meta.fasilitas : (fallbackTkData.fasilitas as FasilitasItem[]);
-  const kegiatanList = meta.kegiatan_harian && meta.kegiatan_harian.length > 0 ? meta.kegiatan_harian : (fallbackTkData.kegiatanHarian as KegiatanItem[]);
-  const syaratList = meta.syarat_pendaftaran && meta.syarat_pendaftaran.length > 0 ? meta.syarat_pendaftaran : fallbackTkData.pendaftaran.syarat;
+  const misiList = Array.isArray(meta.misi_sekolah) ? meta.misi_sekolah : fallbackTkData.misi;
+  const keunggulanList = Array.isArray(meta.keunggulan) ? meta.keunggulan : (fallbackTkData.keunggulan as KeunggulanItem[]);
+  const fasilitasList = Array.isArray(meta.fasilitas) ? meta.fasilitas : (fallbackTkData.fasilitas as FasilitasItem[]);
+  const kegiatanList = Array.isArray(meta.kegiatan_harian) ? meta.kegiatan_harian : [];
+  const syaratList = Array.isArray(meta.syarat_pendaftaran) ? meta.syarat_pendaftaran : fallbackTkData.pendaftaran.syarat;
 
   return (
     <div className="pt-[72px]">
@@ -362,76 +362,80 @@ export default function TkPaudPage() {
       </section>
 
       {/* 2. Kurikulum & Keunggulan Program (Gambar 1 - 6 Kartu) */}
-      <section className="py-16 sm:py-20 bg-white">
-        <div className="max-w-[1200px] w-full mx-auto px-5 md:px-8">
-          <div className="text-center max-w-2xl mx-auto mb-12">
-            <div className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-yimi-blue-600 mb-2">
-              <BookOpen className="w-4 h-4" />
-              <span>Kurikulum Unggulan</span>
+      {keunggulanList && keunggulanList.length > 0 && (
+        <section className="py-16 sm:py-20 bg-white">
+          <div className="max-w-[1200px] w-full mx-auto px-5 md:px-8">
+            <div className="text-center max-w-2xl mx-auto mb-12">
+              <div className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-yimi-blue-600 mb-2">
+                <BookOpen className="w-4 h-4" />
+                <span>Kurikulum Unggulan</span>
+              </div>
+              <h2 className="text-2xl sm:text-3xl font-extrabold text-yimi-blue-800 tracking-tight mb-3">
+                {meta.keunggulan_judul || 'Kurikulum & Keunggulan Program'}
+              </h2>
+              <p className="text-sm text-neutral-600">
+                {meta.keunggulan_subjudul || 'Menyelaraskan nilai-nilai sunnah dengan metode pembelajaran ramah anak yang menyenangkan.'}
+              </p>
             </div>
-            <h2 className="text-2xl sm:text-3xl font-extrabold text-yimi-blue-800 tracking-tight mb-3">
-              {meta.keunggulan_judul || 'Kurikulum & Keunggulan Program'}
-            </h2>
-            <p className="text-sm text-neutral-600">
-              {meta.keunggulan_subjudul || 'Menyelaraskan nilai-nilai sunnah dengan metode pembelajaran ramah anak yang menyenangkan.'}
-            </p>
-          </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {keunggulanList.map((item, idx) => (
-              <Card key={idx} hoverEffect className="p-6 flex flex-col justify-between">
-                <div>
-                  <div className="w-10 h-10 rounded-xl bg-yimi-blue-50 text-yimi-green-700 flex items-center justify-center mb-4">
-                    <CheckCircle2 className="w-5 h-5 text-yimi-green-500" />
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {keunggulanList.map((item, idx) => (
+                <Card key={idx} hoverEffect className="p-6 flex flex-col justify-between">
+                  <div>
+                    <div className="w-10 h-10 rounded-xl bg-yimi-blue-50 text-yimi-green-700 flex items-center justify-center mb-4">
+                      <CheckCircle2 className="w-5 h-5 text-yimi-green-500" />
+                    </div>
+                    <h3 className="text-lg font-bold text-yimi-blue-800 mb-2">
+                      {item.judul}
+                    </h3>
+                    <p className="text-sm text-neutral-600 leading-relaxed">
+                      {item.deskripsi}
+                    </p>
                   </div>
-                  <h3 className="text-lg font-bold text-yimi-blue-800 mb-2">
-                    {item.judul}
-                  </h3>
-                  <p className="text-sm text-neutral-600 leading-relaxed">
-                    {item.deskripsi}
-                  </p>
-                </div>
-              </Card>
-            ))}
+                </Card>
+              ))}
+            </div>
           </div>
-        </div>
-      </section>
+        </section>
+      )}
 
       {/* 3. Fasilitas & Lingkungan Belajar (Gambar 2 - 6 Kartu) */}
-      <section className="py-16 sm:py-20 bg-neutral-50/70 border-t border-neutral-200/60">
-        <div className="max-w-[1200px] w-full mx-auto px-5 md:px-8">
-          <div className="text-center max-w-2xl mx-auto mb-12">
-            <div className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-yimi-green-700 mb-2">
-              <Building2 className="w-4 h-4 text-yimi-green-500" />
-              <span>Sarana &amp; Prasarana</span>
+      {fasilitasList && fasilitasList.length > 0 && (
+        <section className="py-16 sm:py-20 bg-neutral-50/70 border-t border-neutral-200/60">
+          <div className="max-w-[1200px] w-full mx-auto px-5 md:px-8">
+            <div className="text-center max-w-2xl mx-auto mb-12">
+              <div className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-yimi-green-700 mb-2">
+                <Building2 className="w-4 h-4 text-yimi-green-500" />
+                <span>Sarana &amp; Prasarana</span>
+              </div>
+              <h2 className="text-2xl sm:text-3xl font-extrabold text-yimi-blue-800 tracking-tight mb-3">
+                {meta.fasilitas_judul || 'Fasilitas & Lingkungan Belajar'}
+              </h2>
+              <p className="text-sm text-neutral-600">
+                {meta.fasilitas_subjudul || 'Sarana dan prasarana yang dirancang aman, bersih, dan mendukung kenyamanan tumbuh kembang santri.'}
+              </p>
             </div>
-            <h2 className="text-2xl sm:text-3xl font-extrabold text-yimi-blue-800 tracking-tight mb-3">
-              {meta.fasilitas_judul || 'Fasilitas & Lingkungan Belajar'}
-            </h2>
-            <p className="text-sm text-neutral-600">
-              {meta.fasilitas_subjudul || 'Sarana dan prasarana yang dirancang aman, bersih, dan mendukung kenyamanan tumbuh kembang santri.'}
-            </p>
-          </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {fasilitasList.map((item, idx) => (
-              <Card key={idx} hoverEffect className="p-6 bg-white flex flex-col justify-between">
-                <div>
-                  <div className="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-700 flex items-center justify-center mb-4">
-                    <Sparkles className="w-5 h-5 text-emerald-600" />
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {fasilitasList.map((item, idx) => (
+                <Card key={idx} hoverEffect className="p-6 bg-white flex flex-col justify-between">
+                  <div>
+                    <div className="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-700 flex items-center justify-center mb-4">
+                      <Sparkles className="w-5 h-5 text-emerald-600" />
+                    </div>
+                    <h3 className="text-lg font-bold text-yimi-blue-800 mb-2">
+                      {item.nama}
+                    </h3>
+                    <p className="text-sm text-neutral-600 leading-relaxed">
+                      {item.deskripsi}
+                    </p>
                   </div>
-                  <h3 className="text-lg font-bold text-yimi-blue-800 mb-2">
-                    {item.nama}
-                  </h3>
-                  <p className="text-sm text-neutral-600 leading-relaxed">
-                    {item.deskripsi}
-                  </p>
-                </div>
-              </Card>
-            ))}
+                </Card>
+              ))}
+            </div>
           </div>
-        </div>
-      </section>
+        </section>
+      )}
 
       {/* 4. Banner Pendaftaran Santri Baru Telah Dibuka (Gambar 2) */}
       <section className="py-12 bg-yimi-blue-800 text-white relative overflow-hidden">
@@ -464,69 +468,73 @@ export default function TkPaudPage() {
       </section>
 
       {/* 5. Runtutan Aktivitas Harian */}
-      <section className="py-16 sm:py-20 bg-white">
-        <div className="max-w-[1200px] w-full mx-auto px-5 md:px-8">
-          <div className="max-w-3xl mx-auto">
-            <div className="text-center mb-10">
-              <h2 className="text-2xl sm:text-3xl font-extrabold text-yimi-blue-800 tracking-tight mb-2">
-                {meta.kegiatan_judul || 'Jadwal Rutinitas Santri'}
-              </h2>
-              <p className="text-sm text-neutral-600">
-                {meta.kegiatan_subjudul || 'Alur kegiatan harian yang membangun kedisiplinan dan keceriaan ananda.'}
-              </p>
-            </div>
+      {kegiatanList && kegiatanList.length > 0 && (
+        <section className="py-16 sm:py-20 bg-white">
+          <div className="max-w-[1200px] w-full mx-auto px-5 md:px-8">
+            <div className="max-w-3xl mx-auto">
+              <div className="text-center mb-10">
+                <h2 className="text-2xl sm:text-3xl font-extrabold text-yimi-blue-800 tracking-tight mb-2">
+                  {meta.kegiatan_judul || 'Jadwal Rutinitas Santri'}
+                </h2>
+                <p className="text-sm text-neutral-600">
+                  {meta.kegiatan_subjudul || 'Alur kegiatan harian yang membangun kedisiplinan dan keceriaan ananda.'}
+                </p>
+              </div>
 
-            <div className="flex flex-col gap-3">
-              {kegiatanList.map((item, idx) => (
-                <div
-                  key={idx}
-                  className="p-4 sm:p-5 rounded-2xl bg-neutral-50 border border-neutral-100 flex flex-col sm:flex-row sm:items-center justify-between gap-2 hover:border-yimi-blue-600/20 transition-colors shadow-2xs"
-                >
-                  <span className="font-mono text-xs font-bold text-yimi-blue-600 bg-yimi-blue-50 px-3 py-1 rounded-full w-fit">
-                    {item.waktu}
-                  </span>
-                  <span className="text-sm font-semibold text-neutral-800 flex-1 sm:pl-4">
-                    {item.aktivitas}
-                  </span>
-                </div>
-              ))}
+              <div className="flex flex-col gap-3">
+                {kegiatanList.map((item, idx) => (
+                  <div
+                    key={idx}
+                    className="p-4 sm:p-5 rounded-2xl bg-neutral-50 border border-neutral-100 flex flex-col sm:flex-row sm:items-center justify-between gap-2 hover:border-yimi-blue-600/20 transition-colors shadow-2xs"
+                  >
+                    <span className="font-mono text-xs font-bold text-yimi-blue-600 bg-yimi-blue-50 px-3 py-1 rounded-full w-fit">
+                      {item.waktu}
+                    </span>
+                    <span className="text-sm font-semibold text-neutral-800 flex-1 sm:pl-4">
+                      {item.aktivitas}
+                    </span>
+                  </div>
+                ))}
+              </div>
             </div>
           </div>
-        </div>
-      </section>
+        </section>
+      )}
 
       {/* 6. Syarat Pendaftaran Administrasi */}
-      <section className="py-16 sm:py-20 bg-neutral-50/70 border-t border-neutral-200/60">
-        <div className="max-w-[1200px] w-full mx-auto px-5 md:px-8">
-          <div className="max-w-2xl mx-auto bg-white p-8 rounded-3xl border border-neutral-200/80 shadow-xs">
-            <div className="flex items-center gap-3 mb-4">
-              <FileText className="w-6 h-6 text-yimi-blue-600" />
-              <h2 className="text-xl font-bold text-yimi-blue-800">
-                {meta.syarat_judul || 'Syarat Pendaftaran'}
-              </h2>
-            </div>
-            <ul className="flex flex-col gap-2.5 text-sm text-neutral-700 mb-6">
-              {syaratList.map((item: string, idx: number) => (
-                <li key={idx} className="flex items-center gap-2.5">
-                  <CheckCircle2 className="w-4 h-4 text-yimi-green-500 shrink-0" />
-                  <span>{item}</span>
-                </li>
-              ))}
-            </ul>
-            <div className="border-t border-neutral-100 pt-5 flex justify-end">
-              <Button
-                href={waUrl}
-                variant="primary"
-                size="md"
-                className="w-full sm:w-auto flex items-center justify-center gap-2"
-              >
-                <Phone className="w-4 h-4" />
-                <span>Konsultasikan via WhatsApp</span>
-              </Button>
+      {syaratList && syaratList.length > 0 && (
+        <section className="py-16 sm:py-20 bg-neutral-50/70 border-t border-neutral-200/60">
+          <div className="max-w-[1200px] w-full mx-auto px-5 md:px-8">
+            <div className="max-w-2xl mx-auto bg-white p-8 rounded-3xl border border-neutral-200/80 shadow-xs">
+              <div className="flex items-center gap-3 mb-4">
+                <FileText className="w-6 h-6 text-yimi-blue-600" />
+                <h2 className="text-xl font-bold text-yimi-blue-800">
+                  {meta.syarat_judul || 'Syarat Pendaftaran'}
+                </h2>
+              </div>
+              <ul className="flex flex-col gap-2.5 text-sm text-neutral-700 mb-6">
+                {syaratList.map((item: string, idx: number) => (
+                  <li key={idx} className="flex items-center gap-2.5">
+                    <CheckCircle2 className="w-4 h-4 text-yimi-green-500 shrink-0" />
+                    <span>{item}</span>
+                  </li>
+                ))}
+              </ul>
+              <div className="border-t border-neutral-100 pt-5 flex justify-end">
+                <Button
+                  href={waUrl}
+                  variant="primary"
+                  size="md"
+                  className="w-full sm:w-auto flex items-center justify-center gap-2"
+                >
+                  <Phone className="w-4 h-4" />
+                  <span>Konsultasikan via WhatsApp</span>
+                </Button>
+              </div>
             </div>
           </div>
-        </div>
-      </section>
+        </section>
+      )}
 
       {/* 7. Download Brosur & Formulir, Jam Pelayanan, Hotline & Alamat (Gambar 3) */}
       <section className="py-16 sm:py-20 bg-white border-t border-neutral-200/60">

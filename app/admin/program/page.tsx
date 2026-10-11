@@ -228,37 +228,37 @@ export default function AdminProgramPage() {
     const isTk = prog.slug === 'tk-paud';
 
     const keunggulan =
-      Array.isArray(meta.keunggulan) && meta.keunggulan.length > 0
+      Array.isArray(meta.keunggulan)
         ? meta.keunggulan
-        : isTk
+        : isTk && meta.keunggulan === undefined
         ? (fallbackTkData.keunggulan as KeunggulanItem[])
         : [];
 
     const fasilitas =
-      Array.isArray(meta.fasilitas) && meta.fasilitas.length > 0
+      Array.isArray(meta.fasilitas)
         ? meta.fasilitas
-        : isTk
+        : isTk && meta.fasilitas === undefined
         ? ((fallbackTkData as Record<string, unknown>).fasilitas as FasilitasItem[] || [])
         : [];
 
     const misi =
-      Array.isArray(meta.misi_sekolah) && meta.misi_sekolah.length > 0
+      Array.isArray(meta.misi_sekolah)
         ? meta.misi_sekolah
-        : isTk
+        : isTk && meta.misi_sekolah === undefined
         ? ((fallbackTkData as Record<string, unknown>).misi as string[] || [])
         : [];
 
     const kegiatanHarian =
-      Array.isArray(meta.kegiatan_harian) && meta.kegiatan_harian.length > 0
+      Array.isArray(meta.kegiatan_harian)
         ? meta.kegiatan_harian
-        : isTk
+        : isTk && meta.kegiatan_harian === undefined
         ? (fallbackTkData.kegiatanHarian as KegiatanItem[])
         : [];
 
     const syarat =
-      Array.isArray(meta.syarat_pendaftaran) && meta.syarat_pendaftaran.length > 0
+      Array.isArray(meta.syarat_pendaftaran)
         ? meta.syarat_pendaftaran
-        : isTk
+        : isTk && meta.syarat_pendaftaran === undefined
         ? fallbackTkData.pendaftaran.syarat
         : [];
 
@@ -266,53 +266,57 @@ export default function AdminProgramPage() {
     setProgramMeta({
       kategori: meta.kategori || (isTk ? 'Pendidikan' : 'Umum'),
       biaya_label: meta.biaya_label || '',
-      biaya_pendaftaran: meta.biaya_pendaftaran || (isTk ? 'Rp 50.000' : ''),
-      biaya_spp: meta.biaya_spp || (isTk ? 'Rp 70.000 / bulan' : ''),
-      status_pendaftaran: meta.status_pendaftaran || (isTk ? 'Gelombang 1 Telah Dibuka' : ''),
-      kontak_wa: meta.kontak_wa || (isTk ? fallbackTkData.pendaftaran.kontakPendaftaran : ''),
-      pesan_wa: meta.pesan_wa || (isTk ? fallbackTkData.pendaftaran.pesanWA : ''),
-      target_usia: meta.target_usia || (isTk ? fallbackTkData.targetUsia : ''),
-      waktu_belajar: meta.waktu_belajar || (isTk ? fallbackTkData.waktuBelajar : ''),
-      visi_sekolah: meta.visi_sekolah || (isTk ? ((fallbackTkData as Record<string, unknown>).visi as string || '') : ''),
+      biaya_pendaftaran: meta.biaya_pendaftaran !== undefined ? meta.biaya_pendaftaran : (isTk ? 'Rp 50.000' : ''),
+      biaya_spp: meta.biaya_spp !== undefined ? meta.biaya_spp : (isTk ? 'Rp 70.000 / bulan' : ''),
+      status_pendaftaran: meta.status_pendaftaran !== undefined ? meta.status_pendaftaran : (isTk ? 'Gelombang 1 Telah Dibuka' : ''),
+      kontak_wa: meta.kontak_wa !== undefined ? meta.kontak_wa : (isTk ? fallbackTkData.pendaftaran.kontakPendaftaran : ''),
+      pesan_wa: meta.pesan_wa !== undefined ? meta.pesan_wa : (isTk ? fallbackTkData.pendaftaran.pesanWA : ''),
+      target_usia: meta.target_usia !== undefined ? meta.target_usia : (isTk ? fallbackTkData.targetUsia : ''),
+      waktu_belajar: meta.waktu_belajar !== undefined ? meta.waktu_belajar : (isTk ? fallbackTkData.waktuBelajar : ''),
+      visi_sekolah: meta.visi_sekolah !== undefined ? meta.visi_sekolah : (isTk ? ((fallbackTkData as Record<string, unknown>).visi as string || '') : ''),
       misi_sekolah: misi,
       keunggulan_judul:
-        meta.keunggulan_judul || (isTk ? 'Kurikulum & Keunggulan Program' : 'Keunggulan Program'),
+        meta.keunggulan_judul !== undefined ? meta.keunggulan_judul : (isTk ? 'Kurikulum & Keunggulan Program' : 'Keunggulan Program'),
       keunggulan_subjudul:
-        meta.keunggulan_subjudul ||
-        (isTk
+        meta.keunggulan_subjudul !== undefined
+          ? meta.keunggulan_subjudul
+          : isTk
           ? 'Menyelaraskan nilai-nilai sunnah dengan metode pembelajaran ramah anak yang menyenangkan.'
-          : ''),
+          : '',
       keunggulan,
       fasilitas_judul:
-        meta.fasilitas_judul || (isTk ? 'Fasilitas & Lingkungan Belajar' : 'Fasilitas Program'),
+        meta.fasilitas_judul !== undefined ? meta.fasilitas_judul : (isTk ? 'Fasilitas & Lingkungan Belajar' : 'Fasilitas Program'),
       fasilitas_subjudul:
-        meta.fasilitas_subjudul ||
-        (isTk
+        meta.fasilitas_subjudul !== undefined
+          ? meta.fasilitas_subjudul
+          : isTk
           ? 'Sarana dan prasarana yang dirancang aman, bersih, dan mendukung kenyamanan tumbuh kembang santri.'
-          : ''),
+          : '',
       fasilitas,
       banner_pendaftaran_judul:
-        meta.banner_pendaftaran_judul || (isTk ? 'Pendaftaran Santri Baru Telah Dibuka!' : ''),
+        meta.banner_pendaftaran_judul !== undefined ? meta.banner_pendaftaran_judul : (isTk ? 'Pendaftaran Santri Baru Telah Dibuka!' : ''),
       banner_pendaftaran_subjudul:
-        meta.banner_pendaftaran_subjudul ||
-        (isTk
+        meta.banner_pendaftaran_subjudul !== undefined
+          ? meta.banner_pendaftaran_subjudul
+          : isTk
           ? 'Kuota terbatas untuk setiap jenjang kelas (KB & TK). Daftarkan putra-putri tercinta untuk membentuk pondasi aqidah dan karakter islami yang kokoh sejak dini.'
-          : ''),
-      file_brosur: meta.file_brosur || (isTk ? ((fallbackTkData.pendaftaran as Record<string, unknown>).fileBrosur as string || '') : ''),
-      file_brosur_nama: meta.file_brosur_nama || (isTk ? 'Brosur TK Islam Insan Muslim Istiqomah (PDF)' : ''),
-      file_formulir: meta.file_formulir || (isTk ? ((fallbackTkData.pendaftaran as Record<string, unknown>).fileFormulir as string || '') : ''),
-      file_formulir_nama: meta.file_formulir_nama || (isTk ? 'Formulir Pendaftaran Santri Baru (PDF)' : ''),
-      jam_pelayanan: meta.jam_pelayanan || (isTk ? ((fallbackTkData.pendaftaran as Record<string, unknown>).jamPelayanan as string || 'Senin – Jumat: 07.30 – 12.00 WIB') : ''),
-      alamat_sekolah: meta.alamat_sekolah || (isTk ? ((fallbackTkData.pendaftaran as Record<string, unknown>).alamatSekolah as string || 'Jl. Raya Cilodong No. 45, Kalimulya, Kec. Cilodong, Kota Depok, Jawa Barat 16413') : ''),
+          : '',
+      file_brosur: meta.file_brosur !== undefined ? meta.file_brosur : '',
+      file_brosur_nama: meta.file_brosur_nama !== undefined ? meta.file_brosur_nama : (isTk ? 'Brosur TK Islam Insan Muslim Istiqomah (PDF)' : ''),
+      file_formulir: meta.file_formulir !== undefined ? meta.file_formulir : '',
+      file_formulir_nama: meta.file_formulir_nama !== undefined ? meta.file_formulir_nama : (isTk ? 'Formulir Pendaftaran Santri Baru (PDF)' : ''),
+      jam_pelayanan: meta.jam_pelayanan !== undefined ? meta.jam_pelayanan : (isTk ? 'Senin – Jumat: 07.30 – 12.00 WIB' : ''),
+      alamat_sekolah: meta.alamat_sekolah !== undefined ? meta.alamat_sekolah : (isTk ? 'Jl. Raya Cilodong No. 45, Kalimulya, Kec. Cilodong, Kota Depok, Jawa Barat 16413' : ''),
       kegiatan_judul:
-        meta.kegiatan_judul || (isTk ? 'Jadwal Rutinitas Santri' : 'Jadwal Rutinitas & Kegiatan'),
+        meta.kegiatan_judul !== undefined ? meta.kegiatan_judul : (isTk ? 'Jadwal Rutinitas Santri' : 'Jadwal Rutinitas & Kegiatan'),
       kegiatan_subjudul:
-        meta.kegiatan_subjudul ||
-        (isTk
+        meta.kegiatan_subjudul !== undefined
+          ? meta.kegiatan_subjudul
+          : isTk
           ? 'Alur kegiatan harian yang membangun kedisiplinan dan keceriaan ananda.'
-          : ''),
+          : '',
       kegiatan_harian: kegiatanHarian,
-      syarat_judul: meta.syarat_judul || 'Syarat Pendaftaran',
+      syarat_judul: meta.syarat_judul !== undefined ? meta.syarat_judul : 'Syarat Pendaftaran',
       syarat_pendaftaran: syarat,
       target_penerima: meta.target_penerima || '',
       jadwal_penyaluran: meta.jadwal_penyaluran || '',
