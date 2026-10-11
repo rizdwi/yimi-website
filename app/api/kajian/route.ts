@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { supabase } from '@/lib/supabase';
 import kajianFallback from '@/content/kajian.json';
+import { saringKajianAktif } from '@/lib/kajian';
 
 export const dynamic = 'force-dynamic';
 export const revalidate = 0;
@@ -21,11 +22,19 @@ export async function GET() {
     if (error) {
       console.error('Supabase error fetching public jadwal_kajian:', error);
     } else if (data && data.length > 0) {
-      return NextResponse.json({ kajian: data }, { headers: CACHE_HEADERS });
+      // Jadwal yang sudah terlewat disembunyikan dari web utama.
+      // CMS (endpoint /api/admin/kajian) tetap menyimpan semuanya sebagai arsip.
+      return NextResponse.json(
+        { kajian: saringKajianAktif(data) },
+        { headers: CACHE_HEADERS }
+      );
     }
   } catch (err) {
     console.error('Failed to load public kajian from Supabase:', err);
   }
 
-  return NextResponse.json({ kajian: kajianFallback }, { headers: CACHE_HEADERS });
+  return NextResponse.json(
+    { kajian: saringKajianAktif(kajianFallback as { tanggal?: string }[]) },
+    { headers: CACHE_HEADERS }
+  );
 }

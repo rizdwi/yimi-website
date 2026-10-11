@@ -19,6 +19,7 @@ import { Badge } from '@/components/ui/Badge';
 import { Button } from '@/components/ui/Button';
 import { downloadIcsFile } from '@/lib/ics';
 import { KajianItem } from '@/lib/types';
+import { saringKajianAktif, tanggalHariIniWIB } from '@/lib/kajian';
 import kajianProgramData from '@/content/programs/kajian.json';
 import kajianScheduleFallback from '@/content/kajian.json';
 
@@ -29,10 +30,10 @@ export default function KajianProgramPage() {
     deskripsi: kajianProgramData.deskripsi,
   });
   const [kajianList, setKajianList] = useState<KajianItem[]>(
-    kajianScheduleFallback as unknown as KajianItem[]
+    saringKajianAktif(kajianScheduleFallback as unknown as KajianItem[])
   );
   const [activeFlyer, setActiveFlyer] = useState<{ url: string; tema: string } | null>(null);
-  const todayStr = new Date().toISOString().split('T')[0];
+  const todayStr = tanggalHariIniWIB();
 
   useEffect(() => {
     async function fetchProgramData() {
@@ -59,7 +60,7 @@ export default function KajianProgramPage() {
         if (res.ok) {
           const data = await res.json();
           if (Array.isArray(data.kajian) && data.kajian.length > 0) {
-            setKajianList(data.kajian);
+            setKajianList(saringKajianAktif(data.kajian));
           }
         }
       } catch (err) {
@@ -142,7 +143,17 @@ export default function KajianProgramPage() {
           </div>
 
           <div className="flex flex-col gap-5">
-            {kajianList.map((item) => {
+            {kajianList.length === 0 ? (
+              <div className="rounded-2xl border border-dashed border-neutral-300 bg-white px-6 py-12 text-center">
+                <p className="text-sm font-semibold text-neutral-600">
+                  Belum ada jadwal kajian mendatang.
+                </p>
+                <p className="mt-1 text-xs text-neutral-500">
+                  Jadwal yang sudah terlewat tersimpan sebagai arsip di CMS. Pantau halaman ini untuk info kajian terbaru, insya Allah.
+                </p>
+              </div>
+            ) : (
+            kajianList.map((item) => {
               const isToday = item.tanggal === todayStr;
               const isBatal = item.status === 'batal';
 
@@ -311,7 +322,7 @@ export default function KajianProgramPage() {
                   </div>
                 </Card>
               );
-            })}
+            }))}
           </div>
         </div>
 

@@ -9,12 +9,15 @@ import { Card } from '@/components/ui/Card';
 import { Button } from '@/components/ui/Button';
 import { downloadIcsFile } from '@/lib/ics';
 import { KajianItem } from '@/lib/types';
+import { saringKajianAktif, tanggalHariIniWIB } from '@/lib/kajian';
 import kajianScheduleFallback from '@/content/kajian.json';
 
 export function KajianSchedule() {
-  const [kajianList, setKajianList] = useState<KajianItem[]>(kajianScheduleFallback as unknown as KajianItem[]);
+  const [kajianList, setKajianList] = useState<KajianItem[]>(
+    saringKajianAktif(kajianScheduleFallback as unknown as KajianItem[])
+  );
   const [activeFlyer, setActiveFlyer] = useState<{ url: string; tema: string } | null>(null);
-  const todayStr = new Date().toISOString().split('T')[0];
+  const todayStr = tanggalHariIniWIB();
 
   useEffect(() => {
     async function fetchKajian() {
@@ -23,7 +26,7 @@ export function KajianSchedule() {
         if (res.ok) {
           const data = await res.json();
           if (Array.isArray(data.kajian) && data.kajian.length > 0) {
-            setKajianList(data.kajian);
+            setKajianList(saringKajianAktif(data.kajian));
           }
         }
       } catch (err) {
@@ -59,7 +62,17 @@ export function KajianSchedule() {
 
         {/* Horizontal Schedule Cards */}
         <div className="flex flex-col gap-4">
-          {kajianList.slice(0, 4).map((item) => {
+          {kajianList.length === 0 ? (
+            <div className="rounded-2xl border border-dashed border-neutral-300 bg-neutral-50/70 px-6 py-10 text-center">
+              <p className="text-sm font-semibold text-neutral-600">
+                Belum ada jadwal kajian mendatang.
+              </p>
+              <p className="mt-1 text-xs text-neutral-500">
+                Pantau halaman ini untuk informasi kajian terbaru, insya Allah.
+              </p>
+            </div>
+          ) : (
+          kajianList.slice(0, 4).map((item) => {
             const isToday = item.tanggal === todayStr;
             const isBatal = item.status === 'batal';
 
@@ -232,7 +245,7 @@ export function KajianSchedule() {
                 </div>
               </Card>
             );
-          })}
+          }))}
         </div>
 
         {/* Modal Lightbox Flyer Kajian */}
