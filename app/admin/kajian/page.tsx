@@ -462,7 +462,7 @@ export default function AdminKajianPage() {
                         ref={flyerInputRef}
                         type="file"
                         accept="image/*"
-                        className="hidden"
+                        className="sr-only"
                         onChange={async (e) => {
                           const file = e.target.files?.[0];
                           if (!file) return;

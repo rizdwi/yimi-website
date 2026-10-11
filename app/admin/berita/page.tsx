@@ -553,7 +553,7 @@ export default function AdminBeritaPage() {
                     ref={fileInputRef}
                     onChange={handleFileUpload}
                     accept="image/*"
-                    className="hidden"
+                    className="sr-only"
                   />
 
                   <div className="grid grid-cols-2 gap-2">

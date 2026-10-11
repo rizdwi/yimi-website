@@ -285,7 +285,7 @@ export default function AdminSettingsPage() {
                     ref={logoInputRef}
                     type="file"
                     accept="image/*,.svg"
-                    className="hidden"
+                    className="sr-only"
                     onChange={async (e) => {
                       const file = e.target.files?.[0];
                       if (!file) return;
@@ -504,7 +504,7 @@ export default function AdminSettingsPage() {
                     ref={qrisInputRef}
                     type="file"
                     accept="image/*,.svg"
-                    className="hidden"
+                    className="sr-only"
                     onChange={async (e) => {
                       const file = e.target.files?.[0];
                       if (!file) return;

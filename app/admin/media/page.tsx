@@ -215,7 +215,7 @@ export default function AdminMediaPage() {
             ref={fileInputRef}
             onChange={handleFileUpload}
             accept="image/*,image/svg+xml"
-            className="hidden"
+            className="sr-only"
           />
           <button
             type="button"

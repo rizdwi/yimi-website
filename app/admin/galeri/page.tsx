@@ -592,7 +592,7 @@ export default function AdminGaleriPage() {
               onChange={handleBatchFilesSelect}
               multiple
               accept="image/jpeg,image/png,image/webp,image/gif,image/svg+xml"
-              className="hidden"
+              className="sr-only"
             />
 
             <form onSubmit={handleSubmitBatch} className="space-y-4 text-xs">
@@ -822,7 +822,7 @@ export default function AdminGaleriPage() {
               ref={fileInputRef}
               onChange={handleSingleFileSelect}
               accept="image/jpeg,image/png,image/webp,image/gif,image/svg+xml"
-              className="hidden"
+              className="sr-only"
             />
 
             <form onSubmit={handleSubmitPhoto} className="space-y-4 text-xs">

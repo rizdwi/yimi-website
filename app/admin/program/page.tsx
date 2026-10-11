@@ -1257,7 +1257,7 @@ export default function AdminProgramPage() {
                           ref={imageInputRef}
                           onChange={handleImageUpload}
                           accept="image/*"
-                          className="hidden"
+                          className="sr-only"
                         />
 
                         <div className="flex flex-wrap gap-2">
@@ -1863,7 +1863,7 @@ export default function AdminProgramPage() {
                         ref={brosurInputRef}
                         onChange={handleBrosurUpload}
                         accept=".pdf"
-                        className="hidden"
+                        className="sr-only"
                       />
                       <div className="flex items-center gap-2">
                         <input
@@ -1899,7 +1899,7 @@ export default function AdminProgramPage() {
                         ref={formulirInputRef}
                         onChange={handleFormulirUpload}
                         accept=".pdf"
-                        className="hidden"
+                        className="sr-only"
                       />
                       <div className="flex items-center gap-2">
                         <input
