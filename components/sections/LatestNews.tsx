@@ -116,7 +116,7 @@ export function LatestNews() {
                     <span>{item.penulis}</span>
                   </span>
                   <span className="flex items-center gap-1 font-bold group-hover:underline">
-                    Baca Faedah <ArrowRight className="w-3.5 h-3.5" />
+                    Baca Selengkapnya <ArrowRight className="w-3.5 h-3.5" />
                   </span>
                 </div>
               </Card>

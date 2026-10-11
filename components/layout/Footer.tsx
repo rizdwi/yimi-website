@@ -124,7 +124,7 @@ export function Footer() {
               </li>
               <li>
                 <Link href="/donasi" className="hover:text-white hover:underline transition-colors">
-                  Rekening Infaq &amp; QRIS
+                  Rekening Infaq
                 </Link>
               </li>
             </ul>
@@ -151,11 +151,11 @@ export function Footer() {
                   {whatsapp || siteData.kontak.whatsappFormatted} (WhatsApp)
                 </a>
               </div>
-              <div className="flex items-center gap-2.5">
+              <div className="flex items-center gap-2.5 min-w-0">
                 <Mail className="w-4 h-4 text-yimi-green-500 shrink-0" />
                 <a
                   href={`mailto:${email || siteData.kontak.email}`}
-                  className="hover:text-white hover:underline transition-colors"
+                  className="hover:text-white hover:underline transition-colors break-all"
                 >
                   {email || siteData.kontak.email}
                 </a>

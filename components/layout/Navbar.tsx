@@ -121,7 +121,7 @@ export function Navbar() {
               href="/donasi"
               variant="primary"
               size="sm"
-              className="hidden md:inline-flex items-center gap-1.5 shadow-[0_4px_12px_rgba(62,95,209,0.25)]"
+              className="inline-flex items-center gap-1.5 shadow-[0_4px_12px_rgba(62,95,209,0.25)]"
             >
               <Heart className="w-4 h-4 fill-white text-white" />
               <span>Donasi</span>

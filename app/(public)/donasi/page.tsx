@@ -1,7 +1,6 @@
 'use client';
 
 import React, { useState } from 'react';
-import Image from 'next/image';
 import {
   Heart,
   Copy,
@@ -25,8 +24,12 @@ export default function DonasiPage() {
   const bank2Nama = settings?.bank_2_nama || siteData.donasi.rekeningLain?.bank || '';
   const bank2Rekening = settings?.bank_2_rekening || siteData.donasi.rekeningLain?.noRekening || '';
   const bank2An = settings?.bank_2_an || siteData.donasi.rekeningLain?.atasNama || '';
-  const qrisUrl = settings?.qris_image || siteData.donasi.qrisImage;
   const activeWa = whatsapp || siteData.kontak.whatsapp;
+
+  // Hanya tampilkan kartu rekening bila nama & nomornya valid (bukan kosong / "-")
+  const isValidBank = (nama?: string, rek?: string) =>
+    !!nama && nama.trim() !== '' && nama.trim() !== '-' &&
+    !!rek && rek.trim() !== '' && rek.trim() !== '-';
 
   const copyToClipboard = (accountNo: string, bankName: string) => {
     navigator.clipboard.writeText(accountNo);
@@ -128,8 +131,8 @@ export default function DonasiPage() {
                 </div>
               </div>
 
-              {/* Muamalat Card */}
-              {bank2Nama && bank2Rekening && (
+              {/* Rekening Kedua (opsional, hanya bila datanya valid) */}
+              {isValidBank(bank2Nama, bank2Rekening) && (
                 <div className="bg-white rounded-3xl p-8 border border-neutral-200/90 shadow-xs flex flex-col gap-5">
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-3">
@@ -212,39 +215,8 @@ export default function DonasiPage() {
               </div>
             </div>
 
-            {/* Right 5 cols: QRIS & Konfirmasi WA */}
+            {/* Right 5 cols: Konfirmasi WA */}
             <div className="lg:col-span-5 flex flex-col gap-8">
-              {/* QRIS Card */}
-              <div className="bg-white rounded-3xl p-8 border border-neutral-200/90 shadow-xs flex flex-col items-center text-center">
-                <Badge variant="green" className="mb-4">
-                  Pembayaran Instan
-                </Badge>
-                <h3 className="text-xl font-extrabold text-yimi-blue-800 mb-1">
-                  QRIS Resmi YIMI
-                </h3>
-                <p className="text-xs text-neutral-500 mb-6 max-w-xs">
-                  Dapat dipindai menggunakan seluruh mobile banking dan e-wallet di Indonesia.
-                </p>
-
-                <div className="w-full max-w-[280px] aspect-3/4 relative mb-6">
-                  <Image
-                    src={qrisUrl}
-                    alt="QRIS YIMI"
-                    width={280}
-                    height={360}
-                    unoptimized
-                    className="w-full h-auto object-contain rounded-2xl shadow-xs"
-                  />
-                </div>
-
-                <div className="p-4 rounded-2xl bg-neutral-50 border border-neutral-100 w-full text-xs text-neutral-600">
-                  <span className="block font-bold text-yimi-blue-800 mb-0.5">
-                    NMID: ID1023456789012
-                  </span>
-                  <span>A.N. YAYASAN INSAN MUSLIM ISTIQOMAH</span>
-                </div>
-              </div>
-
               {/* Konfirmasi WhatsApp Card */}
               <div className="bg-yimi-blue-800 text-white rounded-3xl p-8 flex flex-col gap-4 shadow-xs">
                 <span className="text-xs font-bold uppercase tracking-wider text-yimi-yellow-400">

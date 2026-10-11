@@ -30,6 +30,29 @@ interface ArticleItem {
   ayatRujukan?: string;
 }
 
+/** Deteksi baris subjudul: huruf kapital semua, pendek, dominan huruf. */
+function isHeadingLine(text: string): boolean {
+  const t = text.trim();
+  if (t.length < 4 || t.length > 140) return false;
+  const letters = t.replace(/[^A-Za-zÀ-ÿĀ-ž]/g, '');
+  if (letters.length < 4) return false;
+  return letters === letters.toUpperCase();
+}
+
+/** Render penekanan **teks** menjadi <strong>. */
+function renderInline(text: string): React.ReactNode {
+  const parts = text.split(/(\*\*[^*]+\*\*)/g);
+  return parts.map((part, i) =>
+    part.startsWith('**') && part.endsWith('**') && part.length > 4 ? (
+      <strong key={i} className="font-bold text-yimi-blue-900">
+        {part.slice(2, -2)}
+      </strong>
+    ) : (
+      <React.Fragment key={i}>{part}</React.Fragment>
+    )
+  );
+}
+
 async function getArticle(slug: string): Promise<ArticleItem | null> {
   try {
     const { data: post, error } = await supabase
@@ -205,9 +228,20 @@ export default async function BeritaDetailPage({ params }: Props) {
               );
             }
 
+            if (isHeadingLine(paragraf)) {
+              return (
+                <h2
+                  key={idx}
+                  className="text-xl sm:text-2xl font-extrabold text-yimi-blue-800 leading-snug mt-10 mb-2"
+                >
+                  {renderInline(paragraf)}
+                </h2>
+              );
+            }
+
             return (
               <p key={idx} className="leading-relaxed">
-                {paragraf}
+                {renderInline(paragraf)}
               </p>
             );
           })}
@@ -269,7 +303,7 @@ export default async function BeritaDetailPage({ params }: Props) {
                     href={`/berita/${rel.slug}`}
                     className="inline-flex items-center gap-1.5 text-xs font-bold text-yimi-blue-600 hover:text-yimi-blue-800 pt-2"
                   >
-                    <span>Baca</span>
+                    <span>Baca Selengkapnya</span>
                     <ArrowRight className="w-3 h-3" />
                   </Link>
                 </Card>
