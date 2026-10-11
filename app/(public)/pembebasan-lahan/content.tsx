@@ -246,7 +246,7 @@ export default function PembebasanLahanPage() {
                 </span>
                 <Button
                   href="#rekening"
-                  variant="primary"
+                  variant="secondary"
                   size="md"
                   className="w-full"
                 >
@@ -254,11 +254,11 @@ export default function PembebasanLahanPage() {
                 </Button>
                 <Button
                   href={waConfirmUrl}
-                  variant="outline"
+                  variant="secondary"
                   size="md"
                   className="w-full flex items-center justify-center gap-2"
                 >
-                  <MessageCircle className="w-4 h-4 text-yimi-blue-600" />
+                  <MessageCircle className="w-4 h-4 text-yimi-blue-800" />
                   <span>Konfirmasi via WhatsApp</span>
                 </Button>
               </div>
@@ -449,7 +449,7 @@ export default function PembebasanLahanPage() {
 
                   <Button
                     href="#rekening"
-                    variant="primary"
+                    variant="secondary"
                     size="sm"
                     className="w-full"
                   >

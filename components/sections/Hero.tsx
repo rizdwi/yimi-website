@@ -104,11 +104,11 @@ export function Hero() {
 
           <Button
             href="/pembebasan-lahan"
-            variant="outline"
+            variant="secondary"
             size="lg"
-            className="w-full sm:w-auto flex items-center justify-center gap-2 border-yimi-blue-600 text-yimi-blue-600 hover:bg-yimi-blue-50"
+            className="w-full sm:w-auto flex items-center justify-center gap-2"
           >
-            <Heart className="w-5 h-5 text-yimi-blue-600" />
+            <Heart className="w-5 h-5 text-yimi-blue-800" />
             <span>Ikut Berinfaq Lahan</span>
           </Button>
         </div>

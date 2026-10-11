@@ -119,11 +119,11 @@ export function Navbar() {
           <div className="flex items-center gap-3">
             <Button
               href="/donasi"
-              variant="primary"
+              variant="secondary"
               size="sm"
-              className="inline-flex items-center gap-1.5 shadow-[0_4px_12px_rgba(62,95,209,0.25)]"
+              className="inline-flex items-center gap-1.5"
             >
-              <Heart className="w-4 h-4 fill-white text-white" />
+              <Heart className="w-4 h-4 fill-yimi-blue-800 text-yimi-blue-800" />
               <span>Donasi</span>
             </Button>
 
@@ -214,12 +214,12 @@ export function Navbar() {
         <div className="pt-6 border-t border-neutral-100 flex flex-col gap-3">
           <Button
             href="/donasi"
-            variant="primary"
+            variant="secondary"
             size="md"
             className="w-full flex items-center justify-center gap-2"
             onClick={() => setIsMobileOpen(false)}
           >
-            <Heart className="w-4 h-4 fill-white" />
+            <Heart className="w-4 h-4 fill-yimi-blue-800" />
             <span>Infaq &amp; Donasi</span>
           </Button>
 
