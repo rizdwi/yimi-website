@@ -267,10 +267,10 @@ export function ContactCta() {
 
                   <Button
                     href={waUrl}
-                    variant="secondary"
+                    variant="primary"
                     className="flex items-center justify-center gap-2"
                   >
-                    <MessageCircle className="w-4 h-4 fill-yimi-blue-800" />
+                    <MessageCircle className="w-4 h-4 text-white" />
                     <span>Chat WA</span>
                   </Button>
                 </div>

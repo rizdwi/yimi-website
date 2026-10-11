@@ -107,7 +107,7 @@ export function Footer() {
                   className="hover:text-white hover:underline transition-colors flex items-center gap-1.5"
                 >
                   <span>Pembebasan Lahan</span>
-                  <span className="bg-yimi-green-500 text-yimi-blue-800 text-[10px] font-extrabold px-1.5 py-0.5 rounded-full">
+                  <span className="bg-yimi-yellow-400 text-yimi-blue-800 text-[10px] font-extrabold px-1.5 py-0.5 rounded-full">
                     Prioritas
                   </span>
                 </Link>

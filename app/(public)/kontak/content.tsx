@@ -173,7 +173,7 @@ export default function KontakPage() {
                       href={directWaUrl}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-yimi-green-500 hover:bg-yimi-green-700 text-yimi-blue-800 hover:text-white font-bold text-xs transition-colors"
+                      className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-yimi-blue-600 hover:bg-yimi-blue-800 text-white font-bold text-xs transition-colors"
                     >
                       <MessageCircle className="w-3.5 h-3.5" />
                       <span>Chat WhatsApp Pengurus ({activeWa})</span>
@@ -277,7 +277,7 @@ export default function KontakPage() {
                         onChange={(e) =>
                           setFormData({ ...formData, nama: e.target.value })
                         }
-                        className="w-full px-4 py-3 bg-neutral-50 border border-neutral-200 rounded-2xl text-xs sm:text-sm text-neutral-800 placeholder-neutral-400 focus:outline-hidden focus:border-yimi-blue-600 focus:bg-white transition-colors"
+                        className="w-full px-4 py-3 bg-neutral-50 border border-neutral-200 rounded-xl text-xs sm:text-sm text-neutral-800 placeholder-neutral-400 focus:outline-hidden focus:border-yimi-blue-600 focus:bg-white transition-colors"
                       />
                     </div>
 
@@ -294,7 +294,7 @@ export default function KontakPage() {
                         onChange={(e) =>
                           setFormData({ ...formData, kontak: e.target.value })
                         }
-                        className="w-full px-4 py-3 bg-neutral-50 border border-neutral-200 rounded-2xl text-xs sm:text-sm text-neutral-800 placeholder-neutral-400 focus:outline-hidden focus:border-yimi-blue-600 focus:bg-white transition-colors"
+                        className="w-full px-4 py-3 bg-neutral-50 border border-neutral-200 rounded-xl text-xs sm:text-sm text-neutral-800 placeholder-neutral-400 focus:outline-hidden focus:border-yimi-blue-600 focus:bg-white transition-colors"
                       />
                     </div>
 
@@ -307,7 +307,7 @@ export default function KontakPage() {
                         onChange={(e) =>
                           setFormData({ ...formData, kategori: e.target.value })
                         }
-                        className="w-full px-4 py-3 bg-neutral-50 border border-neutral-200 rounded-2xl text-xs sm:text-sm text-neutral-800 focus:outline-hidden focus:border-yimi-blue-600 focus:bg-white transition-colors"
+                        className="w-full px-4 py-3 bg-neutral-50 border border-neutral-200 rounded-xl text-xs sm:text-sm text-neutral-800 focus:outline-hidden focus:border-yimi-blue-600 focus:bg-white transition-colors"
                       >
                         <option value="Umum">Pertanyaan Umum</option>
                         <option value="TK-PAUD">Pendaftaran TK &amp; PAUD</option>
@@ -329,7 +329,7 @@ export default function KontakPage() {
                         onChange={(e) =>
                           setFormData({ ...formData, pesan: e.target.value })
                         }
-                        className="w-full px-4 py-3 bg-neutral-50 border border-neutral-200 rounded-2xl text-xs sm:text-sm text-neutral-800 placeholder-neutral-400 focus:outline-hidden focus:border-yimi-blue-600 focus:bg-white transition-colors resize-none"
+                        className="w-full px-4 py-3 bg-neutral-50 border border-neutral-200 rounded-xl text-xs sm:text-sm text-neutral-800 placeholder-neutral-400 focus:outline-hidden focus:border-yimi-blue-600 focus:bg-white transition-colors resize-none"
                       />
                     </div>
 

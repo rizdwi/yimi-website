@@ -43,11 +43,11 @@ export function Button({
 
   const variantStyles = {
     primary:
-      'bg-yimi-blue-600 text-white hover:bg-yimi-blue-800 shadow-[0_4px_14px_rgba(62,95,209,0.25)] hover:shadow-[0_6px_20px_rgba(31,47,107,0.3)]',
+      'bg-yimi-blue-600 text-white hover:bg-yimi-blue-800 hover:-translate-y-0.5 shadow-[0_4px_14px_rgba(62,95,209,0.25)] hover:shadow-[0_8px_24px_rgba(31,47,107,0.35)]',
     secondary:
-      'bg-yimi-yellow-400 text-yimi-blue-800 hover:bg-yellow-300 font-bold shadow-[0_4px_14px_rgba(255,242,0,0.35)]',
+      'bg-yimi-yellow-400 text-yimi-blue-800 hover:bg-yellow-300 hover:-translate-y-0.5 font-bold shadow-[0_4px_14px_rgba(255,242,0,0.35)] hover:shadow-[0_8px_24px_rgba(255,242,0,0.45)]',
     outline:
-      'border-2 border-yimi-blue-600 text-yimi-blue-600 bg-transparent hover:bg-yimi-blue-50',
+      'border-2 border-yimi-blue-600 text-yimi-blue-600 bg-transparent hover:bg-yimi-blue-50 hover:-translate-y-0.5',
     white:
       'border-2 border-white text-white bg-transparent hover:bg-white/10 backdrop-blur-xs',
     ghost:

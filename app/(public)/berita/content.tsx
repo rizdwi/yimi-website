@@ -112,7 +112,7 @@ export default function BeritaPage() {
                 placeholder="Cari artikel..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full pl-10 pr-4 py-2.5 bg-white border border-neutral-200/90 rounded-2xl text-xs text-neutral-800 placeholder-neutral-400 focus:outline-hidden focus:border-yimi-blue-600 shadow-xs"
+                className="w-full pl-10 pr-4 py-2.5 bg-white border border-neutral-200/90 rounded-xl text-xs text-neutral-800 placeholder-neutral-400 focus:outline-hidden focus:border-yimi-blue-600 shadow-xs"
               />
               <Search className="w-4 h-4 text-neutral-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
             </div>
