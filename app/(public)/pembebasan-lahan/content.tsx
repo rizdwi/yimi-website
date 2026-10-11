@@ -1,7 +1,6 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import Image from 'next/image';
 import {
   Landmark,
   MapPin,
@@ -12,14 +11,19 @@ import {
   MessageCircle,
   Clock,
   Sparkles,
+  QrCode,
 } from 'lucide-react';
 import { Card } from '@/components/ui/Card';
+import { PageHero } from '@/components/ui/PageHero';
 import { Badge } from '@/components/ui/Badge';
 import { Button } from '@/components/ui/Button';
 import { ProgressBar } from '@/components/ui/ProgressBar';
 import { CountUp } from '@/components/motion/CountUp';
 import { formatRupiah, formatPersen } from '@/lib/format';
 import { useSiteSettings } from '@/context/SiteSettingsContext';
+import { QrisDinamisModal } from '@/components/donasi/QrisDinamisModal';
+import { QrisCode } from '@/components/donasi/QrisCode';
+import { isQrisPayload } from '@/lib/qris';
 import landDataFallback from '@/content/land-campaign.json';
 import siteData from '@/content/site.json';
 
@@ -49,13 +53,14 @@ interface FaqItem {
 }
 
 export default function PembebasanLahanPage() {
-  const { settings, whatsapp } = useSiteSettings();
+  const { settings, whatsapp, qrisString } = useSiteSettings();
   const [copied, setCopied] = useState(false);
+  const [paketAktif, setPaketAktif] = useState<PaketWakafItem | null>(null);
 
   const bank1Nama = settings?.bank_1_nama || siteData.donasi.bank;
   const bank1Rekening = settings?.bank_1_rekening || siteData.donasi.noRekening;
   const bank1An = settings?.bank_1_an || siteData.donasi.atasNama;
-  const qrisUrl = settings?.qris_image || siteData.donasi.qrisImage;
+  const qrisAda = isQrisPayload(qrisString);
   const activeWa = whatsapp || siteData.kontak.whatsapp;
   const [campaign, setCampaign] = useState({
     judul: landDataFallback.judul,
@@ -141,36 +146,25 @@ export default function PembebasanLahanPage() {
 
   return (
     <div className="flex flex-col min-h-screen">
-      {/* Hero Section */}
-      <section className="relative py-20 md:py-28 bg-yimi-blue-800 text-white overflow-hidden">
-        <div className="absolute inset-0 bg-star8-pattern bg-center opacity-10 pointer-events-none" />
-        <div
-          className="absolute -top-32 right-1/4 w-96 h-96 bg-yimi-blue-600/30 rounded-full blur-3xl pointer-events-none"
-          aria-hidden="true"
-        />
-
-        <div className="max-w-[1200px] w-full mx-auto px-5 md:px-8 relative z-10">
-          <div className="max-w-3xl flex flex-col gap-4">
-            <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-white/10 text-yimi-yellow-400 text-xs font-bold uppercase tracking-wider w-fit border border-white/15">
-              <Landmark className="w-4 h-4" />
-              <span>Program Wakaf Prioritas</span>
-            </div>
-
-            <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold tracking-tight text-white leading-tight">
-              {campaign.judul}
-            </h1>
-
-            <p className="text-base sm:text-xl text-blue-100/90 leading-relaxed max-w-2xl">
-              {campaign.subjudul}
-            </p>
-
-            <div className="flex items-center gap-2 text-xs md:text-sm text-blue-200 mt-2">
-              <MapPin className="w-4 h-4 text-yimi-green-500 shrink-0" />
-              <span>{campaign.lokasi}</span>
-            </div>
+      <PageHero
+        image="/images/banners/pembebasan-lahan.jpg"
+        imageAlt="Pembangunan kubah masjid di atas lahan hijau saat senja"
+        align="left"
+        badge={
+          <>
+            <Landmark className="w-4 h-4" />
+            <span>Program Wakaf Prioritas</span>
+          </>
+        }
+        title={campaign.judul}
+        subtitle={campaign.subjudul}
+        extra={
+          <div className="flex items-center gap-2 text-xs md:text-sm text-blue-200 mt-4">
+            <MapPin className="w-4 h-4 text-yimi-green-500 shrink-0" />
+            <span>{campaign.lokasi}</span>
           </div>
-        </div>
-      </section>
+        }
+      />
 
       {/* Progres Penggalangan Dana Card (Sticky/Prominent) */}
       <section className="py-12 bg-white relative -mt-10 z-20">
@@ -184,12 +178,6 @@ export default function PembebasanLahanPage() {
                     <span className="text-xs font-bold uppercase tracking-wider text-neutral-500">
                       Progres Terkumpul (Update: {campaign.diperbaruiPada})
                     </span>
-                    {!isLoading && (
-                      <span className="inline-flex items-center gap-1 text-[11px] font-semibold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200">
-                        <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
-                        Live Terhubung CMS
-                      </span>
-                    )}
                   </div>
                   <Badge variant="green" className="text-sm px-3 py-1">
                     {percentage}% Tercapai
@@ -448,10 +436,10 @@ export default function PembebasanLahanPage() {
                   </div>
 
                   <Button
-                    href="#rekening"
                     variant="secondary"
                     size="sm"
                     className="w-full"
+                    onClick={() => setPaketAktif(paket)}
                   >
                     Pilih Paket
                   </Button>
@@ -524,22 +512,32 @@ export default function PembebasanLahanPage() {
                 </div>
               </div>
 
-              {/* QRIS Card */}
+              {/* QRIS Card — QR asli dari string resmi yayasan; tanpa string, tampil jujur */}
               <div className="bg-neutral-50 border border-neutral-200/80 rounded-3xl p-8 flex flex-col items-center text-center gap-4">
                 <Badge variant="neutral">Scan Cepat QRIS</Badge>
-                <div className="relative w-48 h-48 bg-white p-3 rounded-2xl border border-neutral-200 shadow-xs flex items-center justify-center">
-                  <Image
-                    src={qrisUrl}
-                    alt="QRIS Donasi YIMI"
-                    width={180}
-                    height={180}
-                    unoptimized
-                    className="w-full h-full object-contain"
-                  />
-                </div>
-                <span className="text-xs text-neutral-500">
-                  Mendukung seluruh aplikasi M-Banking &amp; E-Wallet nasional.
-                </span>
+                {qrisAda ? (
+                  <>
+                    <div className="bg-white p-3 rounded-2xl border border-neutral-200 shadow-xs">
+                      <QrisCode payload={qrisString} size={180} label="QRIS Donasi YIMI" />
+                    </div>
+                    <span className="text-xs text-neutral-500">
+                      Mendukung seluruh aplikasi M-Banking &amp; E-Wallet nasional.
+                      Pilih paket di atas untuk QRIS dengan nominal terkunci otomatis.
+                    </span>
+                  </>
+                ) : (
+                  <>
+                    <div className="w-48 h-48 bg-white rounded-2xl border border-dashed border-neutral-300 flex flex-col items-center justify-center gap-2 p-6">
+                      <QrCode className="w-10 h-10 text-neutral-300" />
+                      <span className="text-xs font-semibold text-neutral-500">
+                        QRIS segera hadir
+                      </span>
+                    </div>
+                    <span className="text-xs text-neutral-500">
+                      Sementara ini, salurkan wakaf via transfer ke rekening resmi di samping.
+                    </span>
+                  </>
+                )}
                 <Button
                   href={waConfirmUrl}
                   variant="outline"
@@ -582,6 +580,17 @@ export default function PembebasanLahanPage() {
             </div>
           </div>
         </section>
+      )}
+
+      {/* Modal QRIS dinamis per paket wakaf */}
+      {paketAktif && (
+        <QrisDinamisModal
+          paket={paketAktif}
+          qrisString={qrisString}
+          bank={{ nama: bank1Nama, rekening: bank1Rekening, an: bank1An }}
+          waNumber={activeWa}
+          onClose={() => setPaketAktif(null)}
+        />
       )}
     </div>
   );

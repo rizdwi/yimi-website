@@ -5,6 +5,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { Newspaper, Calendar, User, Search, ArrowRight, Tag } from 'lucide-react';
 import { Card } from '@/components/ui/Card';
+import { PageHero } from '@/components/ui/PageHero';
 import { Badge } from '@/components/ui/Badge';
 import { formatTanggal } from '@/lib/format';
 import newsDataFallback from '@/content/news/index.json';
@@ -63,24 +64,18 @@ export default function BeritaPage() {
   return (
     <div className="pt-[72px]">
       {/* Subpage Hero */}
-      <section className="relative h-80 min-h-[320px] bg-yimi-blue-800 text-white flex items-center justify-center overflow-hidden">
-        <div
-          className="absolute inset-0 bg-star8-pattern opacity-[0.06] pointer-events-none"
-          aria-hidden="true"
-        />
-        <div className="max-w-[1200px] w-full mx-auto px-5 md:px-8 text-center relative z-10">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 text-yimi-yellow-400 text-xs font-bold uppercase tracking-wider mb-3">
+      <PageHero
+        image="/images/banners/berita.jpg"
+        imageAlt="Meja tulis dengan buku catatan dan pena, berita dakwah"
+        badge={
+          <>
             <Newspaper className="w-3.5 h-3.5" />
             <span>Kabar Dakwah &amp; Edukasi</span>
-          </div>
-          <h1 className="text-3xl sm:text-4xl md:text-5xl font-extrabold tracking-tight text-white mb-3">
-            Warta &amp; Artikel YIMI
-          </h1>
-          <p className="text-base text-blue-100 max-w-xl mx-auto">
-            Informasi kegiatan, artikel ilmiah ringkas, dan perkembangan dakwah Yayasan Insan Muslim Istiqomah.
-          </p>
-        </div>
-      </section>
+          </>
+        }
+        title={<>Warta &amp; Artikel YIMI</>}
+        subtitle="Informasi kegiatan, artikel ilmiah ringkas, dan perkembangan dakwah Yayasan Insan Muslim Istiqomah."
+      />
 
       {/* Filter & Content Section */}
       <section className="py-16 md:py-20 bg-neutral-100/60 min-h-[500px]">

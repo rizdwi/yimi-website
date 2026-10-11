@@ -3,6 +3,7 @@ import type { Metadata } from 'next';
 import Image from 'next/image';
 import { ShieldCheck, BookOpen, Users, Compass, CheckCircle2 } from 'lucide-react';
 import { Card } from '@/components/ui/Card';
+import { PageHero } from '@/components/ui/PageHero';
 import { StarOrnament } from '@/components/ui/StarOrnament';
 import { constructMetadata } from '@/lib/seo';
 import aboutData from '@/content/about.json';
@@ -106,24 +107,18 @@ export default async function TentangPage() {
   return (
     <div className="pt-[72px]">
       {/* Subpage Hero (Height 320px) */}
-      <section className="relative h-80 min-h-[320px] bg-yimi-blue-800 text-white flex items-center justify-center overflow-hidden">
-        <div
-          className="absolute inset-0 bg-star8-pattern opacity-[0.06] pointer-events-none"
-          aria-hidden="true"
-        />
-        <div className="max-w-[1200px] w-full mx-auto px-5 md:px-8 text-center relative z-10">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 text-yimi-yellow-400 text-xs font-bold uppercase tracking-wider mb-3">
+      <PageHero
+        image="/images/banners/tentang.jpg"
+        imageAlt="Al-Qur'an bercahaya dengan ornamen geometris Islami"
+        badge={
+          <>
             <Compass className="w-3.5 h-3.5" />
             <span>Mengenal YIMI</span>
-          </div>
-          <h1 className="text-3xl sm:text-4xl md:text-5xl font-extrabold tracking-tight text-white mb-3">
-            Tentang Yayasan &amp; Manhaj
-          </h1>
-          <p className="text-base text-blue-100 max-w-xl mx-auto">
-            Dakwah di atas sunnah berlandaskan Al-Qur&apos;an dan As-Sunnah sesuai pemahaman Salafus Shalih.
-          </p>
-        </div>
-      </section>
+          </>
+        }
+        title={<>Tentang Yayasan &amp; Manhaj</>}
+        subtitle="Dakwah di atas sunnah berlandaskan Al-Qur'an dan As-Sunnah sesuai pemahaman Salafus Shalih."
+      />
 
       {/* Visi & Misi Section (Dua Kolom) */}
       <section className="py-20 bg-white">

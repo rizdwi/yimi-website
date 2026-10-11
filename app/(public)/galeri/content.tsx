@@ -4,6 +4,7 @@ import React, { useState, useMemo, useEffect } from 'react';
 import Image from 'next/image';
 import { Images, Eye, X } from 'lucide-react';
 import { Badge } from '@/components/ui/Badge';
+import { PageHero } from '@/components/ui/PageHero';
 import galleryData from '@/content/gallery.json';
 
 const FALLBACK_IMAGE = 'https://images.unsplash.com/photo-1542816417-0983c9c9ad53?q=80&w=1200&auto=format&fit=crop';
@@ -115,24 +116,18 @@ export default function GaleriPage() {
   return (
     <div className="pt-[72px]">
       {/* Subpage Hero */}
-      <section className="relative h-80 min-h-[320px] bg-yimi-blue-800 text-white flex items-center justify-center overflow-hidden">
-        <div
-          className="absolute inset-0 bg-star8-pattern opacity-[0.06] pointer-events-none"
-          aria-hidden="true"
-        />
-        <div className="max-w-[1200px] w-full mx-auto px-5 md:px-8 text-center relative z-10">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 text-yimi-yellow-400 text-xs font-bold uppercase tracking-wider mb-3">
+      <PageHero
+        image="/images/banners/galeri.jpg"
+        imageAlt="Dinding galeri dengan bingkai foto emas"
+        badge={
+          <>
             <Images className="w-3.5 h-3.5" />
             <span>Dokumentasi Kegiatan</span>
-          </div>
-          <h1 className="text-3xl sm:text-4xl md:text-5xl font-extrabold tracking-tight text-white mb-3">
-            Galeri Dakwah &amp; Sosial
-          </h1>
-          <p className="text-base text-blue-100 max-w-xl mx-auto">
-            Arsip rekaman jejak syiar ilmu, kebersamaan jamaah, dan bakti sosial Yayasan Insan Muslim Istiqomah.
-          </p>
-        </div>
-      </section>
+          </>
+        }
+        title={<>Galeri Dakwah &amp; Sosial</>}
+        subtitle="Arsip rekaman jejak syiar ilmu, kebersamaan jamaah, dan bakti sosial Yayasan Insan Muslim Istiqomah."
+      />
 
       {/* Gallery Section */}
       <section className="py-16 md:py-20 bg-neutral-100/60 min-h-[500px]">

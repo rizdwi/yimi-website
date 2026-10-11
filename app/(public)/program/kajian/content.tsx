@@ -15,6 +15,7 @@ import {
   X,
 } from 'lucide-react';
 import { Card } from '@/components/ui/Card';
+import { PageHero } from '@/components/ui/PageHero';
 import { Badge } from '@/components/ui/Badge';
 import { Button } from '@/components/ui/Button';
 import { downloadIcsFile } from '@/lib/ics';
@@ -74,25 +75,18 @@ export default function KajianProgramPage() {
 
   return (
     <div className="pt-[72px]">
-      {/* Subpage Hero */}
-      <section className="relative h-80 min-h-[320px] bg-yimi-blue-800 text-white flex items-center justify-center overflow-hidden">
-        <div
-          className="absolute inset-0 bg-star8-pattern opacity-[0.06] pointer-events-none"
-          aria-hidden="true"
-        />
-        <div className="max-w-[1200px] w-full mx-auto px-5 md:px-8 text-center relative z-10">
-          <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-white/10 text-yimi-yellow-400 text-xs font-bold uppercase tracking-wider mb-3 border border-white/15">
+      <PageHero
+        image="/images/banners/kajian.jpg"
+        imageAlt="Kitab-kitab klasik dan tasbih di atas rehal kayu dengan cahaya hangat"
+        badge={
+          <>
             <BookOpen className="w-3.5 h-3.5" />
             <span>Majelis Talabul &apos;Ilmi</span>
-          </div>
-          <h1 className="text-3xl sm:text-4xl md:text-5xl font-extrabold tracking-tight text-white mb-3">
-            {programData.judul}
-          </h1>
-          <p className="text-base text-blue-100 max-w-xl mx-auto">
-            {programData.subjudul}
-          </p>
-        </div>
-      </section>
+          </>
+        }
+        title={programData.judul}
+        subtitle={programData.subjudul}
+      />
 
       {/* Deskripsi & Dalil */}
       <section className="py-20 bg-white">

@@ -10,6 +10,7 @@ import {
   Building2,
 } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
+import { PageHero } from '@/components/ui/PageHero';
 import { Badge } from '@/components/ui/Badge';
 import { useSiteSettings } from '@/context/SiteSettingsContext';
 import siteData from '@/content/site.json';
@@ -44,24 +45,18 @@ export default function DonasiPage() {
   return (
     <div className="pt-[72px]">
       {/* Subpage Hero */}
-      <section className="relative h-80 min-h-[320px] bg-yimi-blue-800 text-white flex items-center justify-center overflow-hidden">
-        <div
-          className="absolute inset-0 bg-star8-pattern opacity-[0.06] pointer-events-none"
-          aria-hidden="true"
-        />
-        <div className="max-w-[1200px] w-full mx-auto px-5 md:px-8 text-center relative z-10">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 text-yimi-yellow-400 text-xs font-bold uppercase tracking-wider mb-3">
+      <PageHero
+        image="/images/banners/donasi.jpg"
+        imageAlt="Kotak donasi dengan simbol hati bercahaya, semangat berbagi"
+        badge={
+          <>
             <Heart className="w-3.5 h-3.5 fill-yimi-yellow-400" />
             <span>Infaq &amp; Wakaf Umat</span>
-          </div>
-          <h1 className="text-3xl sm:text-4xl md:text-5xl font-extrabold tracking-tight text-white mb-3">
-            Saluran Infaq Resmi YIMI
-          </h1>
-          <p className="text-base text-blue-100 max-w-xl mx-auto">
-            Salurkan infaq, sedekah, dan wakaf Anda melalui saluran resmi untuk mendukung operasional dakwah sunnah dan sosial umat.
-          </p>
-        </div>
-      </section>
+          </>
+        }
+        title="Saluran Infaq Resmi YIMI"
+        subtitle="Salurkan infaq, sedekah, dan wakaf Anda melalui saluran resmi untuk mendukung operasional dakwah sunnah dan sosial umat."
+      />
 
       {/* Main Section */}
       <section className="py-20 bg-neutral-100/60">

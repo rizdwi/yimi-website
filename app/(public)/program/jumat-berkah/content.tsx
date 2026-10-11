@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import { HeartHandshake, Utensils, Heart, Download } from 'lucide-react';
 import { Card } from '@/components/ui/Card';
+import { PageHero } from '@/components/ui/PageHero';
 import { Button } from '@/components/ui/Button';
 import { formatRupiah } from '@/lib/format';
 import fallbackJumatData from '@/content/programs/jumat-berkah.json';
@@ -74,25 +75,18 @@ export default function JumatBerkahPage() {
 
   return (
     <div className="pt-[72px]">
-      {/* Subpage Hero */}
-      <section className="relative h-80 min-h-[320px] bg-yimi-blue-800 text-white flex items-center justify-center overflow-hidden">
-        <div
-          className="absolute inset-0 bg-star8-pattern opacity-[0.06] pointer-events-none"
-          aria-hidden="true"
-        />
-        <div className="max-w-[1200px] w-full mx-auto px-5 md:px-8 text-center relative z-10">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 text-yimi-yellow-400 text-xs font-bold uppercase tracking-wider mb-3">
+      <PageHero
+        image="/images/banners/jumat-berkah.jpg"
+        imageAlt="Paket makanan sedekah yang disiapkan dengan latar masjid di pagi hari"
+        badge={
+          <>
             <HeartHandshake className="w-3.5 h-3.5" />
             <span>Sedekah Sosial</span>
-          </div>
-          <h1 className="text-3xl sm:text-4xl md:text-5xl font-extrabold tracking-tight text-white mb-3">
-            {jumatData.judul}
-          </h1>
-          <p className="text-base text-blue-100 max-w-xl mx-auto">
-            {jumatData.subjudul}
-          </p>
-        </div>
-      </section>
+          </>
+        }
+        title={jumatData.judul}
+        subtitle={jumatData.subjudul}
+      />
 
       {/* Deskripsi & Dalil */}
       <section className="py-20 bg-white">

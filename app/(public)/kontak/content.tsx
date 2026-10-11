@@ -11,6 +11,7 @@ import {
   CheckCircle2,
 } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
+import { PageHero } from '@/components/ui/PageHero';
 import { useSiteSettings } from '@/context/SiteSettingsContext';
 import siteData from '@/content/site.json';
 
@@ -94,24 +95,18 @@ export default function KontakPage() {
   return (
     <div className="pt-[72px]">
       {/* Subpage Hero */}
-      <section className="relative h-80 min-h-[320px] bg-yimi-blue-800 text-white flex items-center justify-center overflow-hidden">
-        <div
-          className="absolute inset-0 bg-star8-pattern opacity-[0.06] pointer-events-none"
-          aria-hidden="true"
-        />
-        <div className="max-w-[1200px] w-full mx-auto px-5 md:px-8 text-center relative z-10">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 text-yimi-yellow-400 text-xs font-bold uppercase tracking-wider mb-3">
+      <PageHero
+        image="/images/banners/kontak.jpg"
+        imageAlt="Gerbang masjid dengan lentera hangat di waktu senja"
+        badge={
+          <>
             <Phone className="w-3.5 h-3.5" />
             <span>Pusat Komunikasi</span>
-          </div>
-          <h1 className="text-3xl sm:text-4xl md:text-5xl font-extrabold tracking-tight text-white mb-3">
-            Hubungi Yayasan YIMI
-          </h1>
-          <p className="text-base text-blue-100 max-w-xl mx-auto">
-            Kami siap menyambut silaturahim, konsultasi program pendidikan, pendaftaran kajian, maupun konfirmasi donasi.
-          </p>
-        </div>
-      </section>
+          </>
+        }
+        title="Hubungi Yayasan YIMI"
+        subtitle="Kami siap menyambut silaturahim, konsultasi program pendidikan, pendaftaran kajian, maupun konfirmasi donasi."
+      />
 
       {/* Main Two Columns */}
       <section className="py-20 bg-neutral-100/60">
