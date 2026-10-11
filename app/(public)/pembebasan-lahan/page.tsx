@@ -70,8 +70,14 @@ export default function PembebasanLahanPage() {
     paketJudul: 'Pilihan Paket Wakaf Tanah',
     paketSubjudul: 'Pahala jariyah yang abadi untuk Anda dan orang tua tercinta.',
     rencanaPenggunaan: landDataFallback.rencanaPenggunaan as string[],
+    rencanaJudul: 'Peruntukan & Rencana Pembangunan',
+    rencanaSubjudul: 'Setiap jengkal tanah wakaf ini akan dimakmurkan untuk ibadah dan kaderisasi generasi Islam.',
     tahapan: landDataFallback.tahapan as TahapanItem[],
+    tahapanJudul: 'Tahapan Eksekusi Lahan',
+    tahapanSubjudul: 'Transparansi progres pengikatan dan legalitas tanah wakaf yayasan.',
     faq: landDataFallback.faq as FaqItem[],
+    faqJudul: 'Pertanyaan yang Sering Diajukan',
+    faqSubjudul: 'Seputar pelaksanaan dan transparansi program wakaf tanah yayasan.',
   });
   const [updates, setUpdates] = useState<LandUpdateItem[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -97,8 +103,14 @@ export default function PembebasanLahanPage() {
               paketJudul: c.paketJudul || 'Pilihan Paket Wakaf Tanah',
               paketSubjudul: c.paketSubjudul || 'Pahala jariyah yang abadi untuk Anda dan orang tua tercinta.',
               rencanaPenggunaan: Array.isArray(c.rencanaPenggunaan) ? c.rencanaPenggunaan : (landDataFallback.rencanaPenggunaan as string[]),
+              rencanaJudul: c.rencanaJudul || 'Peruntukan & Rencana Pembangunan',
+              rencanaSubjudul: c.rencanaSubjudul || 'Setiap jengkal tanah wakaf ini akan dimakmurkan untuk ibadah dan kaderisasi generasi Islam.',
               tahapan: Array.isArray(c.tahapan) ? c.tahapan : (landDataFallback.tahapan as TahapanItem[]),
+              tahapanJudul: c.tahapanJudul || 'Tahapan Eksekusi Lahan',
+              tahapanSubjudul: c.tahapanSubjudul || 'Transparansi progres pengikatan dan legalitas tanah wakaf yayasan.',
               faq: Array.isArray(c.faq) ? c.faq : (landDataFallback.faq as FaqItem[]),
+              faqJudul: c.faqJudul || 'Pertanyaan yang Sering Diajukan',
+              faqSubjudul: c.faqSubjudul || 'Seputar pelaksanaan dan transparansi program wakaf tanah yayasan.',
             });
           }
           if (Array.isArray(data.updates)) {
@@ -329,10 +341,10 @@ export default function PembebasanLahanPage() {
           <div className="max-w-[1200px] w-full mx-auto px-5 md:px-8">
             <div className="text-center max-w-2xl mx-auto mb-12">
               <h2 className="text-2xl sm:text-3xl font-extrabold text-yimi-blue-800 tracking-tight mb-3">
-                Peruntukan &amp; Rencana Pembangunan
+                {campaign.rencanaJudul}
               </h2>
               <p className="text-sm text-neutral-600">
-                Setiap jengkal tanah wakaf ini akan dimakmurkan untuk ibadah dan kaderisasi generasi Islam.
+                {campaign.rencanaSubjudul}
               </p>
             </div>
 
@@ -358,10 +370,10 @@ export default function PembebasanLahanPage() {
           <div className="max-w-[1200px] w-full mx-auto px-5 md:px-8">
             <div className="text-center max-w-2xl mx-auto mb-12">
               <h2 className="text-2xl sm:text-3xl font-extrabold text-yimi-blue-800 tracking-tight mb-3">
-                Tahapan Eksekusi Lahan
+                {campaign.tahapanJudul}
               </h2>
               <p className="text-sm text-neutral-600">
-                Transparansi progres pengikatan dan legalitas tanah wakaf yayasan.
+                {campaign.tahapanSubjudul}
               </p>
             </div>
 
@@ -549,10 +561,10 @@ export default function PembebasanLahanPage() {
           <div className="max-w-[1200px] w-full mx-auto px-5 md:px-8">
             <div className="text-center max-w-2xl mx-auto mb-12">
               <h2 className="text-2xl sm:text-3xl font-extrabold text-yimi-blue-800 tracking-tight mb-3">
-                Pertanyaan yang Sering Diajukan
+                {campaign.faqJudul}
               </h2>
               <p className="text-sm text-neutral-600">
-                Seputar pelaksanaan dan transparansi program wakaf tanah yayasan.
+                {campaign.faqSubjudul}
               </p>
             </div>
 

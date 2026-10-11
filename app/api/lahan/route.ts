@@ -51,8 +51,14 @@ export async function GET() {
       const paketJudul = typeof meta.paket_judul === 'string' && meta.paket_judul.trim() ? meta.paket_judul : 'Pilihan Paket Wakaf Tanah';
       const paketSubjudul = typeof meta.paket_subjudul === 'string' && meta.paket_subjudul.trim() ? meta.paket_subjudul : 'Pahala jariyah yang abadi untuk Anda dan orang tua tercinta.';
       const rencanaPenggunaan = Array.isArray(meta.rencana_penggunaan) ? meta.rencana_penggunaan : landFallback.rencanaPenggunaan;
+      const rencanaJudul = typeof meta.rencana_judul === 'string' && meta.rencana_judul.trim() ? meta.rencana_judul : 'Peruntukan & Rencana Pembangunan';
+      const rencanaSubjudul = typeof meta.rencana_subjudul === 'string' && meta.rencana_subjudul.trim() ? meta.rencana_subjudul : 'Setiap jengkal tanah wakaf ini akan dimakmurkan untuk ibadah dan kaderisasi generasi Islam.';
       const tahapan = Array.isArray(meta.tahapan) ? meta.tahapan : landFallback.tahapan;
+      const tahapanJudul = typeof meta.tahapan_judul === 'string' && meta.tahapan_judul.trim() ? meta.tahapan_judul : 'Tahapan Eksekusi Lahan';
+      const tahapanSubjudul = typeof meta.tahapan_subjudul === 'string' && meta.tahapan_subjudul.trim() ? meta.tahapan_subjudul : 'Transparansi progres pengikatan dan legalitas tanah wakaf yayasan.';
       const faq = Array.isArray(meta.faq) ? meta.faq : landFallback.faq;
+      const faqJudul = typeof meta.faq_judul === 'string' && meta.faq_judul.trim() ? meta.faq_judul : 'Pertanyaan yang Sering Diajukan';
+      const faqSubjudul = typeof meta.faq_subjudul === 'string' && meta.faq_subjudul.trim() ? meta.faq_subjudul : 'Seputar pelaksanaan dan transparansi program wakaf tanah yayasan.';
       const subjudul = typeof meta.subjudul === 'string' && meta.subjudul.trim() ? meta.subjudul : landFallback.subjudul;
 
       return NextResponse.json(
@@ -71,8 +77,14 @@ export async function GET() {
             paketJudul,
             paketSubjudul,
             rencanaPenggunaan,
+            rencanaJudul,
+            rencanaSubjudul,
             tahapan,
+            tahapanJudul,
+            tahapanSubjudul,
             faq,
+            faqJudul,
+            faqSubjudul,
             metadata: meta,
           },
           updates,
@@ -100,8 +112,14 @@ export async function GET() {
         paketJudul: 'Pilihan Paket Wakaf Tanah',
         paketSubjudul: 'Pahala jariyah yang abadi untuk Anda dan orang tua tercinta.',
         rencanaPenggunaan: landFallback.rencanaPenggunaan,
+        rencanaJudul: 'Peruntukan & Rencana Pembangunan',
+        rencanaSubjudul: 'Setiap jengkal tanah wakaf ini akan dimakmurkan untuk ibadah dan kaderisasi generasi Islam.',
         tahapan: landFallback.tahapan,
+        tahapanJudul: 'Tahapan Eksekusi Lahan',
+        tahapanSubjudul: 'Transparansi progres pengikatan dan legalitas tanah wakaf yayasan.',
         faq: landFallback.faq,
+        faqJudul: 'Pertanyaan yang Sering Diajukan',
+        faqSubjudul: 'Seputar pelaksanaan dan transparansi program wakaf tanah yayasan.',
       },
       updates: [],
     },

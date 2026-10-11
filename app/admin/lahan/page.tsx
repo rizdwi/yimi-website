@@ -13,6 +13,8 @@ import {
   CheckCircle2,
   Sparkles,
   Layers,
+  ListOrdered,
+  HelpCircle,
 } from 'lucide-react';
 import { ConfirmModal } from '@/components/admin/ConfirmModal';
 
@@ -38,8 +40,14 @@ interface CampaignMetadata {
   paket_judul?: string;
   paket_subjudul?: string;
   paket_wakaf?: PaketWakafItem[];
+  rencana_judul?: string;
+  rencana_subjudul?: string;
   rencana_penggunaan?: string[];
+  tahapan_judul?: string;
+  tahapan_subjudul?: string;
   tahapan?: TahapanItem[];
+  faq_judul?: string;
+  faq_subjudul?: string;
   faq?: FaqItem[];
 }
 
@@ -66,7 +74,7 @@ interface LandUpdate {
 }
 
 export default function AdminLahanPage() {
-  const [activeTab, setActiveTab] = useState<'target' | 'paket' | 'konten'>('target');
+  const [activeTab, setActiveTab] = useState<'target' | 'paket' | 'tahapan' | 'rencana' | 'faq'>('target');
   const [campaign, setCampaign] = useState<CampaignData | null>(null);
   const [updates, setUpdates] = useState<LandUpdate[]>([]);
   const [loading, setLoading] = useState(true);
@@ -91,12 +99,24 @@ export default function AdminLahanPage() {
   const [paketWakafList, setPaketWakafList] = useState<PaketWakafItem[]>([]);
   const [savingPaket, setSavingPaket] = useState(false);
 
-  // Tab Konten & Tahapan State
-  const [heroSubjudul, setHeroSubjudul] = useState('');
-  const [rencanaList, setRencanaList] = useState<string[]>([]);
+  // Tab Tahapan Eksekusi State
+  const [tahapanJudul, setTahapanJudul] = useState('Tahapan Eksekusi Lahan');
+  const [tahapanSubjudul, setTahapanSubjudul] = useState('Transparansi progres pengikatan dan legalitas tanah wakaf yayasan.');
   const [tahapanList, setTahapanList] = useState<TahapanItem[]>([]);
+  const [savingTahapan, setSavingTahapan] = useState(false);
+
+  // Tab Peruntukan & Rencana State
+  const [heroSubjudul, setHeroSubjudul] = useState('');
+  const [rencanaJudul, setRencanaJudul] = useState('Peruntukan & Rencana Pembangunan');
+  const [rencanaSubjudul, setRencanaSubjudul] = useState('Setiap jengkal tanah wakaf ini akan dimakmurkan untuk ibadah dan kaderisasi generasi Islam.');
+  const [rencanaList, setRencanaList] = useState<string[]>([]);
+  const [savingRencana, setSavingRencana] = useState(false);
+
+  // Tab FAQ State
+  const [faqJudul, setFaqJudul] = useState('Pertanyaan yang Sering Diajukan');
+  const [faqSubjudul, setFaqSubjudul] = useState('Seputar pelaksanaan dan transparansi program wakaf tanah yayasan.');
   const [faqList, setFaqList] = useState<FaqItem[]>([]);
-  const [savingKonten, setSavingKonten] = useState(false);
+  const [savingFaq, setSavingFaq] = useState(false);
 
   // Modal Tambah Update Baru
   const [isAddUpdateOpen, setIsAddUpdateOpen] = useState(false);
@@ -149,6 +169,8 @@ export default function AdminLahanPage() {
       );
 
       setHeroSubjudul(meta.subjudul || 'Investasi Abadi Menuju Jannah Melalui Wakaf Lahan Dakwah dan Pendidikan Sunnah');
+      setRencanaJudul(meta.rencana_judul || 'Peruntukan & Rencana Pembangunan');
+      setRencanaSubjudul(meta.rencana_subjudul || 'Setiap jengkal tanah wakaf ini akan dimakmurkan untuk ibadah dan kaderisasi generasi Islam.');
       setRencanaList(
         Array.isArray(meta.rencana_penggunaan)
           ? meta.rencana_penggunaan
@@ -159,6 +181,8 @@ export default function AdminLahanPage() {
               'Kantor operasional sekretariat yayasan, posko kemanusiaan, dan area parkir jamaah',
             ]
       );
+      setTahapanJudul(meta.tahapan_judul || 'Tahapan Eksekusi Lahan');
+      setTahapanSubjudul(meta.tahapan_subjudul || 'Transparansi progres pengikatan dan legalitas tanah wakaf yayasan.');
       setTahapanList(
         Array.isArray(meta.tahapan)
           ? meta.tahapan
@@ -169,6 +193,8 @@ export default function AdminLahanPage() {
               { nama: 'Tahap 4: Pengurusan Akta Ikrar Wakaf (AIW)', status: 'Akan Datang', keterangan: 'Penerbitan Akta Ikrar Wakaf resmi melalui KUA dan pendaftaran sertifikat ke Badan Wakaf Indonesia (BWI).' },
             ]
       );
+      setFaqJudul(meta.faq_judul || 'Pertanyaan yang Sering Diajukan');
+      setFaqSubjudul(meta.faq_subjudul || 'Seputar pelaksanaan dan transparansi program wakaf tanah yayasan.');
       setFaqList(
         Array.isArray(meta.faq)
           ? meta.faq
@@ -291,16 +317,76 @@ export default function AdminLahanPage() {
     }
   }
 
-  async function handleSaveKonten(e: React.FormEvent) {
+  async function handleSaveTahapan(e: React.FormEvent) {
     e.preventDefault();
-    setSavingKonten(true);
+    setSavingTahapan(true);
+    try {
+      const currentMeta = (campaign?.metadata || {}) as CampaignMetadata;
+      const updatedMeta: CampaignMetadata = {
+        ...currentMeta,
+        tahapan_judul: tahapanJudul.trim(),
+        tahapan_subjudul: tahapanSubjudul.trim(),
+        tahapan: tahapanList,
+      };
+
+      const res = await fetch('/api/admin/lahan', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          metadata: updatedMeta,
+        }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || 'Gagal menyimpan tahapan eksekusi lahan.');
+      setCampaign(data.campaign);
+      showToast('Tahapan Eksekusi Lahan berhasil diperbarui dan aktif di web publik!');
+    } catch (err: unknown) {
+      alert(err instanceof Error ? err.message : 'Gagal menyimpan tahapan eksekusi.');
+    } finally {
+      setSavingTahapan(false);
+    }
+  }
+
+  async function handleSaveRencana(e: React.FormEvent) {
+    e.preventDefault();
+    setSavingRencana(true);
     try {
       const currentMeta = (campaign?.metadata || {}) as CampaignMetadata;
       const updatedMeta: CampaignMetadata = {
         ...currentMeta,
         subjudul: heroSubjudul.trim(),
+        rencana_judul: rencanaJudul.trim(),
+        rencana_subjudul: rencanaSubjudul.trim(),
         rencana_penggunaan: rencanaList,
-        tahapan: tahapanList,
+      };
+
+      const res = await fetch('/api/admin/lahan', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          metadata: updatedMeta,
+        }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || 'Gagal menyimpan rencana peruntukan.');
+      setCampaign(data.campaign);
+      showToast('Peruntukan & Rencana Pembangunan berhasil diperbarui!');
+    } catch (err: unknown) {
+      alert(err instanceof Error ? err.message : 'Gagal menyimpan rencana peruntukan.');
+    } finally {
+      setSavingRencana(false);
+    }
+  }
+
+  async function handleSaveFaq(e: React.FormEvent) {
+    e.preventDefault();
+    setSavingFaq(true);
+    try {
+      const currentMeta = (campaign?.metadata || {}) as CampaignMetadata;
+      const updatedMeta: CampaignMetadata = {
+        ...currentMeta,
+        faq_judul: faqJudul.trim(),
+        faq_subjudul: faqSubjudul.trim(),
         faq: faqList,
       };
 
@@ -312,13 +398,13 @@ export default function AdminLahanPage() {
         }),
       });
       const data = await res.json();
-      if (!res.ok) throw new Error(data.error || 'Gagal menyimpan konten & tahapan.');
+      if (!res.ok) throw new Error(data.error || 'Gagal menyimpan FAQ.');
       setCampaign(data.campaign);
-      showToast('Konten peruntukan, tahapan, dan FAQ berhasil diperbarui!');
+      showToast('Pertanyaan yang Sering Diajukan (FAQ) berhasil diperbarui!');
     } catch (err: unknown) {
-      alert(err instanceof Error ? err.message : 'Gagal menyimpan konten.');
+      alert(err instanceof Error ? err.message : 'Gagal menyimpan FAQ.');
     } finally {
-      setSavingKonten(false);
+      setSavingFaq(false);
     }
   }
 
@@ -453,11 +539,11 @@ export default function AdminLahanPage() {
       </div>
 
       {/* Navigasi Tab Pengelompokan CMS Lahan */}
-      <div className="flex items-center gap-2 border-b border-neutral-200">
+      <div className="flex items-center gap-2 border-b border-neutral-200 overflow-x-auto pb-1">
         <button
           type="button"
           onClick={() => setActiveTab('target')}
-          className={`inline-flex items-center gap-2 px-4 py-3 text-sm font-bold border-b-2 transition-colors cursor-pointer ${
+          className={`inline-flex items-center gap-2 px-4 py-3 text-sm font-bold border-b-2 transition-colors cursor-pointer whitespace-nowrap ${
             activeTab === 'target'
               ? 'border-[#1F2F6B] text-[#1F2F6B]'
               : 'border-transparent text-neutral-500 hover:text-neutral-800'
@@ -469,7 +555,7 @@ export default function AdminLahanPage() {
         <button
           type="button"
           onClick={() => setActiveTab('paket')}
-          className={`inline-flex items-center gap-2 px-4 py-3 text-sm font-bold border-b-2 transition-colors cursor-pointer ${
+          className={`inline-flex items-center gap-2 px-4 py-3 text-sm font-bold border-b-2 transition-colors cursor-pointer whitespace-nowrap ${
             activeTab === 'paket'
               ? 'border-[#1F2F6B] text-[#1F2F6B]'
               : 'border-transparent text-neutral-500 hover:text-neutral-800'
@@ -483,15 +569,48 @@ export default function AdminLahanPage() {
         </button>
         <button
           type="button"
-          onClick={() => setActiveTab('konten')}
-          className={`inline-flex items-center gap-2 px-4 py-3 text-sm font-bold border-b-2 transition-colors cursor-pointer ${
-            activeTab === 'konten'
+          onClick={() => setActiveTab('tahapan')}
+          className={`inline-flex items-center gap-2 px-4 py-3 text-sm font-bold border-b-2 transition-colors cursor-pointer whitespace-nowrap ${
+            activeTab === 'tahapan'
+              ? 'border-[#1F2F6B] text-[#1F2F6B]'
+              : 'border-transparent text-neutral-500 hover:text-neutral-800'
+          }`}
+        >
+          <ListOrdered className="w-4 h-4" />
+          <span>Tahapan Eksekusi Lahan</span>
+          <span className="ml-1 text-[11px] font-bold px-2 py-0.5 rounded-full bg-blue-100 text-[#1F2F6B]">
+            {tahapanList.length}
+          </span>
+        </button>
+        <button
+          type="button"
+          onClick={() => setActiveTab('rencana')}
+          className={`inline-flex items-center gap-2 px-4 py-3 text-sm font-bold border-b-2 transition-colors cursor-pointer whitespace-nowrap ${
+            activeTab === 'rencana'
               ? 'border-[#1F2F6B] text-[#1F2F6B]'
               : 'border-transparent text-neutral-500 hover:text-neutral-800'
           }`}
         >
           <Layers className="w-4 h-4" />
-          <span>Peruntukan, Tahapan &amp; FAQ</span>
+          <span>Peruntukan Lahan</span>
+          <span className="ml-1 text-[11px] font-bold px-2 py-0.5 rounded-full bg-blue-100 text-[#1F2F6B]">
+            {rencanaList.length}
+          </span>
+        </button>
+        <button
+          type="button"
+          onClick={() => setActiveTab('faq')}
+          className={`inline-flex items-center gap-2 px-4 py-3 text-sm font-bold border-b-2 transition-colors cursor-pointer whitespace-nowrap ${
+            activeTab === 'faq'
+              ? 'border-[#1F2F6B] text-[#1F2F6B]'
+              : 'border-transparent text-neutral-500 hover:text-neutral-800'
+          }`}
+        >
+          <HelpCircle className="w-4 h-4" />
+          <span>FAQ Wakaf Lahan</span>
+          <span className="ml-1 text-[11px] font-bold px-2 py-0.5 rounded-full bg-blue-100 text-[#1F2F6B]">
+            {faqList.length}
+          </span>
         </button>
       </div>
 
@@ -861,119 +980,118 @@ export default function AdminLahanPage() {
         </form>
       )}
 
-      {/* TAB 3: PERUNTUKAN, TAHAPAN & FAQ */}
-      {activeTab === 'konten' && (
-        <form onSubmit={handleSaveKonten} className="space-y-6">
+      {/* TAB 3: TAHAPAN EKSEKUSI LAHAN */}
+      {activeTab === 'tahapan' && (
+        <form onSubmit={handleSaveTahapan} className="space-y-6">
           <div className="bg-white border border-neutral-200/80 rounded-2xl p-6 shadow-xs">
             <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 border-b border-neutral-100 pb-5 mb-5">
               <div>
-                <h2 className="text-xl font-bold text-[#111827]">Peruntukan Lahan, Tahapan &amp; FAQ</h2>
+                <h2 className="text-xl font-bold text-[#111827]">Tahapan Eksekusi Lahan</h2>
                 <p className="text-sm text-neutral-500 mt-1">
-                  Atur subjudul hero, 4 poin rencana pembangunan, 4 tahapan eksekusi legalitas lahan, dan tanya jawab.
+                  Kelola transparansi nomor tahapan, nama, status badge (Selesai, Sedang Berjalan, Akan Datang), dan keterangan rincian alur legalitas.
                 </p>
               </div>
               <button
                 type="submit"
-                disabled={savingKonten}
+                disabled={savingTahapan}
                 className="inline-flex items-center gap-2 px-5 py-2.5 bg-[#1F2F6B] hover:bg-[#3E5FD1] text-white rounded-xl text-sm font-semibold transition-colors shadow-sm cursor-pointer disabled:opacity-50"
               >
                 <Save className="w-4 h-4" />
-                <span>{savingKonten ? 'Menyimpan...' : 'Simpan Konten & Tahapan'}</span>
+                <span>{savingTahapan ? 'Menyimpan...' : 'Simpan Tahapan Eksekusi'}</span>
               </button>
             </div>
 
-            {/* Subjudul Hero */}
-            <div className="mb-6">
-              <label className="block text-xs font-bold text-neutral-700 uppercase mb-1">
-                Subjudul Kampanye (Banner Hero)
-              </label>
-              <textarea
-                rows={2}
-                value={heroSubjudul}
-                onChange={(e) => setHeroSubjudul(e.target.value)}
-                placeholder="Investasi Abadi Menuju Jannah Melalui Wakaf Lahan Dakwah dan Pendidikan Sunnah"
-                className="w-full px-3.5 py-2.5 rounded-xl border border-neutral-300 text-sm focus:outline-hidden focus:ring-2 focus:ring-[#3E5FD1]"
-              />
-            </div>
-
-            {/* Rencana Penggunaan / Peruntukan Lahan */}
-            <div className="mb-8 border-t border-neutral-100 pt-5">
-              <div className="flex justify-between items-center mb-3">
-                <h3 className="text-base font-bold text-[#111827]">
-                  Rencana Pembangunan &amp; Peruntukan ({rencanaList.length} Poin)
-                </h3>
-                <button
-                  type="button"
-                  onClick={() => setRencanaList([...rencanaList, 'Rencana pembangunan fasilitas dakwah baru'])}
-                  className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-[#EEF2FC] hover:bg-blue-100 text-[#1F2F6B] rounded-lg text-xs font-bold transition-colors cursor-pointer"
-                >
-                  <Plus className="w-3.5 h-3.5" />
-                  <span>Tambah Poin</span>
-                </button>
+            {/* Header Seksi */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 p-4 rounded-xl bg-neutral-50/70 border border-neutral-200/80 mb-6">
+              <div>
+                <label className="block text-xs font-bold text-neutral-700 uppercase mb-1">
+                  Judul Seksi di Halaman Publik
+                </label>
+                <input
+                  type="text"
+                  required
+                  value={tahapanJudul}
+                  onChange={(e) => setTahapanJudul(e.target.value)}
+                  placeholder="Tahapan Eksekusi Lahan"
+                  className="w-full px-3.5 py-2 rounded-xl border border-neutral-300 text-sm font-semibold focus:outline-hidden focus:ring-2 focus:ring-[#3E5FD1]"
+                />
               </div>
-
-              <div className="space-y-2.5">
-                {rencanaList.map((item, idx) => (
-                  <div key={idx} className="flex items-center gap-2">
-                    <span className="text-xs font-bold text-neutral-400 w-6 text-center">{idx + 1}.</span>
-                    <input
-                      type="text"
-                      required
-                      value={item}
-                      onChange={(e) => {
-                        const updated = [...rencanaList];
-                        updated[idx] = e.target.value;
-                        setRencanaList(updated);
-                      }}
-                      className="flex-1 px-3 py-2 rounded-xl border border-neutral-300 text-sm focus:outline-hidden focus:ring-1 focus:ring-[#3E5FD1]"
-                    />
-                    <button
-                      type="button"
-                      onClick={() => setRencanaList(rencanaList.filter((_, i) => i !== idx))}
-                      className="p-2 text-neutral-400 hover:text-red-600 rounded-lg transition-colors cursor-pointer"
-                      title="Hapus Poin"
-                    >
-                      <Trash2 className="w-4 h-4" />
-                    </button>
-                  </div>
-                ))}
+              <div>
+                <label className="block text-xs font-bold text-neutral-700 uppercase mb-1">
+                  Subjudul Seksi di Halaman Publik
+                </label>
+                <input
+                  type="text"
+                  required
+                  value={tahapanSubjudul}
+                  onChange={(e) => setTahapanSubjudul(e.target.value)}
+                  placeholder="Transparansi progres pengikatan dan legalitas tanah wakaf yayasan."
+                  className="w-full px-3.5 py-2 rounded-xl border border-neutral-300 text-sm focus:outline-hidden focus:ring-2 focus:ring-[#3E5FD1]"
+                />
               </div>
             </div>
 
-            {/* Tahapan Eksekusi Lahan */}
-            <div className="mb-8 border-t border-neutral-100 pt-5">
-              <div className="flex justify-between items-center mb-3">
-                <h3 className="text-base font-bold text-[#111827]">
-                  Tahapan Eksekusi Lahan ({tahapanList.length} Tahap)
-                </h3>
+            <div className="flex justify-between items-center mb-4">
+              <h3 className="text-base font-bold text-[#111827]">
+                Daftar Kartu Tahapan ({tahapanList.length} Tahap)
+              </h3>
+              <button
+                type="button"
+                onClick={() =>
+                  setTahapanList([
+                    ...tahapanList,
+                    {
+                      nama: `Tahap ${tahapanList.length + 1}: Nama Tahapan Baru`,
+                      status: 'Akan Datang',
+                      keterangan: 'Keterangan rencana tahapan legalitas dan pelaksanaan.',
+                    },
+                  ])
+                }
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-[#EEF2FC] hover:bg-blue-100 text-[#1F2F6B] rounded-lg text-xs font-bold transition-colors cursor-pointer"
+              >
+                <Plus className="w-3.5 h-3.5" />
+                <span>Tambah Tahap Baru</span>
+              </button>
+            </div>
+
+            {tahapanList.length === 0 ? (
+              <div className="text-center py-10 border border-dashed border-neutral-200 rounded-xl">
+                <p className="text-neutral-500 text-sm mb-3">Belum ada tahapan eksekusi yang ditambahkan.</p>
                 <button
                   type="button"
                   onClick={() =>
                     setTahapanList([
-                      ...tahapanList,
                       {
-                        nama: 'Tahap Baru',
-                        status: 'Akan Datang',
-                        keterangan: 'Keterangan rencana eksekusi.',
+                        nama: 'Tahap 1: Pembayaran DP & Tanda Jadi',
+                        status: 'Selesai',
+                        keterangan: 'Perjanjian pengikatan jual beli (PPJB) dan verifikasi legalitas berkas di hadapan notaris.',
                       },
                     ])
                   }
-                  className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-[#EEF2FC] hover:bg-blue-100 text-[#1F2F6B] rounded-lg text-xs font-bold transition-colors cursor-pointer"
+                  className="px-3 py-1.5 bg-[#1F2F6B] text-white rounded-lg text-xs font-semibold"
                 >
-                  <Plus className="w-3.5 h-3.5" />
-                  <span>Tambah Tahap</span>
+                  Tambah Tahap Pertama
                 </button>
               </div>
-
+            ) : (
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {tahapanList.map((thp, idx) => (
-                  <div key={idx} className="p-4 rounded-xl border border-neutral-200 bg-neutral-50/50 space-y-3">
-                    <div className="flex justify-between items-center border-b border-neutral-200 pb-2">
-                      <span className="text-xs font-bold text-[#1F2F6B]">Tahap 0{idx + 1}</span>
+                  <div
+                    key={idx}
+                    className="p-4 rounded-xl border border-neutral-200/90 bg-neutral-50/40 space-y-3.5 hover:border-[#3E5FD1]/40 transition-colors"
+                  >
+                    <div className="flex justify-between items-center border-b border-neutral-200/80 pb-2.5">
+                      <div className="flex items-center gap-2">
+                        <span className="text-xs font-bold font-mono text-[#1F2F6B] bg-[#EEF2FC] px-2 py-0.5 rounded-md">
+                          0{idx + 1}
+                        </span>
+                        <span className="text-xs font-semibold text-neutral-600">Kartu Tahapan #{idx + 1}</span>
+                      </div>
                       <button
                         type="button"
                         onClick={() => setTahapanList(tahapanList.filter((_, i) => i !== idx))}
-                        className="p-1 text-neutral-400 hover:text-red-600 cursor-pointer"
+                        className="p-1 text-neutral-400 hover:text-red-600 transition-colors cursor-pointer"
+                        title="Hapus Tahap Ini"
                       >
                         <Trash2 className="w-4 h-4" />
                       </button>
@@ -981,7 +1099,7 @@ export default function AdminLahanPage() {
 
                     <div>
                       <label className="block text-[11px] font-bold text-neutral-600 uppercase mb-1">
-                        Nama Tahap
+                        Nama / Judul Tahapan
                       </label>
                       <input
                         type="text"
@@ -992,13 +1110,14 @@ export default function AdminLahanPage() {
                           updated[idx].nama = e.target.value;
                           setTahapanList(updated);
                         }}
-                        className="w-full px-3 py-1.5 rounded-lg border border-neutral-300 text-sm focus:outline-hidden"
+                        placeholder="Tahap 1: Pembayaran DP & Tanda Jadi"
+                        className="w-full px-3 py-2 rounded-lg border border-neutral-300 text-sm font-semibold focus:outline-hidden focus:ring-1 focus:ring-[#3E5FD1] bg-white"
                       />
                     </div>
 
                     <div>
                       <label className="block text-[11px] font-bold text-neutral-600 uppercase mb-1">
-                        Status Tahap
+                        Status Eksekusi (Badge)
                       </label>
                       <select
                         value={thp.status}
@@ -1007,17 +1126,17 @@ export default function AdminLahanPage() {
                           updated[idx].status = e.target.value;
                           setTahapanList(updated);
                         }}
-                        className="w-full px-3 py-1.5 rounded-lg border border-neutral-300 text-sm focus:outline-hidden bg-white"
+                        className="w-full px-3 py-2 rounded-lg border border-neutral-300 text-sm font-medium focus:outline-hidden focus:ring-1 focus:ring-[#3E5FD1] bg-white"
                       >
-                        <option value="Selesai">Selesai</option>
-                        <option value="Sedang Berjalan">Sedang Berjalan</option>
-                        <option value="Akan Datang">Akan Datang</option>
+                        <option value="Selesai">Selesai (Hijau)</option>
+                        <option value="Sedang Berjalan">Sedang Berjalan (Kuning)</option>
+                        <option value="Akan Datang">Akan Datang (Abu-abu)</option>
                       </select>
                     </div>
 
                     <div>
                       <label className="block text-[11px] font-bold text-neutral-600 uppercase mb-1">
-                        Keterangan
+                        Rincian Keterangan / Progres
                       </label>
                       <textarea
                         rows={2}
@@ -1028,98 +1147,281 @@ export default function AdminLahanPage() {
                           updated[idx].keterangan = e.target.value;
                           setTahapanList(updated);
                         }}
-                        className="w-full px-3 py-1.5 rounded-lg border border-neutral-300 text-xs focus:outline-hidden"
+                        placeholder="Rincian keterangan progres pelaksanaan..."
+                        className="w-full px-3 py-2 rounded-lg border border-neutral-300 text-xs focus:outline-hidden focus:ring-1 focus:ring-[#3E5FD1] bg-white"
                       />
                     </div>
                   </div>
                 ))}
+              </div>
+            )}
+
+            <div className="flex justify-end pt-5 mt-6 border-t border-neutral-100">
+              <button
+                type="submit"
+                disabled={savingTahapan}
+                className="inline-flex items-center gap-2 px-6 py-2.5 bg-[#1F2F6B] hover:bg-[#3E5FD1] text-white rounded-xl text-sm font-semibold transition-colors shadow-sm cursor-pointer disabled:opacity-50"
+              >
+                <Save className="w-4 h-4" />
+                <span>{savingTahapan ? 'Menyimpan...' : 'Simpan Tahapan Eksekusi'}</span>
+              </button>
+            </div>
+          </div>
+        </form>
+      )}
+
+      {/* TAB 4: PERUNTUKAN LAHAN */}
+      {activeTab === 'rencana' && (
+        <form onSubmit={handleSaveRencana} className="space-y-6">
+          <div className="bg-white border border-neutral-200/80 rounded-2xl p-6 shadow-xs">
+            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 border-b border-neutral-100 pb-5 mb-5">
+              <div>
+                <h2 className="text-xl font-bold text-[#111827]">Peruntukan &amp; Rencana Pembangunan</h2>
+                <p className="text-sm text-neutral-500 mt-1">
+                  Atur subjudul hero banner, judul &amp; subjudul seksi peruntukan, serta poin-poin rencana pembangunan fasilitas ibadah dan pendidikan.
+                </p>
+              </div>
+              <button
+                type="submit"
+                disabled={savingRencana}
+                className="inline-flex items-center gap-2 px-5 py-2.5 bg-[#1F2F6B] hover:bg-[#3E5FD1] text-white rounded-xl text-sm font-semibold transition-colors shadow-sm cursor-pointer disabled:opacity-50"
+              >
+                <Save className="w-4 h-4" />
+                <span>{savingRencana ? 'Menyimpan...' : 'Simpan Peruntukan Lahan'}</span>
+              </button>
+            </div>
+
+            {/* Subjudul Hero */}
+            <div className="mb-6">
+              <label className="block text-xs font-bold text-neutral-700 uppercase mb-1">
+                Subjudul Kampanye (Banner Hero Atas)
+              </label>
+              <textarea
+                rows={2}
+                value={heroSubjudul}
+                onChange={(e) => setHeroSubjudul(e.target.value)}
+                placeholder="Investasi Abadi Menuju Jannah Melalui Wakaf Lahan Dakwah dan Pendidikan Sunnah"
+                className="w-full px-3.5 py-2.5 rounded-xl border border-neutral-300 text-sm focus:outline-hidden focus:ring-2 focus:ring-[#3E5FD1]"
+              />
+            </div>
+
+            {/* Header Seksi Peruntukan */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 p-4 rounded-xl bg-neutral-50/70 border border-neutral-200/80 mb-6">
+              <div>
+                <label className="block text-xs font-bold text-neutral-700 uppercase mb-1">
+                  Judul Seksi di Halaman Publik
+                </label>
+                <input
+                  type="text"
+                  required
+                  value={rencanaJudul}
+                  onChange={(e) => setRencanaJudul(e.target.value)}
+                  placeholder="Peruntukan & Rencana Pembangunan"
+                  className="w-full px-3.5 py-2 rounded-xl border border-neutral-300 text-sm font-semibold focus:outline-hidden focus:ring-2 focus:ring-[#3E5FD1]"
+                />
+              </div>
+              <div>
+                <label className="block text-xs font-bold text-neutral-700 uppercase mb-1">
+                  Subjudul Seksi di Halaman Publik
+                </label>
+                <input
+                  type="text"
+                  required
+                  value={rencanaSubjudul}
+                  onChange={(e) => setRencanaSubjudul(e.target.value)}
+                  placeholder="Setiap jengkal tanah wakaf ini akan dimakmurkan untuk ibadah dan kaderisasi generasi Islam."
+                  className="w-full px-3.5 py-2 rounded-xl border border-neutral-300 text-sm focus:outline-hidden focus:ring-2 focus:ring-[#3E5FD1]"
+                />
               </div>
             </div>
 
-            {/* Pertanyaan FAQ */}
-            <div className="border-t border-neutral-100 pt-5">
-              <div className="flex justify-between items-center mb-3">
-                <h3 className="text-base font-bold text-[#111827]">
-                  FAQ Pertanyaan &amp; Jawaban ({faqList.length} Item)
-                </h3>
-                <button
-                  type="button"
-                  onClick={() =>
-                    setFaqList([
-                      ...faqList,
-                      {
-                        pertanyaan: 'Pertanyaan baru seputar wakaf lahan?',
-                        jawaban: 'Penjelasan dan jawaban resmi yayasan.',
-                      },
-                    ])
-                  }
-                  className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-[#EEF2FC] hover:bg-blue-100 text-[#1F2F6B] rounded-lg text-xs font-bold transition-colors cursor-pointer"
-                >
-                  <Plus className="w-3.5 h-3.5" />
-                  <span>Tambah Pertanyaan</span>
-                </button>
-              </div>
+            <div className="flex justify-between items-center mb-3">
+              <h3 className="text-base font-bold text-[#111827]">
+                Poin Pembangunan &amp; Peruntukan ({rencanaList.length} Poin)
+              </h3>
+              <button
+                type="button"
+                onClick={() => setRencanaList([...rencanaList, 'Rencana pembangunan fasilitas dakwah baru'])}
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-[#EEF2FC] hover:bg-blue-100 text-[#1F2F6B] rounded-lg text-xs font-bold transition-colors cursor-pointer"
+              >
+                <Plus className="w-3.5 h-3.5" />
+                <span>Tambah Poin</span>
+              </button>
+            </div>
 
-              <div className="space-y-4">
-                {faqList.map((fq, idx) => (
-                  <div key={idx} className="p-4 rounded-xl border border-neutral-200 bg-white space-y-2.5">
-                    <div className="flex justify-between items-center border-b border-neutral-100 pb-2">
-                      <span className="text-xs font-bold text-neutral-500">FAQ #{idx + 1}</span>
-                      <button
-                        type="button"
-                        onClick={() => setFaqList(faqList.filter((_, i) => i !== idx))}
-                        className="p-1 text-neutral-400 hover:text-red-600 cursor-pointer"
-                      >
-                        <Trash2 className="w-4 h-4" />
-                      </button>
-                    </div>
-
-                    <div>
-                      <label className="block text-[11px] font-bold text-neutral-600 uppercase mb-1">
-                        Pertanyaan
-                      </label>
-                      <input
-                        type="text"
-                        required
-                        value={fq.pertanyaan}
-                        onChange={(e) => {
-                          const updated = [...faqList];
-                          updated[idx].pertanyaan = e.target.value;
-                          setFaqList(updated);
-                        }}
-                        className="w-full px-3 py-2 rounded-lg border border-neutral-300 text-sm focus:outline-hidden"
-                      />
-                    </div>
-
-                    <div>
-                      <label className="block text-[11px] font-bold text-neutral-600 uppercase mb-1">
-                        Jawaban
-                      </label>
-                      <textarea
-                        rows={2}
-                        required
-                        value={fq.jawaban}
-                        onChange={(e) => {
-                          const updated = [...faqList];
-                          updated[idx].jawaban = e.target.value;
-                          setFaqList(updated);
-                        }}
-                        className="w-full px-3 py-2 rounded-lg border border-neutral-300 text-xs focus:outline-hidden"
-                      />
-                    </div>
-                  </div>
-                ))}
-              </div>
+            <div className="space-y-2.5">
+              {rencanaList.map((item, idx) => (
+                <div key={idx} className="flex items-center gap-2">
+                  <span className="text-xs font-bold text-neutral-400 w-6 text-center">{idx + 1}.</span>
+                  <input
+                    type="text"
+                    required
+                    value={item}
+                    onChange={(e) => {
+                      const updated = [...rencanaList];
+                      updated[idx] = e.target.value;
+                      setRencanaList(updated);
+                    }}
+                    className="flex-1 px-3 py-2 rounded-xl border border-neutral-300 text-sm focus:outline-hidden focus:ring-1 focus:ring-[#3E5FD1]"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setRencanaList(rencanaList.filter((_, i) => i !== idx))}
+                    className="p-2 text-neutral-400 hover:text-red-600 rounded-lg transition-colors cursor-pointer"
+                    title="Hapus Poin"
+                  >
+                    <Trash2 className="w-4 h-4" />
+                  </button>
+                </div>
+              ))}
             </div>
 
             <div className="flex justify-end pt-5 mt-6 border-t border-neutral-100">
               <button
                 type="submit"
-                disabled={savingKonten}
+                disabled={savingRencana}
                 className="inline-flex items-center gap-2 px-6 py-2.5 bg-[#1F2F6B] hover:bg-[#3E5FD1] text-white rounded-xl text-sm font-semibold transition-colors shadow-sm cursor-pointer disabled:opacity-50"
               >
                 <Save className="w-4 h-4" />
-                <span>{savingKonten ? 'Menyimpan...' : 'Simpan Konten & Tahapan'}</span>
+                <span>{savingRencana ? 'Menyimpan...' : 'Simpan Peruntukan Lahan'}</span>
+              </button>
+            </div>
+          </div>
+        </form>
+      )}
+
+      {/* TAB 5: FAQ WAKAF LAHAN */}
+      {activeTab === 'faq' && (
+        <form onSubmit={handleSaveFaq} className="space-y-6">
+          <div className="bg-white border border-neutral-200/80 rounded-2xl p-6 shadow-xs">
+            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 border-b border-neutral-100 pb-5 mb-5">
+              <div>
+                <h2 className="text-xl font-bold text-[#111827]">Pertanyaan yang Sering Diajukan (FAQ)</h2>
+                <p className="text-sm text-neutral-500 mt-1">
+                  Kelola daftar tanya jawab seputar transparansi legalitas, sertifikat, dan rekening pembebasan lahan wakaf.
+                </p>
+              </div>
+              <button
+                type="submit"
+                disabled={savingFaq}
+                className="inline-flex items-center gap-2 px-5 py-2.5 bg-[#1F2F6B] hover:bg-[#3E5FD1] text-white rounded-xl text-sm font-semibold transition-colors shadow-sm cursor-pointer disabled:opacity-50"
+              >
+                <Save className="w-4 h-4" />
+                <span>{savingFaq ? 'Menyimpan...' : 'Simpan FAQ Wakaf'}</span>
+              </button>
+            </div>
+
+            {/* Header Seksi FAQ */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 p-4 rounded-xl bg-neutral-50/70 border border-neutral-200/80 mb-6">
+              <div>
+                <label className="block text-xs font-bold text-neutral-700 uppercase mb-1">
+                  Judul Seksi di Halaman Publik
+                </label>
+                <input
+                  type="text"
+                  required
+                  value={faqJudul}
+                  onChange={(e) => setFaqJudul(e.target.value)}
+                  placeholder="Pertanyaan yang Sering Diajukan"
+                  className="w-full px-3.5 py-2 rounded-xl border border-neutral-300 text-sm font-semibold focus:outline-hidden focus:ring-2 focus:ring-[#3E5FD1]"
+                />
+              </div>
+              <div>
+                <label className="block text-xs font-bold text-neutral-700 uppercase mb-1">
+                  Subjudul Seksi di Halaman Publik
+                </label>
+                <input
+                  type="text"
+                  required
+                  value={faqSubjudul}
+                  onChange={(e) => setFaqSubjudul(e.target.value)}
+                  placeholder="Seputar pelaksanaan dan transparansi program wakaf tanah yayasan."
+                  className="w-full px-3.5 py-2 rounded-xl border border-neutral-300 text-sm focus:outline-hidden focus:ring-2 focus:ring-[#3E5FD1]"
+                />
+              </div>
+            </div>
+
+            <div className="flex justify-between items-center mb-3">
+              <h3 className="text-base font-bold text-[#111827]">
+                Daftar Pertanyaan &amp; Jawaban ({faqList.length} Item)
+              </h3>
+              <button
+                type="button"
+                onClick={() =>
+                  setFaqList([
+                    ...faqList,
+                    {
+                      pertanyaan: 'Pertanyaan baru seputar wakaf lahan?',
+                      jawaban: 'Penjelasan dan jawaban resmi yayasan.',
+                    },
+                  ])
+                }
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-[#EEF2FC] hover:bg-blue-100 text-[#1F2F6B] rounded-lg text-xs font-bold transition-colors cursor-pointer"
+              >
+                <Plus className="w-3.5 h-3.5" />
+                <span>Tambah Pertanyaan</span>
+              </button>
+            </div>
+
+            <div className="space-y-4">
+              {faqList.map((fq, idx) => (
+                <div key={idx} className="p-4 rounded-xl border border-neutral-200 bg-white space-y-2.5">
+                  <div className="flex justify-between items-center border-b border-neutral-100 pb-2">
+                    <span className="text-xs font-bold text-neutral-500">FAQ #{idx + 1}</span>
+                    <button
+                      type="button"
+                      onClick={() => setFaqList(faqList.filter((_, i) => i !== idx))}
+                      className="p-1 text-neutral-400 hover:text-red-600 cursor-pointer"
+                    >
+                      <Trash2 className="w-4 h-4" />
+                    </button>
+                  </div>
+
+                  <div>
+                    <label className="block text-[11px] font-bold text-neutral-600 uppercase mb-1">
+                      Pertanyaan
+                    </label>
+                    <input
+                      type="text"
+                      required
+                      value={fq.pertanyaan}
+                      onChange={(e) => {
+                        const updated = [...faqList];
+                        updated[idx].pertanyaan = e.target.value;
+                        setFaqList(updated);
+                      }}
+                      className="w-full px-3 py-2 rounded-lg border border-neutral-300 text-sm focus:outline-hidden"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-[11px] font-bold text-neutral-600 uppercase mb-1">
+                      Jawaban
+                    </label>
+                    <textarea
+                      rows={2}
+                      required
+                      value={fq.jawaban}
+                      onChange={(e) => {
+                        const updated = [...faqList];
+                        updated[idx].jawaban = e.target.value;
+                        setFaqList(updated);
+                      }}
+                      className="w-full px-3 py-2 rounded-lg border border-neutral-300 text-xs focus:outline-hidden"
+                    />
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            <div className="flex justify-end pt-5 mt-6 border-t border-neutral-100">
+              <button
+                type="submit"
+                disabled={savingFaq}
+                className="inline-flex items-center gap-2 px-6 py-2.5 bg-[#1F2F6B] hover:bg-[#3E5FD1] text-white rounded-xl text-sm font-semibold transition-colors shadow-sm cursor-pointer disabled:opacity-50"
+              >
+                <Save className="w-4 h-4" />
+                <span>{savingFaq ? 'Menyimpan...' : 'Simpan FAQ Wakaf'}</span>
               </button>
             </div>
           </div>
