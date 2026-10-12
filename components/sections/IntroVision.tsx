@@ -45,7 +45,7 @@ export function IntroVision() {
         {/* Star Ornament Header */}
         <div className="flex items-center justify-center gap-3 mb-6">
           <div className="h-px w-12 bg-yimi-blue-600/20" />
-          <StarOrnament size={36} color="#3E5FD1" accentColor="#2EE05A" />
+          <StarOrnament size={36} color="#567790" accentColor="#5eb2f2" />
           <div className="h-px w-12 bg-yimi-blue-600/20" />
         </div>
 

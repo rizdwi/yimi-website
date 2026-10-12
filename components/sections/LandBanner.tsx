@@ -107,7 +107,7 @@ export function LandBanner() {
               </span>
             </div>
 
-            {/* Progress Bar with Green fill #2EE05A */}
+            {/* Progress Bar with Green fill #5eb2f2 */}
             <div className="flex flex-col gap-2">
               <div className="flex justify-between items-center text-xs font-bold text-white">
                 <span className="text-yimi-green-500 text-sm">

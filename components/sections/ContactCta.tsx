@@ -123,7 +123,7 @@ export function ContactCta() {
           </div>
 
           {/* Right Form Card */}
-          <div className="lg:col-span-6 bg-white rounded-3xl p-6 sm:p-8 shadow-[0_8px_30px_rgba(31,47,107,0.08)] border border-yimi-blue-50">
+          <div className="lg:col-span-6 bg-white rounded-3xl p-6 sm:p-8 shadow-[0_8px_30px_rgba(0,40,70,0.08)] border border-yimi-blue-50">
             {isSubmitted ? (
               <div className="py-8 text-center flex flex-col items-center">
                 <CheckCircle2 className="w-16 h-16 text-yimi-green-500 mb-4" />

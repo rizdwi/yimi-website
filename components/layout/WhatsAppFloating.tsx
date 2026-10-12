@@ -18,7 +18,7 @@ export function WhatsAppFloating() {
       aria-label="Kontak Cepat WhatsApp"
       className="fixed bottom-6 right-6 z-40 flex items-center group mb-[env(safe-area-inset-bottom)]"
     >
-      <span className="hidden sm:inline-block mr-3 px-3.5 py-1.5 bg-white text-yimi-blue-800 text-xs font-bold rounded-full shadow-[0_4px_16px_rgba(31,47,107,0.12)] border border-yimi-blue-50 opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none">
+      <span className="hidden sm:inline-block mr-3 px-3.5 py-1.5 bg-white text-yimi-blue-800 text-xs font-bold rounded-full shadow-[0_4px_16px_rgba(0,40,70,0.12)] border border-yimi-blue-50 opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none">
         Tanya Pengurus via WhatsApp
       </span>
       <a

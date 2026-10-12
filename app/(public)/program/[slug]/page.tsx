@@ -260,18 +260,18 @@ export default function DynamicProgramPage() {
             {(meta.visi_sekolah || (meta.misi_sekolah && meta.misi_sekolah.length > 0)) && (
               <div className="space-y-4 pt-4 border-t border-neutral-100">
                 <div className="flex items-center gap-2">
-                  <Compass className="w-5 h-5 text-[#3E5FD1]" />
+                  <Compass className="w-5 h-5 text-[#567790]" />
                   <h3 className="text-xl font-extrabold text-yimi-blue-800">
                     Visi &amp; Misi Program
                   </h3>
                 </div>
 
                 {meta.visi_sekolah && (
-                  <div className="p-5 rounded-2xl bg-[#EEF2FC]/50 border border-[#3E5FD1]/20">
-                    <span className="text-[10px] font-bold uppercase tracking-wider text-[#3E5FD1] block mb-1">
+                  <div className="p-5 rounded-2xl bg-[#baddef]/50 border border-[#567790]/20">
+                    <span className="text-[10px] font-bold uppercase tracking-wider text-[#567790] block mb-1">
                       Visi Utama
                     </span>
-                    <p className="text-sm font-semibold text-[#1F2F6B] leading-relaxed">
+                    <p className="text-sm font-semibold text-[#002846] leading-relaxed">
                       &ldquo;{meta.visi_sekolah}&rdquo;
                     </p>
                   </div>
@@ -286,7 +286,7 @@ export default function DynamicProgramPage() {
                           key={idx}
                           className="flex items-start gap-2.5 p-3 rounded-xl bg-neutral-50 border border-neutral-100"
                         >
-                          <span className="w-5 h-5 rounded-full bg-[#138A3A]/10 text-[#138A3A] font-bold text-xs flex items-center justify-center shrink-0 mt-0.5">
+                          <span className="w-5 h-5 rounded-full bg-[#567790]/10 text-[#567790] font-bold text-xs flex items-center justify-center shrink-0 mt-0.5">
                             {idx + 1}
                           </span>
                           <span className="text-xs text-neutral-700 leading-relaxed">{m}</span>
@@ -388,7 +388,7 @@ export default function DynamicProgramPage() {
                       key={idx}
                       className="p-4 rounded-2xl bg-[#F8FAFC] border border-[#E3E7EE] flex items-start gap-3"
                     >
-                      <div className="w-8 h-8 rounded-lg bg-[#EEF2FC] text-[#3E5FD1] flex items-center justify-center shrink-0">
+                      <div className="w-8 h-8 rounded-lg bg-[#baddef] text-[#567790] flex items-center justify-center shrink-0">
                         <Building2 className="w-4 h-4" />
                       </div>
                       <div>
@@ -496,8 +496,8 @@ export default function DynamicProgramPage() {
             {/* Paket Infaq jika ada */}
             {meta.paket_infaq && meta.paket_infaq.length > 0 && (
               <div className="p-4 rounded-2xl bg-white border border-yimi-blue-600/20 space-y-2">
-                <div className="flex items-center gap-1.5 text-xs font-bold text-[#1F2F6B]">
-                  <PackageCheck className="w-4 h-4 text-[#3E5FD1]" />
+                <div className="flex items-center gap-1.5 text-xs font-bold text-[#002846]">
+                  <PackageCheck className="w-4 h-4 text-[#567790]" />
                   <span>Pilihan Paket Donasi:</span>
                 </div>
                 <div className="space-y-1.5">
@@ -546,9 +546,9 @@ export default function DynamicProgramPage() {
                     href={meta.file_formulir}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-white border border-[#138A3A] text-[#138A3A] hover:bg-emerald-50 text-xs font-bold transition-all shadow-xs"
+                    className="w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-white border border-[#567790] text-[#567790] hover:bg-emerald-50 text-xs font-bold transition-all shadow-xs"
                   >
-                    <FileText className="w-4 h-4 text-[#138A3A]" />
+                    <FileText className="w-4 h-4 text-[#567790]" />
                     <span className="truncate max-w-[220px]">
                       {meta.file_formulir_nama || 'Unduh Formulir (PDF)'}
                     </span>
@@ -573,7 +573,7 @@ export default function DynamicProgramPage() {
             {/* Jam Pelayanan & Alamat jika ada */}
             {meta.jam_pelayanan && (
               <div className="p-3 bg-white/70 rounded-xl border border-yimi-blue-600/10 text-xs text-neutral-600">
-                <span className="font-bold text-[#1F2F6B] block mb-0.5">Jam Pelayanan PPDB:</span>
+                <span className="font-bold text-[#002846] block mb-0.5">Jam Pelayanan PPDB:</span>
                 <span>{meta.jam_pelayanan}</span>
               </div>
             )}
@@ -582,7 +582,7 @@ export default function DynamicProgramPage() {
               <div className="p-3 bg-white/70 rounded-xl border border-yimi-blue-600/10 text-xs text-neutral-600 flex items-start gap-2">
                 <MapPin className="w-4 h-4 text-[#D7261E] shrink-0 mt-0.5" />
                 <div>
-                  <span className="font-bold text-[#1F2F6B] block mb-0.5">Lokasi:</span>
+                  <span className="font-bold text-[#002846] block mb-0.5">Lokasi:</span>
                   <span className="text-[11px] leading-relaxed">{meta.alamat_sekolah}</span>
                 </div>
               </div>

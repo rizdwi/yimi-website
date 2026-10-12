@@ -2,11 +2,13 @@
 @import "tailwindcss";
 
 @theme {
-  --color-yimi-blue-600: #3E5FD1;
-  --color-yimi-blue-800: #1F2F6B;
-  --color-yimi-blue-50: #EEF2FC;
-  --color-yimi-green-500: #2EE05A;
-  --color-yimi-green-700: #138A3A;
+  /* Skema warna YIMI (60-30-10): biru pucat dominan, biru tua sekunder, biru langit aksen */
+  --color-yimi-blue-950: #002846;
+  --color-yimi-blue-800: #002846;
+  --color-yimi-blue-600: #567790;
+  --color-yimi-blue-50: #baddef;
+  --color-yimi-green-500: #5eb2f2;
+  --color-yimi-green-700: #567790;
   --color-yimi-yellow-400: #FFF200;
   --color-yimi-red-600: #D7261E;
   --color-neutral-900: #111827;
@@ -17,16 +19,17 @@
   --font-sans: "Plus Jakarta Sans", "Inter", system-ui, -apple-system, sans-serif;
   --font-arabic: "Amiri", "Noto Naskh Arabic", serif;
 
-  --shadow-yimi: 0 8px 24px rgba(31, 47, 107, 0.08);
-  --shadow-yimi-hover: 0 14px 32px rgba(31, 47, 107, 0.14);
+  --shadow-yimi: 0 8px 24px rgba(0, 40, 70, 0.08);
+  --shadow-yimi-hover: 0 14px 32px rgba(0, 40, 70, 0.14);
 }
 
 :root {
-  --yimi-blue-600: #3E5FD1;
-  --yimi-blue-800: #1F2F6B;
-  --yimi-blue-50: #EEF2FC;
-  --yimi-green-500: #2EE05A;
-  --yimi-green-700: #138A3A;
+  --yimi-blue-950: #002846;
+  --yimi-blue-800: #002846;
+  --yimi-blue-600: #567790;
+  --yimi-blue-50: #baddef;
+  --yimi-green-500: #5eb2f2;
+  --yimi-green-700: #567790;
   --yimi-yellow-400: #FFF200;
   --yimi-red-600: #D7261E;
   --neutral-900: #111827;

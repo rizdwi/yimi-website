@@ -169,7 +169,7 @@ export default function PembebasanLahanPage() {
       {/* Progres Penggalangan Dana Card (Sticky/Prominent) */}
       <section className="py-12 bg-white relative -mt-10 z-20">
         <div className="max-w-[1200px] w-full mx-auto px-5 md:px-8">
-          <div className="bg-white rounded-3xl p-6 sm:p-10 border border-neutral-200/90 shadow-[0_12px_40px_rgba(31,47,107,0.1)]">
+          <div className="bg-white rounded-3xl p-6 sm:p-10 border border-neutral-200/90 shadow-[0_12px_40px_rgba(0,40,70,0.1)]">
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
               {/* Numbers */}
               <div className="lg:col-span-8 flex flex-col gap-4">

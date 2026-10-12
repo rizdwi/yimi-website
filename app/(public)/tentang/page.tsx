@@ -171,7 +171,7 @@ export default async function TentangPage() {
       <section className="py-20 bg-neutral-100/60 relative overflow-hidden">
         <div className="max-w-[1200px] w-full mx-auto px-5 md:px-8 relative z-10">
           <div className="max-w-3xl mx-auto text-center mb-12">
-            <StarOrnament size={36} color="#3E5FD1" accentColor="#2EE05A" />
+            <StarOrnament size={36} color="#567790" accentColor="#5eb2f2" />
             <h2 className="text-2xl sm:text-3xl md:text-4xl font-extrabold text-yimi-blue-800 tracking-tight mt-3 mb-4">
               {manhaj.judul}
             </h2>
@@ -308,7 +308,7 @@ export default async function TentangPage() {
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
             {/* Center Logo Showcase */}
             <div className="lg:col-span-5 flex items-center justify-center p-8 bg-yimi-blue-50/50 rounded-3xl border border-yimi-blue-600/15">
-              <div className="w-56 h-56 relative drop-shadow-[0_8px_24px_rgba(31,47,107,0.12)] flex items-center justify-center">
+              <div className="w-56 h-56 relative drop-shadow-[0_8px_24px_rgba(0,40,70,0.12)] flex items-center justify-center">
                 <Image
                   src={logoUrl}
                   alt="Logo Lengkap YIMI"

@@ -10,8 +10,8 @@ type StarOrnamentProps = {
 export function StarOrnament({
   size = 32,
   className = '',
-  color = '#3E5FD1',
-  accentColor = '#2EE05A',
+  color = '#567790',
+  accentColor = '#5eb2f2',
 }: StarOrnamentProps) {
   return (
     <svg

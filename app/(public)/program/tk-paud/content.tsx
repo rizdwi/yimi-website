@@ -259,8 +259,8 @@ export default function TkPaudPage() {
                 {/* Paket Sarana & Kelengkapan (jika ada di CMS) */}
                 {meta.paket_infaq && meta.paket_infaq.length > 0 && (
                   <div className="mt-2 pt-2 border-t border-neutral-100 space-y-2">
-                    <div className="flex items-center gap-1.5 text-[11px] font-bold text-[#1F2F6B]">
-                      <PackageCheck className="w-3.5 h-3.5 text-[#3E5FD1]" />
+                    <div className="flex items-center gap-1.5 text-[11px] font-bold text-[#002846]">
+                      <PackageCheck className="w-3.5 h-3.5 text-[#567790]" />
                       <span>Paket Sarana / Seragam / Buku:</span>
                     </div>
                     <div className="space-y-1.5">

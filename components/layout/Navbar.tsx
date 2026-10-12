@@ -60,7 +60,7 @@ export function Navbar() {
       <header
         className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 h-[72px] flex items-center ${
           showSolidNav
-            ? 'bg-white/95 backdrop-blur-md shadow-[0_4px_20px_rgba(31,47,107,0.08)] border-b border-yimi-blue-50'
+            ? 'bg-white/95 backdrop-blur-md shadow-[0_4px_20px_rgba(0,40,70,0.08)] border-b border-yimi-blue-50'
             : 'bg-transparent'
         }`}
       >
