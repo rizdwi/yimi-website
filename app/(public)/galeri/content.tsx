@@ -5,7 +5,6 @@ import Image from 'next/image';
 import { Images, Eye, X } from 'lucide-react';
 import { Badge } from '@/components/ui/Badge';
 import { PageHero } from '@/components/ui/PageHero';
-import galleryData from '@/content/gallery.json';
 
 const FALLBACK_IMAGE = 'https://images.unsplash.com/photo-1542816417-0983c9c9ad53?q=80&w=1200&auto=format&fit=crop';
 
@@ -60,13 +59,8 @@ function GalleryPhotoCard({ photo, onSelect }: { photo: GalleryPhotoItemLocal; o
 }
 
 export default function GaleriPage() {
-  const [photos, setPhotos] = useState<GalleryPhotoItemLocal[]>(
-    galleryData.map((g) => ({
-      ...g,
-      deskripsi: g.deskripsi || '',
-      izinOrangTua: g.izinOrangTua ?? true,
-    }))
-  );
+  // CMS adalah sumber kebenaran: mulai kosong, isi dari API.
+  const [photos, setPhotos] = useState<GalleryPhotoItemLocal[]>([]);
   const [selectedCategory, setSelectedCategory] = useState<string>('Semua');
   const [activePhoto, setActivePhoto] = useState<GalleryPhotoItemLocal | null>(null);
 
@@ -76,19 +70,18 @@ export default function GaleriPage() {
         const res = await fetch('/api/galeri');
         if (res.ok) {
           const data = await res.json();
-          if (data.items && data.items.length > 0) {
-            setPhotos(
-              data.items.map((i: { id: string; judul: string; keterangan?: string; deskripsi?: string; gambar: string; kategori: string; izin_orang_tua?: boolean; izinOrangTua?: boolean; tanggal?: string }) => ({
-                id: i.id,
-                judul: i.judul,
-                deskripsi: i.keterangan || i.deskripsi || '',
-                gambar: i.gambar,
-                kategori: i.kategori,
-                izinOrangTua: i.izin_orang_tua ?? i.izinOrangTua ?? true,
-                tanggal: i.tanggal,
-              }))
-            );
-          }
+          // Hormati CMS: kosong → kosong (jangan fallback ke data lokal basi)
+          setPhotos(
+            (data.items || []).map((i: { id: string; judul: string; keterangan?: string; deskripsi?: string; gambar: string; kategori: string; izin_orang_tua?: boolean; izinOrangTua?: boolean; tanggal?: string }) => ({
+              id: i.id,
+              judul: i.judul,
+              deskripsi: i.keterangan || i.deskripsi || '',
+              gambar: i.gambar,
+              kategori: i.kategori,
+              izinOrangTua: i.izin_orang_tua ?? i.izinOrangTua ?? true,
+              tanggal: i.tanggal,
+            }))
+          );
         }
       } catch (err) {
         console.error('Failed to load photos:', err);

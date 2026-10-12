@@ -7,7 +7,6 @@ import { ArrowRight, Calendar, User } from 'lucide-react';
 import { Card } from '@/components/ui/Card';
 import { Badge } from '@/components/ui/Badge';
 import { formatTanggal } from '@/lib/format';
-import newsDataFallback from '@/content/news/index.json';
 
 interface NewsItem {
   id: string;
@@ -21,7 +20,9 @@ interface NewsItem {
 }
 
 export function LatestNews() {
-  const [newsList, setNewsList] = useState<NewsItem[]>(newsDataFallback);
+  // CMS adalah sumber kebenaran: mulai kosong, isi dari API.
+  const [newsList, setNewsList] = useState<NewsItem[]>([]);
+  const [loaded, setLoaded] = useState(false);
 
   useEffect(() => {
     async function fetchLatestNews() {
@@ -29,17 +30,23 @@ export function LatestNews() {
         const res = await fetch('/api/berita');
         if (res.ok) {
           const data = await res.json();
-          if (Array.isArray(data.news) && data.news.length > 0) {
-            setNewsList(data.news);
-          }
+          // Hormati CMS: kosong → kosong (jangan fallback ke data lokal basi)
+          setNewsList(Array.isArray(data.news) ? data.news : []);
         }
       } catch (err) {
         console.error('Gagal mengambil berita live:', err);
+      } finally {
+        setLoaded(true);
       }
     }
 
     fetchLatestNews();
   }, []);
+
+  // Sembunyikan section jika CMS tidak punya berita
+  if (loaded && newsList.length === 0) {
+    return null;
+  }
 
   const latestThree = newsList.slice(0, 3);
 

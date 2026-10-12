@@ -13,7 +13,6 @@ import {
 } from 'lucide-react';
 import { Badge } from '@/components/ui/Badge';
 import { GalleryItem } from '@/lib/content';
-import galleryData from '@/content/gallery.json';
 
 const FALLBACK_IMAGE =
   'https://images.unsplash.com/photo-1542816417-0983c9c9ad53?q=80&w=1200&auto=format&fit=crop';
@@ -95,9 +94,10 @@ function GalleryCardItem({
 
 export function GalleryPreview() {
   const [selectedPhotoIndex, setSelectedPhotoIndex] = useState<number | null>(null);
-  const [photos, setPhotos] = useState<GalleryItem[]>(
-    galleryData.filter((item) => item.izinOrangTua === true)
-  );
+  // CMS adalah sumber kebenaran: mulai kosong, isi dari API.
+  // Jika CMS kosong, section disembunyikan (jangan tampilkan data basi).
+  const [photos, setPhotos] = useState<GalleryItem[]>([]);
+  const [loaded, setLoaded] = useState(false);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isHovered, setIsHovered] = useState(false);
   const [visibleCount, setVisibleCount] = useState(3);
@@ -122,29 +122,30 @@ export function GalleryPreview() {
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
-  // Fetch live photos dari database
+  // Fetch live photos dari database (CMS = sumber kebenaran)
   useEffect(() => {
     async function fetchLivePhotos() {
       try {
         const res = await fetch('/api/galeri?beranda=true');
         if (res.ok) {
           const data = await res.json();
-          if (data.items && data.items.length > 0) {
-            setPhotos(
-              data.items.map((i: PublicGalleryApiItem) => ({
-                id: i.id,
-                judul: i.judul,
-                deskripsi: i.keterangan || i.deskripsi || '',
-                gambar: i.gambar,
-                kategori: i.kategori,
-                izinOrangTua: i.izin_orang_tua ?? i.izinOrangTua ?? true,
-                tanggal: i.tanggal || new Date().toISOString().split('T')[0],
-              }))
-            );
-          }
+          // Hormati CMS: kosong → kosong (jangan fallback ke data lokal basi)
+          setPhotos(
+            (data.items || []).map((i: PublicGalleryApiItem) => ({
+              id: i.id,
+              judul: i.judul,
+              deskripsi: i.keterangan || i.deskripsi || '',
+              gambar: i.gambar,
+              kategori: i.kategori,
+              izinOrangTua: i.izin_orang_tua ?? i.izinOrangTua ?? true,
+              tanggal: i.tanggal || new Date().toISOString().split('T')[0],
+            }))
+          );
         }
       } catch (err) {
         console.error('Failed to load live gallery for preview slider:', err);
+      } finally {
+        setLoaded(true);
       }
     }
 
@@ -218,6 +219,12 @@ export function GalleryPreview() {
 
   const selectedPhoto =
     selectedPhotoIndex !== null ? photos[selectedPhotoIndex] : null;
+
+  // Sembunyikan section jika CMS tidak punya foto (hindari tampil data basi).
+  // Ditaruh setelah semua hooks (aturan React Hooks).
+  if (loaded && photos.length === 0) {
+    return null;
+  }
 
   return (
     <section className="py-20 md:py-24 bg-neutral-100/60 relative overflow-hidden">

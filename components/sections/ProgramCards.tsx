@@ -14,7 +14,6 @@ import {
 } from 'lucide-react';
 import { Card } from '@/components/ui/Card';
 import { Badge } from '@/components/ui/Badge';
-import fallbackPrograms from '@/content/programs/index.json';
 
 /** Banner tematik per slug program (halaman detail program). */
 const programBanner: Record<string, string> = {
@@ -49,13 +48,9 @@ interface ProgramCardItem {
 }
 
 export function ProgramCards() {
-  const [programs, setPrograms] = useState<ProgramCardItem[]>(
-    fallbackPrograms.map((p) => ({
-      ...p,
-      tampil_beranda: true,
-      ikon: p.icon,
-    }))
-  );
+  // CMS adalah sumber kebenaran: mulai kosong, isi dari API.
+  const [programs, setPrograms] = useState<ProgramCardItem[]>([]);
+  const [loaded, setLoaded] = useState(false);
 
   useEffect(() => {
     async function fetchLivePrograms() {
@@ -63,22 +58,28 @@ export function ProgramCards() {
         const res = await fetch('/api/programs');
         if (res.ok) {
           const data = await res.json();
-          if (Array.isArray(data.programs) && data.programs.length > 0) {
-            const filtered = data.programs.filter(
-              (p: ProgramCardItem) => p.tampil_beranda !== false
-            );
-            if (filtered.length > 0) {
-              setPrograms(filtered);
-            }
-          }
+          // Hormati CMS: kosong → kosong (jangan fallback ke data lokal basi)
+          const filtered = Array.isArray(data.programs)
+            ? data.programs.filter(
+                (p: ProgramCardItem) => p.tampil_beranda !== false
+              )
+            : [];
+          setPrograms(filtered);
         }
       } catch (err) {
         console.error('Gagal mengambil daftar program live:', err);
+      } finally {
+        setLoaded(true);
       }
     }
 
     fetchLivePrograms();
   }, []);
+
+  // Sembunyikan section jika CMS tidak punya program
+  if (loaded && programs.length === 0) {
+    return null;
+  }
 
   return (
     <section className="py-20 md:py-24 bg-neutral-100/60 relative">

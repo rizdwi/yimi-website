@@ -8,7 +8,6 @@ import { Card } from '@/components/ui/Card';
 import { PageHero } from '@/components/ui/PageHero';
 import { Badge } from '@/components/ui/Badge';
 import { formatTanggal } from '@/lib/format';
-import newsDataFallback from '@/content/news/index.json';
 
 interface NewsItem {
   id: string;
@@ -22,7 +21,8 @@ interface NewsItem {
 }
 
 export default function BeritaPage() {
-  const [newsList, setNewsList] = useState<NewsItem[]>(newsDataFallback);
+  // CMS adalah sumber kebenaran: mulai kosong, isi dari API.
+  const [newsList, setNewsList] = useState<NewsItem[]>([]);
   const [selectedCategory, setSelectedCategory] = useState<string>('Semua');
   const [searchQuery, setSearchQuery] = useState<string>('');
 
@@ -32,9 +32,8 @@ export default function BeritaPage() {
         const res = await fetch('/api/berita');
         if (res.ok) {
           const data = await res.json();
-          if (Array.isArray(data.news) && data.news.length > 0) {
-            setNewsList(data.news);
-          }
+          // Hormati CMS: kosong → kosong (jangan fallback ke data lokal basi)
+          setNewsList(Array.isArray(data.news) ? data.news : []);
         }
       } catch (err) {
         console.error('Gagal mengambil daftar berita live:', err);
