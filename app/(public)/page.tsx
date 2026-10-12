@@ -1,6 +1,5 @@
 import type { Metadata } from 'next';
 import { Hero } from '@/components/sections/Hero';
-import { StatsBand } from '@/components/sections/StatsBand';
 import { IntroVision } from '@/components/sections/IntroVision';
 import { ProgramCards } from '@/components/sections/ProgramCards';
 import { LandBanner } from '@/components/sections/LandBanner';
@@ -25,7 +24,6 @@ export default function HomePage() {
   return (
     <>
       <Hero />
-      <StatsBand />
       <IntroVision />
       <ProgramCards />
       <LandBanner />
