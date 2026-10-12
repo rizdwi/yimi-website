@@ -22,10 +22,12 @@ export async function GET(req: NextRequest) {
       .order('terbit_pada', { ascending: false })
       .range(offset, offset + limit - 1);
 
+    // Bedakan "database error" vs "database kosong": error → fallback,
+    // kosong → hormati CMS (jangan tampilkan data cadangan basi).
     if (error) {
       console.error('Supabase error fetching public news_posts:', error);
-    } else if (data && data.length > 0) {
-      const formatted = data.map((post) => ({
+    } else {
+      const formatted = (data || []).map((post) => ({
         id: post.id,
         slug: post.slug,
         judul: post.judul,
@@ -45,7 +47,7 @@ export async function GET(req: NextRequest) {
       }));
 
       return NextResponse.json(
-        { news: formatted, pagination: { page, limit, total: count ?? data.length } },
+        { news: formatted, pagination: { page, limit, total: count ?? formatted.length } },
         { headers: CACHE_HEADERS }
       );
     }

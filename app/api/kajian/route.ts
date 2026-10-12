@@ -28,12 +28,14 @@ export async function GET(req: NextRequest) {
       .order('tanggal', { ascending: true })
       .limit(200); // batas aman sebelum filter
 
+    // Bedakan "database error" vs "database kosong": error → fallback,
+    // kosong → hormati CMS (jangan tampilkan data cadangan basi).
     if (error) {
       console.error('Supabase error fetching public jadwal_kajian:', error);
-    } else if (data && data.length > 0) {
+    } else {
       // Jadwal yang sudah terlewat disembunyikan dari web utama.
       // CMS (endpoint /api/admin/kajian) tetap menyimpan semuanya sebagai arsip.
-      return NextResponse.json(paginate(saringKajianAktif(data)), {
+      return NextResponse.json(paginate(saringKajianAktif(data || [])), {
         headers: CACHE_HEADERS,
       });
     }

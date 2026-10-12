@@ -37,12 +37,18 @@ export async function GET(req: NextRequest) {
 
     const { data, error, count } = await query.range(offset, offset + limit - 1);
 
-    if (!error && data && data.length > 0) {
-      const safeData = data.filter(
+    // Bedakan "database error" vs "database kosong":
+    // - Error (Supabase down) → pakai fallback agar situs tidak rusak.
+    // - Kosong tanpa error → hormati CMS (user memang menghapus semua);
+    //   JANGAN tampilkan data cadangan basi.
+    if (error) {
+      console.error('Error fetching gallery from Supabase:', error);
+    } else {
+      const safeData = (data || []).filter(
         (item) => !(item.kategori?.includes('TK') && !item.izin_orang_tua)
       );
       return NextResponse.json(
-        { items: safeData, pagination: { page, limit, total: count ?? data.length } },
+        { items: safeData, pagination: { page, limit, total: count ?? safeData.length } },
         { headers: CACHE_HEADERS }
       );
     }

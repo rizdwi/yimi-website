@@ -86,7 +86,10 @@ export async function GET(req: NextRequest) {
       .order('urutan', { ascending: true })
       .range(offset, offset + limit - 1);
 
-    if (error || !programs || programs.length === 0) {
+    // Bedakan "database error" vs "database kosong": error → fallback,
+    // kosong → hormati CMS (jangan tampilkan data cadangan basi).
+    if (error) {
+      console.error('Supabase error fetching public programs:', error);
       const fb = (
         fallbackPrograms as { slug?: string; highlight?: string }[]
       ).slice(offset, offset + limit);
