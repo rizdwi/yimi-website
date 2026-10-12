@@ -1,17 +1,15 @@
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import { supabase } from '@/lib/supabase';
 import fallbackPrograms from '@/content/programs/index.json';
 import landFallback from '@/content/land-campaign.json';
 import { formatRupiah } from '@/lib/format';
+import { parsePagination, publicCacheHeaders } from '@/lib/security';
 
 export const dynamic = 'force-dynamic';
 export const revalidate = 0;
 
-const CACHE_HEADERS = {
-  'Cache-Control': 'no-cache, no-store, must-revalidate',
-  'CDN-Cache-Control': 'no-cache, no-store, must-revalidate',
-  'Vercel-CDN-Cache-Control': 'no-cache, no-store, must-revalidate',
-};
+// Program jarang berubah: cache CDN 5 menit.
+const CACHE_HEADERS = publicCacheHeaders(300);
 
 interface ProgramDbRow {
   id: string;
@@ -74,24 +72,29 @@ function terapkanTarifLahan<T extends { slug?: string; highlight?: string }>(
   );
 }
 
-export async function GET() {
+export async function GET(req: NextRequest) {
+  const { searchParams } = new URL(req.url);
+  const { page, limit, offset } = parsePagination(searchParams);
+
   try {
     const tarifLabel = await getTarifLahanLabel();
 
-    const { data: programs, error } = await supabase
+    const { data: programs, error, count } = await supabase
       .from('programs')
-      .select('*')
+      .select('*', { count: 'exact' })
       .eq('is_archived', false)
-      .order('urutan', { ascending: true });
+      .order('urutan', { ascending: true })
+      .range(offset, offset + limit - 1);
 
     if (error || !programs || programs.length === 0) {
+      const fb = (
+        fallbackPrograms as { slug?: string; highlight?: string }[]
+      ).slice(offset, offset + limit);
       return NextResponse.json(
         {
-          programs: terapkanTarifLahan(
-            fallbackPrograms as { slug?: string; highlight?: string }[],
-            tarifLabel
-          ),
+          programs: terapkanTarifLahan(fb, tarifLabel),
           source: 'local-fallback',
+          pagination: { page, limit, total: fallbackPrograms.length },
         },
         { headers: CACHE_HEADERS }
       );
@@ -127,6 +130,7 @@ export async function GET() {
       {
         programs: terapkanTarifLahan(list, tarifLabel),
         source: 'database',
+        pagination: { page, limit, total: count ?? list.length },
       },
       { headers: CACHE_HEADERS }
     );

@@ -41,36 +41,24 @@ export async function POST(req: NextRequest) {
       .eq('email', email.trim().toLowerCase())
       .single();
 
-    let validUser = user;
-    // Fallback jika database belum ada user tapi cocok dengan akun awal
-    if (dbError || !user) {
-      if (
-        email.trim().toLowerCase() === 'admin@yimi.or.id' &&
-        password === 'AdminYimi2026!'
-      ) {
-        validUser = {
-          id: 'admin-default',
-          email: 'admin@yimi.or.id',
-          nama: 'Rizz (Pengelola YIMI)',
-          role: 'admin',
-          password_hash: '',
-        };
-      } else {
-        recordFailedAttempt(`${ip}:${email}`);
-        return NextResponse.json(
-          { error: 'Email atau password salah.' },
-          { status: 401 }
-        );
-      }
-    } else {
-      const isMatch = verifyPassword(password, user.password_hash);
-      if (!isMatch) {
-        recordFailedAttempt(`${ip}:${email}`);
-        return NextResponse.json(
-          { error: 'Email atau password salah.' },
-          { status: 401 }
-        );
-      }
+    // Login HANYA dari database. Tidak ada kredensial fallback hardcoded —
+    // kredensial di kode = backdoor publik (repo ini public).
+    const validUser = user;
+    if (dbError || !validUser) {
+      recordFailedAttempt(`${ip}:${email}`);
+      return NextResponse.json(
+        { error: 'Email atau password salah.' },
+        { status: 401 }
+      );
+    }
+
+    const isMatch = verifyPassword(password, validUser.password_hash);
+    if (!isMatch) {
+      recordFailedAttempt(`${ip}:${email}`);
+      return NextResponse.json(
+        { error: 'Email atau password salah.' },
+        { status: 401 }
+      );
     }
 
     resetRateLimit(`${ip}:${email}`);

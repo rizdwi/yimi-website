@@ -3,9 +3,19 @@ import bcrypt from 'bcryptjs';
 import { cookies } from 'next/headers';
 import { NextRequest } from 'next/server';
 
-const JWT_SECRET = new TextEncoder().encode(
-  process.env.ADMIN_JWT_SECRET || 'yimi_super_secret_jwt_key_2026_istiqomah_secure_token'
-);
+// Fail-closed: aplikasi menolak menandatangani/memverifikasi sesi admin
+// bila ADMIN_JWT_SECRET belum diset. Set di Vercel → Project Settings →
+// Environment Variables (Production), string acak ≥32 karakter, lalu redeploy.
+// TIDAK ADA fallback hardcoded — secret di kode = secret bocor.
+function getJwtSecret(): Uint8Array {
+  const secret = process.env.ADMIN_JWT_SECRET;
+  if (!secret || secret.length < 32) {
+    throw new Error(
+      'ADMIN_JWT_SECRET belum diset (min 32 karakter). Set di environment variables lalu redeploy.'
+    );
+  }
+  return new TextEncoder().encode(secret);
+}
 
 export const COOKIE_NAME = 'yimi_admin_session';
 
@@ -77,12 +87,12 @@ export async function createSessionToken(user: { id: string; email: string; nama
     .setProtectedHeader({ alg: 'HS256' })
     .setIssuedAt()
     .setExpirationTime('8h') // 8 jam sesi aktif
-    .sign(JWT_SECRET);
+    .sign(getJwtSecret());
 }
 
 export async function verifySessionToken(token: string) {
   try {
-    const { payload } = await jwtVerify(token, JWT_SECRET);
+    const { payload } = await jwtVerify(token, getJwtSecret());
     return payload as { sub: string; email: string; nama: string; role: string };
   } catch {
     return null;

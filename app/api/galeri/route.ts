@@ -1,15 +1,13 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { supabase } from '@/lib/supabase';
 import galleryFallback from '@/content/gallery.json';
+import { parsePagination, publicCacheHeaders } from '@/lib/security';
 
 export const dynamic = 'force-dynamic';
 export const revalidate = 0;
 
-const CACHE_HEADERS = {
-  'Cache-Control': 'no-cache, no-store, must-revalidate',
-  'CDN-Cache-Control': 'no-cache, no-store, must-revalidate',
-  'Vercel-CDN-Cache-Control': 'no-cache, no-store, must-revalidate',
-};
+// Galeri jarang berubah: cache CDN 5 menit.
+const CACHE_HEADERS = publicCacheHeaders(300);
 
 interface FallbackGalleryItem {
   id: string;
@@ -23,26 +21,30 @@ interface FallbackGalleryItem {
 export async function GET(req: NextRequest) {
   const { searchParams } = new URL(req.url);
   const berandaOnly = searchParams.get('beranda') === 'true';
+  const { page, limit, offset } = parsePagination(searchParams);
 
   try {
     let query = supabase
       .from('gallery_items')
-      .select('*')
+      .select('*', { count: 'exact' })
       .eq('tampil_publik', true)
       .order('urutan', { ascending: true })
       .order('created_at', { ascending: false });
 
     if (berandaOnly) {
-      query = query.eq('tampil_beranda', true).limit(50);
+      query = query.eq('tampil_beranda', true);
     }
 
-    const { data, error } = await query;
+    const { data, error, count } = await query.range(offset, offset + limit - 1);
 
     if (!error && data && data.length > 0) {
       const safeData = data.filter(
         (item) => !(item.kategori?.includes('TK') && !item.izin_orang_tua)
       );
-      return NextResponse.json({ items: safeData }, { headers: CACHE_HEADERS });
+      return NextResponse.json(
+        { items: safeData, pagination: { page, limit, total: count ?? data.length } },
+        { headers: CACHE_HEADERS }
+      );
     }
   } catch (err) {
     console.error('Error fetching gallery from Supabase:', err);
@@ -50,9 +52,10 @@ export async function GET(req: NextRequest) {
 
   // Fallback to gallery.json
   const fallback = galleryFallback.filter((i) => i.izinOrangTua === true);
+  const paged = fallback.slice(offset, offset + limit);
   return NextResponse.json(
     {
-      items: fallback.map((f: FallbackGalleryItem) => ({
+      items: paged.map((f: FallbackGalleryItem) => ({
         id: f.id,
         judul: f.judul,
         keterangan: f.deskripsi,
@@ -62,6 +65,7 @@ export async function GET(req: NextRequest) {
         tampil_publik: true,
         tampil_beranda: true,
       })),
+      pagination: { page, limit, total: fallback.length },
     },
     { headers: CACHE_HEADERS }
   );
