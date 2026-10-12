@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
+import Image from 'next/image';
 import {
   Landmark,
   MapPin,
@@ -11,7 +12,6 @@ import {
   MessageCircle,
   Clock,
   Sparkles,
-  QrCode,
 } from 'lucide-react';
 import { Card } from '@/components/ui/Card';
 import { PageHero } from '@/components/ui/PageHero';
@@ -21,9 +21,6 @@ import { ProgressBar } from '@/components/ui/ProgressBar';
 import { CountUp } from '@/components/motion/CountUp';
 import { formatRupiah, formatPersen } from '@/lib/format';
 import { useSiteSettings } from '@/context/SiteSettingsContext';
-import { QrisDinamisModal } from '@/components/donasi/QrisDinamisModal';
-import { QrisCode } from '@/components/donasi/QrisCode';
-import { isQrisPayload } from '@/lib/qris';
 import landDataFallback from '@/content/land-campaign.json';
 import siteData from '@/content/site.json';
 
@@ -53,14 +50,13 @@ interface FaqItem {
 }
 
 export default function PembebasanLahanPage() {
-  const { settings, whatsapp, qrisString } = useSiteSettings();
+  const { settings, whatsapp } = useSiteSettings();
   const [copied, setCopied] = useState(false);
-  const [paketAktif, setPaketAktif] = useState<PaketWakafItem | null>(null);
 
   const bank1Nama = settings?.bank_1_nama || siteData.donasi.bank;
   const bank1Rekening = settings?.bank_1_rekening || siteData.donasi.noRekening;
   const bank1An = settings?.bank_1_an || siteData.donasi.atasNama;
-  const qrisAda = isQrisPayload(qrisString);
+  const qrisUrl = settings?.qris_image || siteData.donasi.qrisImage;
   const activeWa = whatsapp || siteData.kontak.whatsapp;
   const [campaign, setCampaign] = useState({
     judul: landDataFallback.judul,
@@ -178,6 +174,7 @@ export default function PembebasanLahanPage() {
                     <span className="text-xs font-bold uppercase tracking-wider text-neutral-500">
                       Progres Terkumpul (Update: {campaign.diperbaruiPada})
                     </span>
+
                   </div>
                   <Badge variant="green" className="text-sm px-3 py-1">
                     {percentage}% Tercapai
@@ -436,10 +433,10 @@ export default function PembebasanLahanPage() {
                   </div>
 
                   <Button
+                    href="#rekening"
                     variant="secondary"
                     size="sm"
                     className="w-full"
-                    onClick={() => setPaketAktif(paket)}
                   >
                     Pilih Paket
                   </Button>
@@ -512,32 +509,22 @@ export default function PembebasanLahanPage() {
                 </div>
               </div>
 
-              {/* QRIS Card — QR asli dari string resmi yayasan; tanpa string, tampil jujur */}
+              {/* QRIS Card */}
               <div className="bg-neutral-50 border border-neutral-200/80 rounded-3xl p-8 flex flex-col items-center text-center gap-4">
                 <Badge variant="neutral">Scan Cepat QRIS</Badge>
-                {qrisAda ? (
-                  <>
-                    <div className="bg-white p-3 rounded-2xl border border-neutral-200 shadow-xs">
-                      <QrisCode payload={qrisString} size={180} label="QRIS Donasi YIMI" />
-                    </div>
-                    <span className="text-xs text-neutral-500">
-                      Mendukung seluruh aplikasi M-Banking &amp; E-Wallet nasional.
-                      Pilih paket di atas untuk QRIS dengan nominal terkunci otomatis.
-                    </span>
-                  </>
-                ) : (
-                  <>
-                    <div className="w-48 h-48 bg-white rounded-2xl border border-dashed border-neutral-300 flex flex-col items-center justify-center gap-2 p-6">
-                      <QrCode className="w-10 h-10 text-neutral-300" />
-                      <span className="text-xs font-semibold text-neutral-500">
-                        QRIS segera hadir
-                      </span>
-                    </div>
-                    <span className="text-xs text-neutral-500">
-                      Sementara ini, salurkan wakaf via transfer ke rekening resmi di samping.
-                    </span>
-                  </>
-                )}
+                <div className="relative w-48 h-48 bg-white p-3 rounded-2xl border border-neutral-200 shadow-xs flex items-center justify-center">
+                  <Image
+                    src={qrisUrl}
+                    alt="QRIS Donasi YIMI"
+                    width={180}
+                    height={180}
+                    unoptimized
+                    className="w-full h-full object-contain"
+                  />
+                </div>
+                <span className="text-xs text-neutral-500">
+                  Mendukung seluruh aplikasi M-Banking &amp; E-Wallet nasional.
+                </span>
                 <Button
                   href={waConfirmUrl}
                   variant="outline"
@@ -580,17 +567,6 @@ export default function PembebasanLahanPage() {
             </div>
           </div>
         </section>
-      )}
-
-      {/* Modal QRIS dinamis per paket wakaf */}
-      {paketAktif && (
-        <QrisDinamisModal
-          paket={paketAktif}
-          qrisString={qrisString}
-          bank={{ nama: bank1Nama, rekening: bank1Rekening, an: bank1An }}
-          waNumber={activeWa}
-          onClose={() => setPaketAktif(null)}
-        />
       )}
     </div>
   );
