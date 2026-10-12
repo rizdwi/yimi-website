@@ -22,7 +22,6 @@ import { downloadIcsFile } from '@/lib/ics';
 import { KajianItem } from '@/lib/types';
 import { saringKajianAktif, tanggalHariIniWIB } from '@/lib/kajian';
 import kajianProgramData from '@/content/programs/kajian.json';
-import kajianScheduleFallback from '@/content/kajian.json';
 
 export default function KajianProgramPage() {
   const [programData, setProgramData] = useState({
@@ -30,9 +29,8 @@ export default function KajianProgramPage() {
     subjudul: kajianProgramData.subjudul,
     deskripsi: kajianProgramData.deskripsi,
   });
-  const [kajianList, setKajianList] = useState<KajianItem[]>(
-    saringKajianAktif(kajianScheduleFallback as unknown as KajianItem[])
-  );
+  // CMS adalah sumber kebenaran untuk jadwal: mulai kosong, isi dari API.
+  const [kajianList, setKajianList] = useState<KajianItem[]>([]);
   const [activeFlyer, setActiveFlyer] = useState<{ url: string; tema: string } | null>(null);
   const todayStr = tanggalHariIniWIB();
 
@@ -60,9 +58,10 @@ export default function KajianProgramPage() {
         const res = await fetch('/api/kajian', { cache: 'no-store' });
         if (res.ok) {
           const data = await res.json();
-          if (Array.isArray(data.kajian) && data.kajian.length > 0) {
-            setKajianList(saringKajianAktif(data.kajian));
-          }
+          // Hormati CMS: kosong → kosong (jangan fallback ke data lokal basi)
+          setKajianList(
+            saringKajianAktif(Array.isArray(data.kajian) ? data.kajian : [])
+          );
         }
       } catch (err) {
         console.error('Gagal mengambil data kajian live:', err);

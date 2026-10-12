@@ -15,7 +15,6 @@ import {
 import { Card } from '@/components/ui/Card';
 import { Badge } from '@/components/ui/Badge';
 import { PageHero } from '@/components/ui/PageHero';
-import fallbackPrograms from '@/content/programs/index.json';
 
 const iconMap = {
   GraduationCap,
@@ -41,12 +40,8 @@ interface ProgramDetailItem {
 }
 
 export default function ProgramIndexPage() {
-  const [programs, setPrograms] = useState<ProgramDetailItem[]>(
-    fallbackPrograms.map((p) => ({
-      ...p,
-      ikon: p.icon,
-    }))
-  );
+  // CMS adalah sumber kebenaran: mulai kosong, isi dari API.
+  const [programs, setPrograms] = useState<ProgramDetailItem[]>([]);
 
   useEffect(() => {
     async function fetchLivePrograms() {
@@ -54,9 +49,8 @@ export default function ProgramIndexPage() {
         const res = await fetch('/api/programs', { cache: 'no-store' });
         if (res.ok) {
           const data = await res.json();
-          if (Array.isArray(data.programs) && data.programs.length > 0) {
-            setPrograms(data.programs);
-          }
+          // Hormati CMS: kosong → kosong (jangan fallback ke data lokal basi)
+          setPrograms(Array.isArray(data.programs) ? data.programs : []);
         }
       } catch (err) {
         console.error('Gagal mengambil daftar program:', err);
