@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import {
   GraduationCap,
   HeartHandshake,
@@ -14,6 +15,16 @@ import {
 import { Card } from '@/components/ui/Card';
 import { Badge } from '@/components/ui/Badge';
 import fallbackPrograms from '@/content/programs/index.json';
+
+/** Banner tematik per slug program (halaman detail program). */
+const programBanner: Record<string, string> = {
+  'tk-paud': '/images/banners/tk-paud.jpg',
+  'tk': '/images/banners/tk-paud.jpg',
+  'kajian': '/images/banners/kajian.jpg',
+  'jumat-berkah': '/images/banners/jumat-berkah.jpg',
+  'pembebasan-lahan': '/images/banners/pembebasan-lahan.jpg',
+  'wakaf': '/images/banners/pembebasan-lahan.jpg',
+};
 
 const iconMap = {
   GraduationCap,
@@ -88,48 +99,67 @@ export function ProgramCards() {
           </p>
         </div>
 
-        {/* 4 Program Cards Grid */}
+        {/* 4 Program Cards Grid — kartu bergambar */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
           {programs.map((item) => {
             const iconKey = (item.ikon || item.icon || 'BookOpen') as keyof typeof iconMap;
             const IconComponent = iconMap[iconKey] || BookOpen;
+            const banner = programBanner[item.slug] || programBanner[item.slug?.split('-')[0]];
 
             return (
               <Card
                 key={item.id}
                 hoverEffect
-                className="flex flex-col justify-between p-6 border-neutral-200/80 hover:border-yimi-blue-600/30 group"
+                className="flex flex-col overflow-hidden p-0 border-neutral-200/80 hover:border-yimi-blue-600/30 group"
               >
-                <div>
-                  <div className="flex items-center justify-between mb-5">
-                    <div className="w-12 h-12 rounded-xl bg-yimi-blue-50 text-yimi-green-700 flex items-center justify-center group-hover:bg-yimi-blue-600 group-hover:text-white transition-colors duration-300">
-                      <IconComponent className="w-6 h-6 stroke-[1.75]" />
-                    </div>
-                    <Badge variant="blue" className="text-[10px]">
+                {/* Gambar banner tematik */}
+                {banner ? (
+                  <div className="relative h-44 overflow-hidden shrink-0">
+                    <Image
+                      src={banner}
+                      alt={item.judul}
+                      fill
+                      sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
+                      className="object-cover transition-transform duration-500 group-hover:scale-105"
+                    />
+                    <div
+                      className="absolute inset-0 bg-linear-to-t from-yimi-blue-950/60 via-transparent to-transparent"
+                      aria-hidden="true"
+                    />
+                    <Badge variant="blue" className="absolute top-3 left-3 text-[10px] backdrop-blur-xs bg-white/85">
                       {item.kategori}
                     </Badge>
                   </div>
+                ) : null}
 
-                  <h3 className="text-lg font-bold text-yimi-blue-800 mb-2 group-hover:text-yimi-blue-600 transition-colors line-clamp-2">
-                    {item.judul}
-                  </h3>
+                <div className="flex flex-col justify-between flex-1 p-6">
+                  <div>
+                    <div className="flex items-center gap-3 mb-4">
+                      <div className="w-11 h-11 rounded-xl bg-yimi-blue-50 text-yimi-green-700 flex items-center justify-center group-hover:bg-yimi-blue-600 group-hover:text-white transition-colors duration-300 shrink-0">
+                        <IconComponent className="w-5 h-5 stroke-[1.75]" />
+                      </div>
+                      <h3 className="text-lg font-bold text-yimi-blue-800 leading-snug group-hover:text-yimi-blue-600 transition-colors line-clamp-2">
+                        {item.judul}
+                      </h3>
+                    </div>
 
-                  <p className="text-sm text-neutral-600 line-clamp-3 leading-relaxed mb-4">
-                    {item.ringkasan}
-                  </p>
-                </div>
+                    <p className="text-sm text-neutral-600 line-clamp-3 leading-relaxed mb-4">
+                      {item.ringkasan}
+                    </p>
+                  </div>
 
-                <div className="pt-4 border-t border-neutral-100 flex items-center justify-between">
-                  <span className="text-xs font-semibold text-neutral-500 truncate max-w-[140px]">
-                    {item.highlight}
-                  </span>
-                  <Link
-                    href={item.href}
-                    className="inline-flex items-center gap-1 text-sm font-bold text-yimi-blue-600 group-hover:text-yimi-blue-800 transition-colors shrink-0"
-                  >
-                    <span>Detail</span>
-                    <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
-                  </Link>
+                  <div className="pt-4 border-t border-neutral-100 flex items-center justify-between">
+                    <span className="text-xs font-semibold text-neutral-500 truncate max-w-[140px]">
+                      {item.highlight}
+                    </span>
+                    <Link
+                      href={item.href}
+                      className="inline-flex items-center gap-1 text-sm font-bold text-yimi-blue-600 group-hover:text-yimi-blue-800 transition-colors shrink-0"
+                    >
+                      <span>Detail</span>
+                      <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
+                    </Link>
+                  </div>
                 </div>
               </Card>
             );

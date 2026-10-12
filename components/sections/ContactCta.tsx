@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
+import Image from 'next/image';
 import { Send, MessageCircle, Mail, CheckCircle2 } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
 import { useSiteSettings } from '@/context/SiteSettingsContext';
@@ -59,41 +60,52 @@ export function ContactCta() {
   const waUrl = `https://wa.me/${activeWa}?text=${waPrefill}`;
 
   return (
-    <section className="py-20 md:py-24 bg-yimi-blue-50/50 relative overflow-hidden">
+    <section className="py-20 md:py-24 bg-yimi-blue-950 relative overflow-hidden">
+      {/* Background banner samar */}
+      <div className="absolute inset-0 pointer-events-none" aria-hidden="true">
+        <Image
+          src="/images/banners/beranda.jpg"
+          alt=""
+          fill
+          sizes="100vw"
+          className="object-cover opacity-20"
+        />
+        <div className="absolute inset-0 bg-linear-to-b from-yimi-blue-950/70 via-yimi-blue-950/85 to-yimi-blue-950" />
+      </div>
       <div className="max-w-[1200px] w-full mx-auto px-5 md:px-8 relative z-10">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-12 items-center">
           {/* Left Info Column */}
           <div className="lg:col-span-6 flex flex-col gap-6">
-            <div className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-yimi-green-700">
+            <div className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-yimi-green-500">
               <span className="w-1.5 h-1.5 rounded-full bg-yimi-green-500" />
               Silaturahim &amp; Informasi
             </div>
 
-            <h2 className="text-2xl sm:text-3xl md:text-4xl font-extrabold text-yimi-blue-800 tracking-tight leading-tight">
+            <h2 className="text-2xl sm:text-3xl md:text-4xl font-extrabold text-white tracking-tight leading-tight">
               Ingin Mengetahui Lebih Dekat Kegiatan YIMI?
             </h2>
 
-            <p className="text-base text-neutral-600 leading-relaxed">
+            <p className="text-base text-blue-100/80 leading-relaxed">
               Tim sekretariat yayasan siap melayani pertanyaan seputar pendaftaran santri TK/PAUD, jadwal kajian, titipan infaq Jumat Berkah, serta wakaf pembebasan lahan.
             </p>
 
             <div className="flex flex-col gap-4 pt-2">
               <div className="flex items-start gap-3">
-                <div className="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center shrink-0">
+                <div className="w-10 h-10 rounded-xl bg-white/10 text-yimi-green-500 flex items-center justify-center shrink-0">
                   <MessageCircle className="w-5 h-5" />
                 </div>
                 <div>
-                  <h4 className="text-sm font-bold text-yimi-blue-800">
+                  <h4 className="text-sm font-bold text-white">
                     Layanan WhatsApp Pengurus
                   </h4>
-                  <p className="text-xs text-neutral-500 mb-1">
+                  <p className="text-xs text-blue-200/70 mb-1">
                     Respons cepat di jam kerja (08.00 – 17.00 WIB)
                   </p>
                   <a
                     href={`https://wa.me/${activeWa}`}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="text-sm font-bold text-yimi-blue-600 hover:underline"
+                    className="text-sm font-bold text-yimi-green-500 hover:underline"
                   >
                     {activeWa}
                   </a>
@@ -101,19 +113,19 @@ export function ContactCta() {
               </div>
 
               <div className="flex items-start gap-3">
-                <div className="w-10 h-10 rounded-xl bg-yimi-blue-50 text-yimi-blue-600 flex items-center justify-center shrink-0">
+                <div className="w-10 h-10 rounded-xl bg-white/10 text-yimi-green-500 flex items-center justify-center shrink-0">
                   <Mail className="w-5 h-5" />
                 </div>
                 <div>
-                  <h4 className="text-sm font-bold text-yimi-blue-800">
+                  <h4 className="text-sm font-bold text-white">
                     Surat Elektronik
                   </h4>
-                  <p className="text-xs text-neutral-500 mb-1">
+                  <p className="text-xs text-blue-200/70 mb-1">
                     Untuk urusan legalitas dan kerja sama resmi
                   </p>
                   <a
                     href={`mailto:${activeEmail}`}
-                    className="text-sm font-bold text-yimi-blue-600 hover:underline"
+                    className="text-sm font-bold text-yimi-green-500 hover:underline"
                   >
                     {activeEmail}
                   </a>

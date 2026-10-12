@@ -22,8 +22,14 @@ export function CountUp({
   const [current, setCurrent] = useState(0);
   const containerRef = useRef<HTMLSpanElement>(null);
   const hasAnimated = useRef(false);
+  const prevEnd = useRef(end);
 
   useEffect(() => {
+    // Data live bisa tiba setelah animasi pertama — ulangi animasi saat end berubah.
+    if (prevEnd.current !== end) {
+      prevEnd.current = end;
+      hasAnimated.current = false;
+    }
     const prefersReducedMotion =
       typeof window !== 'undefined' &&
       window.matchMedia('(prefers-reduced-motion: reduce)').matches;

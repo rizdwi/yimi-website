@@ -44,7 +44,7 @@ export function LatestNews() {
   const latestThree = newsList.slice(0, 3);
 
   return (
-    <section className="py-20 md:py-24 bg-neutral-100/60 relative">
+    <section className="py-20 md:py-24 bg-yimi-blue-50/40 relative">
       <div className="max-w-[1200px] w-full mx-auto px-5 md:px-8">
         {/* Header */}
         <div className="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-4">

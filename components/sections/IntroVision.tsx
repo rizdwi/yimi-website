@@ -34,7 +34,7 @@ export function IntroVision() {
   }, []);
 
   return (
-    <section id="pengantar" className="py-20 md:py-24 bg-white relative overflow-hidden">
+    <section id="pengantar" className="py-20 md:py-24 bg-linear-to-b from-yimi-blue-50/70 via-white to-white relative overflow-hidden">
       {/* Background Star Motif with 4% opacity */}
       <div
         className="absolute inset-0 bg-star8-pattern opacity-[0.035] pointer-events-none"
@@ -55,7 +55,7 @@ export function IntroVision() {
         </p>
 
         {/* Authentic Dalil Card */}
-        <div className="max-w-2xl mx-auto bg-yimi-blue-50/70 border border-yimi-blue-600/15 rounded-2xl p-6 sm:p-8 shadow-xs">
+        <div className="max-w-2xl mx-auto bg-white border border-yimi-blue-600/15 rounded-2xl p-6 sm:p-8 shadow-[0_8px_24px_rgba(0,40,70,0.08)]">
           <p
             lang="ar"
             dir="rtl"
