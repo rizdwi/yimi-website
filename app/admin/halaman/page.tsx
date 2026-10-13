@@ -108,8 +108,9 @@ export default function AdminHalamanPage() {
   ]);
 
   // --- STATE HALAMAN BERANDA ---
-  const [heroTagline, setHeroTagline] = useState(
-    'Menebar Sunnah, Merajut Ukhuwah, Membangun Generasi Rabbani'
+  // Tagline: satu per baris di textarea, tampil bergantian tiap 5 detik di hero
+  const [heroTaglinesText, setHeroTaglinesText] = useState(
+    'Dakwah di Atas Sunnah Sesuai Pemahaman Salafus Shalih\nMenebar Sunnah, Merajut Ukhuwah, Membangun Generasi Rabbani'
   );
   const [heroSubtitle, setHeroSubtitle] = useState(
     'Wadah dakwah ilmiah, pendidikan Islam usia dini berbasis tauhid & adab, serta kepedulian sosial umat di atas manhaj Salafus Shalih.'
@@ -151,7 +152,11 @@ export default function AdminHalamanPage() {
           const berandaPage = pages.find((p: { kunci: string }) => p.kunci === 'beranda');
           if (berandaPage?.konten) {
             const c = berandaPage.konten;
-            if (c.heroTagline) setHeroTagline(c.heroTagline);
+            if (Array.isArray(c.heroTaglines) && c.heroTaglines.length > 0) {
+              setHeroTaglinesText(c.heroTaglines.join('\n'));
+            } else if (c.heroTagline) {
+              setHeroTaglinesText(c.heroTagline);
+            }
             if (c.heroSubtitle) setHeroSubtitle(c.heroSubtitle);
           }
 
@@ -216,6 +221,10 @@ export default function AdminHalamanPage() {
       });
 
       // 2. Simpan Konten Halaman Beranda
+      const taglineList = heroTaglinesText
+        .split('\n')
+        .map((t) => t.trim())
+        .filter(Boolean);
       const resBeranda = await fetch('/api/admin/static-pages', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -223,7 +232,8 @@ export default function AdminHalamanPage() {
           kunci: 'beranda',
           judul: 'Pengantar Beranda & Tagline',
           konten: {
-            heroTagline,
+            heroTaglines: taglineList,
+            heroTagline: taglineList[0] || '',
             heroSubtitle,
           },
           status: 'terbit',
@@ -699,13 +709,14 @@ export default function AdminHalamanPage() {
 
             <div>
               <label className="block text-xs font-semibold text-[#374151] mb-1">
-                Tagline Utama Beranda (Hero Title)
+                Tagline Beranda — satu per baris, tampil bergantian tiap 5 detik
               </label>
-              <input
-                type="text"
-                value={heroTagline}
-                onChange={(e) => setHeroTagline(e.target.value)}
-                className="w-full text-sm font-bold p-2.5 bg-white border border-[#E3E7EE] rounded-lg"
+              <textarea
+                rows={3}
+                value={heroTaglinesText}
+                onChange={(e) => setHeroTaglinesText(e.target.value)}
+                placeholder={'Dakwah di Atas Sunnah Sesuai Pemahaman Salafus Shalih\nMenebar Sunnah, Merajut Ukhuwah, Membangun Generasi Rabbani'}
+                className="w-full text-sm font-bold p-2.5 bg-white border border-[#E3E7EE] rounded-lg leading-relaxed"
               />
             </div>
 

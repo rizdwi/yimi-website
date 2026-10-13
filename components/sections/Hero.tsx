@@ -10,10 +10,11 @@ import siteData from '@/content/site.json';
 
 export function Hero() {
   const { logoUrl, namaYayasan } = useSiteSettings();
-  const [tagline, setTagline] = useState('Dakwah di Atas Sunnah Sesuai Pemahaman Salafus Shalih');
-  const [subtitle, setSubtitle] = useState(
-    'Mengajak kaum muslimin kepada pemurnian aqidah dan ibadah, menyemai generasi Qur\'ani, serta menebar kemaslahatan umat berlandaskan Al-Qur\'an dan As-Sunnah.'
-  );
+  // Tagline dikelola dari CMS (satu per baris di admin). Tidak ada hardcoded di sini.
+  const [taglines, setTaglines] = useState<string[]>([]);
+  const [taglineIndex, setTaglineIndex] = useState(0);
+  const [fade, setFade] = useState(true);
+  const [subtitle, setSubtitle] = useState('');
 
   useEffect(() => {
     async function fetchHomeContent() {
@@ -22,8 +23,15 @@ export function Hero() {
         if (res.ok) {
           const data = await res.json();
           if (data.page?.konten) {
-            if (data.page.konten.heroTagline) setTagline(data.page.konten.heroTagline);
-            if (data.page.konten.heroSubtitle) setSubtitle(data.page.konten.heroSubtitle);
+            const k = data.page.konten;
+            // Dukung format baru (array) & lama (string tunggal)
+            const list: string[] = Array.isArray(k.heroTaglines)
+              ? k.heroTaglines.filter((t: unknown) => typeof t === 'string' && t.trim())
+              : typeof k.heroTagline === 'string' && k.heroTagline.trim()
+                ? [k.heroTagline]
+                : [];
+            if (list.length > 0) setTaglines(list);
+            if (k.heroSubtitle) setSubtitle(k.heroSubtitle);
           }
         }
       } catch (err) {
@@ -33,6 +41,21 @@ export function Hero() {
 
     fetchHomeContent();
   }, []);
+
+  // Rotasi tagline tiap 5 detik jika ada lebih dari satu (fade via opacity)
+  useEffect(() => {
+    if (taglines.length <= 1) return;
+    const id = setInterval(() => {
+      setFade(false);
+      setTimeout(() => {
+        setTaglineIndex((i) => (i + 1) % taglines.length);
+        setFade(true);
+      }, 350);
+    }, 5000);
+    return () => clearInterval(id);
+  }, [taglines.length]);
+
+  const tagline = taglines[taglineIndex] ?? '';
 
   const scrollToContent = () => {
     const nextSection = document.getElementById('pengantar');
@@ -80,8 +103,11 @@ export function Hero() {
           <span>{namaYayasan || siteData.namaLengkap}</span>
         </div>
 
-        {/* Hero Title */}
-        <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold text-yimi-blue-800 tracking-tight max-w-4xl leading-[1.15] mb-5">
+        {/* Hero Title — rotasi tagline CMS tiap 5 detik */}
+        <h1
+          className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold text-yimi-blue-800 tracking-tight max-w-4xl leading-[1.15] mb-5"
+          style={{ opacity: fade ? 1 : 0, transition: 'opacity 350ms ease' }}
+        >
           {tagline}
         </h1>
 

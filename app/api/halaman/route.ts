@@ -57,6 +57,10 @@ export async function GET(req: NextRequest) {
           kunci: 'beranda',
           judul: 'Pengantar Beranda & Tagline',
           konten: {
+            heroTaglines: [
+              'Dakwah di Atas Sunnah Sesuai Pemahaman Salafus Shalih',
+              'Menebar Sunnah, Merajut Ukhuwah, Membangun Generasi Rabbani',
+            ],
             heroTagline: 'Dakwah di Atas Sunnah Sesuai Pemahaman Salafus Shalih',
             heroSubtitle:
               'Mengajak kaum muslimin kepada pemurnian aqidah dan ibadah, menyemai generasi Qur\'ani, serta menebar kemaslahatan umat berlandaskan Al-Qur\'an dan As-Sunnah.',
