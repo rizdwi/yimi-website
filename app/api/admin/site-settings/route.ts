@@ -57,6 +57,8 @@ export async function PUT(req: NextRequest) {
           bank_2_an: body.bank_2_an,
           qris_image: body.qris_image,
           sosmed: body.sosmed,
+          telegram_bot_token: body.telegram_bot_token || null,
+          telegram_chat_id: body.telegram_chat_id || null,
           updated_at: new Date().toISOString(),
           updated_by: session.email,
         })

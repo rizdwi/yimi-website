@@ -12,6 +12,9 @@ import {
   MessageCircle,
   Clock,
   Sparkles,
+  FileText,
+  Award,
+  ArrowRight,
 } from 'lucide-react';
 import { Card } from '@/components/ui/Card';
 import { PageHero } from '@/components/ui/PageHero';
@@ -21,6 +24,7 @@ import { ProgressBar } from '@/components/ui/ProgressBar';
 import { CountUp } from '@/components/motion/CountUp';
 import { formatRupiah, formatPersen } from '@/lib/format';
 import { useSiteSettings } from '@/context/SiteSettingsContext';
+import { DonationConfirmModal } from '@/components/donation/DonationConfirmModal';
 import landDataFallback from '@/content/land-campaign.json';
 import siteData from '@/content/site.json';
 
@@ -52,6 +56,10 @@ interface FaqItem {
 export default function PembebasanLahanPage() {
   const { settings, whatsapp } = useSiteSettings();
   const [copied, setCopied] = useState(false);
+
+  // Modal State
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [modalNominal, setModalNominal] = useState(500000);
 
   const bank1Nama = settings?.bank_1_nama || siteData.donasi.bank;
   const bank1Rekening = settings?.bank_1_rekening || siteData.donasi.noRekening;
@@ -226,13 +234,24 @@ export default function PembebasanLahanPage() {
                 <span className="text-xs font-bold text-yimi-blue-800">
                   Mari Berpartisipasi Sekarang:
                 </span>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setModalNominal(500000);
+                    setIsModalOpen(true);
+                  }}
+                  className="w-full py-3 px-4 rounded-xl bg-yimi-blue-600 hover:bg-yimi-blue-700 text-white font-bold text-xs sm:text-sm flex items-center justify-center gap-2 shadow-xs transition cursor-pointer"
+                >
+                  <Award className="w-4 h-4 text-yimi-yellow-400" />
+                  <span>Konfirmasi Wakaf Langsung</span>
+                </button>
                 <Button
                   href="#rekening"
                   variant="secondary"
                   size="md"
                   className="w-full"
                 >
-                  Salurkan Wakaf Lahan
+                  Saluran Rekening &amp; QRIS
                 </Button>
                 <Button
                   href={waConfirmUrl}
@@ -429,14 +448,17 @@ export default function PembebasanLahanPage() {
                     </p>
                   </div>
 
-                  <Button
-                    href="#rekening"
-                    variant="secondary"
-                    size="sm"
-                    className="w-full"
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setModalNominal(paket.nominal || 500000);
+                      setIsModalOpen(true);
+                    }}
+                    className="w-full py-2.5 px-3 rounded-xl bg-yimi-blue-600 hover:bg-yimi-blue-700 text-white font-bold text-xs shadow-2xs transition flex items-center justify-center gap-1.5 cursor-pointer"
                   >
-                    Pilih Paket
-                  </Button>
+                    <span>Salurkan Paket Ini</span>
+                    <ArrowRight className="w-3.5 h-3.5" />
+                  </button>
                 </Card>
               ))}
             </div>
@@ -565,6 +587,14 @@ export default function PembebasanLahanPage() {
           </div>
         </section>
       )}
+
+      {/* Interactive Wakaf Confirmation Modal */}
+      <DonationConfirmModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        defaultProgram="Pembebasan Lahan Sentra Dakwah & Masjid YIMI"
+        defaultNominal={modalNominal}
+      />
     </div>
   );
 }

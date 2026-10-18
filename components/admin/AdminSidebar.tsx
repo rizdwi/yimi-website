@@ -18,6 +18,7 @@ import {
   Download,
   UserCheck,
   BarChart3,
+  HeartHandshake,
   X,
 } from 'lucide-react';
 import { StarOrnament } from '@/components/ui/StarOrnament';
@@ -39,6 +40,7 @@ export function AdminSidebar({ isOpen, onClose, unreadCount = 0 }: AdminSidebarP
     { label: 'Program', href: '/admin/program', icon: Layers },
     { label: 'Jadwal Kajian', href: '/admin/kajian', icon: Calendar },
     { label: 'Pembebasan Lahan', href: '/admin/lahan', icon: LandPlot },
+    { label: 'Konfirmasi Donasi', href: '/admin/donasi', icon: HeartHandshake },
     { label: 'Berita & Warta', href: '/admin/berita', icon: Newspaper },
     { label: 'Galeri Kegiatan', href: '/admin/galeri', icon: ImageIcon },
     { label: 'Media Library', href: '/admin/media', icon: FolderOpen },

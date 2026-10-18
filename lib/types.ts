@@ -30,6 +30,8 @@ export interface SiteSettings {
     telegram?: string;
     facebook?: string;
   };
+  telegram_bot_token?: string;
+  telegram_chat_id?: string;
   updated_at?: string;
   updated_by?: string;
 }
