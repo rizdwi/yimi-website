@@ -148,7 +148,7 @@ export default function PembebasanLahanPage() {
       <PageHero
         image="/images/banners/pembebasan-lahan.jpg"
         imageAlt="Pembangunan kubah masjid di atas lahan hijau saat senja"
-        align="left"
+        align="center"
         badge={
           <>
             <Landmark className="w-4 h-4" />
@@ -158,7 +158,7 @@ export default function PembebasanLahanPage() {
         title={campaign.judul}
         subtitle={campaign.subjudul}
         extra={
-          <div className="flex items-center gap-2 text-xs md:text-sm text-blue-200 mt-4">
+          <div className="flex items-center justify-center gap-2 text-xs md:text-sm text-blue-200 mt-4">
             <MapPin className="w-4 h-4 text-yimi-green-500 shrink-0" />
             <span>{campaign.lokasi}</span>
           </div>
