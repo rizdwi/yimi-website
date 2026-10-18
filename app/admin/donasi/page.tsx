@@ -83,9 +83,12 @@ export default function AdminDonasiPage() {
       const res = await fetch('/api/admin/donasi');
       if (res.ok) {
         const data = await res.json();
-        setItems(data.donasi || []);
+        const list = data.donasi || data.donations || [];
+        setItems(list);
         if (data.summary) {
           setSummary(data.summary);
+        } else if (data.stats) {
+          setSummary(data.stats);
         }
       }
     } catch (err) {

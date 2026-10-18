@@ -50,7 +50,7 @@ const defaultContext: SiteSettingsContextType = {
   bank2Nama: siteFallback.donasi.rekeningLain.bank,
   bank2Rekening: siteFallback.donasi.rekeningLain.noRekening,
   bank2An: siteFallback.donasi.rekeningLain.atasNama,
-  qrisImage: siteFallback.donasi.qrisImage,
+  qrisImage: '',
   sosmed: siteFallback.sosmed,
   refreshSettings: async () => {},
 };
@@ -127,7 +127,7 @@ export function SiteSettingsProvider({
   const bank2Rekening = settings?.bank_2_rekening || siteFallback.donasi.rekeningLain.noRekening;
   const bank2An = settings?.bank_2_an || siteFallback.donasi.rekeningLain.atasNama;
 
-  const qrisImage = settings?.qris_image || siteFallback.donasi.qrisImage;
+  const qrisImage = settings?.qris_image || '';
   const sosmed = settings?.sosmed || siteFallback.sosmed;
 
   return (

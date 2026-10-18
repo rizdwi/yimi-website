@@ -28,38 +28,50 @@ export async function GET(req: NextRequest) {
         // fallback
       }
 
+      const isAnon = !!parsedPayload.is_anonim;
+      const statusRaw = row.status || 'menunggu';
+      const statusNormalized = (statusRaw === 'baru' ? 'menunggu' : statusRaw);
+
       return {
         id: row.id,
-        nama: row.nama,
-        kontak: row.kontak,
-        kategori: row.kategori,
-        status: row.status || 'menunggu',
-        dibaca: !!row.dibaca,
-        catatan_internal: row.catatan_internal || '',
-        created_at: row.created_at,
-        ref_id: parsedPayload.ref_id || `REF-${row.id.substring(0, 8)}`,
-        nama_asli: parsedPayload.nama_asli || row.nama,
-        is_anonim: !!parsedPayload.is_anonim,
+        ref_id: parsedPayload.ref_id || `YIMI-${row.id.substring(0, 8).toUpperCase()}`,
+        nama: parsedPayload.nama_tampil || (isAnon ? 'Hamba Allah' : row.nama.replace(/\s*\(Anonim.*?\)/i, '')),
+        nama_asli: parsedPayload.nama_asli || row.nama.replace(/\s*\(Anonim.*?\)/i, ''),
+        is_anonim: isAnon,
+        email: parsedPayload.email || '',
+        whatsapp: parsedPayload.whatsapp || row.kontak,
         program: parsedPayload.program || row.kategori.replace('Konfirmasi Donasi: ', ''),
         nominal: Number(parsedPayload.nominal) || 0,
         bank_tujuan: parsedPayload.bank_tujuan || 'BSI',
         tanggal_transfer: parsedPayload.tanggal_transfer || (row.created_at ? row.created_at.split('T')[0] : ''),
         bukti_transfer_url: parsedPayload.bukti_transfer_url || null,
         doa: parsedPayload.doa || '',
+        status: statusNormalized,
+        dibaca: !!row.dibaca,
+        catatan_internal: row.catatan_internal || '',
+        created_at: row.created_at,
       };
     });
 
-    const stats = {
-      total: items.length,
-      menunggu: items.filter((i) => i.status === 'baru' || i.status === 'menunggu').length,
-      terverifikasi: items.filter((i) => i.status === 'terverifikasi').length,
-      ditolak: items.filter((i) => i.status === 'ditolak').length,
-      totalNominalTerverifikasi: items
+    const summary = {
+      total_count: items.length,
+      total_nominal: items.reduce((acc, curr) => acc + curr.nominal, 0),
+      menunggu_count: items.filter((i) => i.status === 'menunggu').length,
+      menunggu_nominal: items
+        .filter((i) => i.status === 'menunggu')
+        .reduce((acc, curr) => acc + curr.nominal, 0),
+      terverifikasi_count: items.filter((i) => i.status === 'terverifikasi').length,
+      terverifikasi_nominal: items
         .filter((i) => i.status === 'terverifikasi')
         .reduce((acc, curr) => acc + curr.nominal, 0),
     };
 
-    return NextResponse.json({ donations: items, stats });
+    return NextResponse.json({
+      donasi: items,
+      donations: items,
+      summary,
+      stats: summary,
+    });
   } catch (error) {
     console.error('Admin GET donasi error:', error);
     return NextResponse.json({ error: 'Gagal memuat data donasi.' }, { status: 500 });

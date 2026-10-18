@@ -502,7 +502,6 @@ export function DonationConfirmModal({
                       className="w-full px-3.5 py-2.5 rounded-2xl bg-neutral-50 border border-neutral-300 text-xs font-medium text-neutral-800 focus:outline-hidden focus:ring-2 focus:ring-yimi-blue-500"
                     >
                       <option value="BSI">BSI (Bank Syariah Indonesia)</option>
-                      <option value="QRIS">QRIS Yayasan YIMI</option>
                       <option value="Mandiri">Bank Mandiri</option>
                       <option value="BCA">Bank BCA</option>
                       <option value="BRI">Bank BRI</option>

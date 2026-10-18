@@ -15,6 +15,7 @@ import {
   FileText,
   Award,
   ArrowRight,
+  HeartHandshake,
 } from 'lucide-react';
 import { Card } from '@/components/ui/Card';
 import { PageHero } from '@/components/ui/PageHero';
@@ -64,7 +65,6 @@ export default function PembebasanLahanPage() {
   const bank1Nama = settings?.bank_1_nama || siteData.donasi.bank;
   const bank1Rekening = settings?.bank_1_rekening || siteData.donasi.noRekening;
   const bank1An = settings?.bank_1_an || siteData.donasi.atasNama;
-  const qrisUrl = settings?.qris_image || siteData.donasi.qrisImage;
   const activeWa = whatsapp || siteData.kontak.whatsapp;
   const [campaign, setCampaign] = useState({
     judul: landDataFallback.judul,
@@ -251,7 +251,7 @@ export default function PembebasanLahanPage() {
                   size="md"
                   className="w-full"
                 >
-                  Saluran Rekening &amp; QRIS
+                  Saluran Rekening Resmi
                 </Button>
                 <Button
                   href={waConfirmUrl}
@@ -466,25 +466,25 @@ export default function PembebasanLahanPage() {
         </section>
       )}
 
-      {/* Rekening Transfer & QRIS Statis */}
+      {/* Rekening Transfer Resmi */}
       <section id="rekening" className="py-20 bg-white">
         <div className="max-w-[1200px] w-full mx-auto px-5 md:px-8">
           <div className="max-w-4xl mx-auto">
             <div className="text-center mb-12">
               <h2 className="text-2xl sm:text-3xl font-extrabold text-yimi-blue-800 tracking-tight mb-3">
-                Saluran Transfer Resmi &amp; QRIS
+                Saluran Rekening Transfer Resmi
               </h2>
               <p className="text-sm text-neutral-600">
                 Seluruh dana donasi disalurkan langsung ke rekening resmi yayasan yang diaudit berkala.
               </p>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-stretch">
               {/* Rekening Bank Card */}
-              <div className="bg-yimi-blue-50/70 border border-yimi-blue-600/20 rounded-3xl p-8 flex flex-col gap-6">
+              <div className="bg-yimi-blue-50/70 border border-yimi-blue-600/20 rounded-3xl p-8 flex flex-col justify-between gap-6">
                 <div>
                   <Badge variant="blue" className="mb-3">
-                    Rekening Khusus Wakaf
+                    Rekening Utama Wakaf
                   </Badge>
                   <h3 className="text-2xl font-extrabold text-yimi-blue-800">
                     {bank1Nama}
@@ -528,31 +528,47 @@ export default function PembebasanLahanPage() {
                 </div>
               </div>
 
-              {/* QRIS Card */}
-              <div className="bg-neutral-50 border border-neutral-200/80 rounded-3xl p-8 flex flex-col items-center text-center gap-4">
-                <Badge variant="neutral">Scan Cepat QRIS</Badge>
-                <div className="relative w-48 h-48 bg-white p-3 rounded-2xl border border-neutral-200 shadow-xs flex items-center justify-center">
-                  <Image
-                    src={qrisUrl}
-                    alt="QRIS Donasi YIMI"
-                    width={180}
-                    height={180}
-                    unoptimized
-                    className="w-full h-full object-contain"
-                  />
+              {/* Konfirmasi & Verifikasi Card */}
+              <div className="bg-neutral-50 border border-neutral-200/80 rounded-3xl p-8 flex flex-col justify-between gap-6">
+                <div>
+                  <Badge variant="neutral" className="mb-3">
+                    Konfirmasi Cepat
+                  </Badge>
+                  <h3 className="text-xl font-extrabold text-neutral-800">
+                    Sudah Transfer Wakaf?
+                  </h3>
+                  <p className="text-xs text-neutral-600 mt-2 leading-relaxed">
+                    Kirim konfirmasi transfer Anda agar tercatat resmi di sistem dan terbit E-Sertifikat Wakaf atas nama Anda atau orang tua tercinta.
+                  </p>
                 </div>
-                <span className="text-xs text-neutral-500">
-                  Mendukung seluruh aplikasi M-Banking &amp; E-Wallet nasional.
-                </span>
-                <Button
-                  href={waConfirmUrl}
-                  variant="outline"
-                  size="sm"
-                  className="w-full flex items-center justify-center gap-2 mt-2"
-                >
-                  <MessageCircle className="w-4 h-4 text-yimi-green-500" />
-                  <span>Konfirmasi via WhatsApp</span>
-                </Button>
+
+                <div className="space-y-3">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setModalNominal(500000);
+                      setIsModalOpen(true);
+                    }}
+                    className="w-full py-3.5 px-4 rounded-2xl bg-yimi-blue-600 hover:bg-yimi-blue-700 text-white font-bold text-xs sm:text-sm flex items-center justify-center gap-2 shadow-xs transition cursor-pointer"
+                  >
+                    <HeartHandshake className="w-4 h-4 text-yimi-yellow-400" />
+                    <span>Konfirmasi Donasi Langsung (Web)</span>
+                  </button>
+
+                  <Button
+                    href={waConfirmUrl}
+                    variant="outline"
+                    size="sm"
+                    className="w-full flex items-center justify-center gap-2"
+                  >
+                    <MessageCircle className="w-4 h-4 text-yimi-green-500" />
+                    <span>Konfirmasi via WhatsApp</span>
+                  </Button>
+                </div>
+
+                <div className="text-[11px] text-neutral-500 text-center">
+                  Laporan dan progres pembebasan lahan diperbarui secara transparan dan berkala.
+                </div>
               </div>
             </div>
           </div>

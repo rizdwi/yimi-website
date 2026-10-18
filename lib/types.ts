@@ -23,7 +23,7 @@ export interface SiteSettings {
   bank_2_nama: string;
   bank_2_rekening: string;
   bank_2_an: string;
-  qris_image: string;
+  qris_image?: string;
   sosmed: {
     youtube?: string;
     instagram?: string;

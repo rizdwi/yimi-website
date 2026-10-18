@@ -40,7 +40,7 @@ export async function GET() {
             bank_2_nama: siteFallback.donasi.rekeningLain.bank,
             bank_2_rekening: siteFallback.donasi.rekeningLain.noRekening,
             bank_2_an: siteFallback.donasi.rekeningLain.atasNama,
-            qris_image: siteFallback.donasi.qrisImage,
+            qris_image: '',
           },
         },
         { headers: CACHE_HEADERS }

@@ -40,6 +40,14 @@ export function DonationCertificateModal({
 }: DonationCertificateModalProps) {
   const [copied, setCopied] = React.useState(false);
 
+  React.useEffect(() => {
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape' && isOpen) onClose();
+    };
+    window.addEventListener('keydown', onKeyDown);
+    return () => window.removeEventListener('keydown', onKeyDown);
+  }, [isOpen, onClose]);
+
   if (!isOpen || !data) return null;
 
   const isWakaf = data.program.toLowerCase().includes('lahan') || data.program.toLowerCase().includes('wakaf');
@@ -63,7 +71,12 @@ export function DonationCertificateModal({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 overflow-y-auto bg-black/60 backdrop-blur-xs print:p-0 print:bg-white print:static">
+    <div
+      className="fixed inset-0 z-[60] flex items-center justify-center p-4 sm:p-6 overflow-y-auto bg-black/60 backdrop-blur-xs print:p-0 print:bg-white print:static"
+      onClick={(e) => {
+        if (e.target === e.currentTarget) onClose();
+      }}
+    >
       {/* Container Kuitansi */}
       <div className="relative w-full max-w-2xl bg-white rounded-3xl shadow-2xl border border-neutral-200 overflow-hidden my-8 print:my-0 print:border-none print:shadow-none">
         
@@ -93,10 +106,11 @@ export function DonationCertificateModal({
             <button
               type="button"
               onClick={onClose}
-              className="p-1.5 rounded-xl text-neutral-400 hover:text-neutral-700 hover:bg-neutral-100 transition cursor-pointer"
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-neutral-200 hover:bg-neutral-300 text-neutral-800 text-xs font-bold transition cursor-pointer"
               aria-label="Tutup kuitansi"
             >
-              <X className="w-5 h-5" />
+              <X className="w-4 h-4" />
+              <span>Tutup</span>
             </button>
           </div>
         </div>
@@ -240,8 +254,18 @@ export function DonationCertificateModal({
         </div>
 
         {/* Footer info (print hidden) */}
-        <div className="p-4 bg-neutral-100 text-center text-xs text-neutral-500 border-t border-neutral-200 print:hidden">
-          Simpan kuitansi digital ini sebagai arsip ibadah dan amal jariyah Anda bersama YIMI.
+        <div className="p-4 sm:p-5 bg-neutral-100 border-t border-neutral-200 flex flex-col sm:flex-row items-center justify-between gap-3 print:hidden">
+          <span className="text-xs text-neutral-500 text-center sm:text-left">
+            Simpan kuitansi digital ini sebagai arsip ibadah dan amal jariyah Anda bersama YIMI.
+          </span>
+          <button
+            type="button"
+            onClick={onClose}
+            className="w-full sm:w-auto px-6 py-2.5 rounded-xl bg-neutral-800 hover:bg-neutral-900 text-white text-xs font-bold flex items-center justify-center gap-1.5 transition cursor-pointer shadow-xs"
+          >
+            <X className="w-4 h-4" />
+            <span>Tutup Kuitansi</span>
+          </button>
         </div>
       </div>
     </div>

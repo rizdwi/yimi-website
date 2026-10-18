@@ -35,15 +35,6 @@ const SYSTEM_ASSETS: MediaItem[] = [
     isSystem: true,
   },
   {
-    id: 'qris-yimi',
-    name: 'qris-yimi.svg',
-    size: 12800,
-    mimetype: 'image/svg+xml',
-    created_at: '2026-10-07T00:00:00Z',
-    url: '/images/qris-yimi.svg',
-    isSystem: true,
-  },
-  {
     id: 'pattern-star8',
     name: 'pattern-star8.svg',
     size: 1800,

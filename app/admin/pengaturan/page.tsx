@@ -72,58 +72,6 @@ export default function AdminSettingsPage() {
     }
   }
 
-  // Upload QRIS Code
-  const [uploadingQris, setUploadingQris] = useState(false);
-  const qrisInputRef = useRef<HTMLInputElement | null>(null);
-
-  async function uploadQrisImage(file: File) {
-    if (!settings) return;
-    setUploadingQris(true);
-    setMessage(null);
-    try {
-      const formData = new FormData();
-      formData.append('file', file);
-      const res = await fetch('/api/admin/upload', {
-        method: 'POST',
-        body: formData,
-      });
-      const data = await res.json();
-      if (!res.ok || !data.url) {
-        throw new Error(data.error || 'Gagal mengunggah gambar QRIS');
-      }
-
-      const updatedSettings = {
-        ...settings,
-        qris_image: data.url,
-      };
-
-      setSettings(updatedSettings);
-
-      const saveRes = await fetch('/api/admin/site-settings', {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(updatedSettings),
-      });
-
-      if (saveRes.ok) {
-        setInitialSettings(updatedSettings);
-        setMessage({
-          type: 'success',
-          text: 'Gambar QRIS resmi yayasan berhasil diunggah dan langsung tersimpan ke sistem!',
-        });
-      } else {
-        setMessage({
-          type: 'error',
-          text: 'QRIS berhasil diunggah tapi belum tersimpan otomatis. Silakan klik tombol Simpan Pengaturan di bawah.',
-        });
-      }
-    } catch (err: unknown) {
-      alert(err instanceof Error ? err.message : 'Gagal mengunggah QRIS.');
-    } finally {
-      setUploadingQris(false);
-    }
-  }
-
   useEffect(() => {
     async function fetchSettings() {
       try {
@@ -520,71 +468,6 @@ export default function AdminSettingsPage() {
               </div>
             </div>
           </div>
-
-          {/* QRIS Code */}
-          <div className="p-4 bg-[#F5F7FA] rounded-xl border border-[#E3E7EE] space-y-3">
-            <h4 className="text-xs font-bold uppercase tracking-wider text-[#1F2F6B]">
-              Kode QRIS Donasi Digital
-            </h4>
-            <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
-              <div className="w-20 h-20 bg-white border border-neutral-300 rounded-lg p-1.5 flex items-center justify-center shrink-0 overflow-hidden shadow-2xs">
-                <Image
-                  src={settings.qris_image || '/images/qris-yimi.svg'}
-                  alt="QRIS Donasi"
-                  width={80}
-                  height={80}
-                  unoptimized
-                  className="w-full h-full object-contain"
-                />
-              </div>
-
-              <div className="space-y-2 flex-1 w-full">
-                <div className="flex flex-wrap items-center gap-2">
-                  <input
-                    ref={qrisInputRef}
-                    type="file"
-                    accept="image/*,.svg"
-                    className="sr-only"
-                    onChange={async (e) => {
-                      const file = e.target.files?.[0];
-                      if (!file) return;
-                      await uploadQrisImage(file);
-                      e.target.value = '';
-                    }}
-                  />
-                  <button
-                    type="button"
-                    disabled={uploadingQris}
-                    onClick={() => qrisInputRef.current?.click()}
-                    className="inline-flex items-center gap-1.5 px-3.5 py-2 bg-white border border-neutral-300 hover:bg-neutral-50 rounded-lg text-xs font-semibold text-neutral-700 transition-colors shadow-2xs cursor-pointer disabled:opacity-50"
-                  >
-                    {uploadingQris ? (
-                      <Loader2 className="w-3.5 h-3.5 animate-spin text-[#3E5FD1]" />
-                    ) : (
-                      <Upload className="w-3.5 h-3.5 text-[#3E5FD1]" />
-                    )}
-                    <span>{uploadingQris ? 'Mengunggah QRIS...' : 'Pilih Gambar QRIS dari Perangkat'}</span>
-                  </button>
-                  {settings.qris_image && settings.qris_image !== '/images/qris-yimi.svg' && (
-                    <button
-                      type="button"
-                      onClick={() => setSettings({ ...settings, qris_image: '/images/qris-yimi.svg' })}
-                      className="text-xs text-red-600 hover:underline px-2 py-1 cursor-pointer font-medium"
-                    >
-                      Reset ke QRIS Default
-                    </button>
-                  )}
-                </div>
-                <input
-                  type="text"
-                  placeholder="Atau tempel URL gambar QRIS (https://...)"
-                  value={settings.qris_image || ''}
-                  onChange={(e) => setSettings({ ...settings, qris_image: e.target.value })}
-                  className="w-full text-xs p-2 bg-white border border-neutral-300 rounded-lg text-neutral-600 focus:ring-1 focus:ring-[#3E5FD1]"
-                />
-              </div>
-            </div>
-          </div>
         </div>
 
         {/* 4. Media Sosial */}
@@ -658,11 +541,11 @@ export default function AdminSettingsPage() {
           </div>
         </div>
 
-        {/* 5. Google Maps & Pembayaran QRIS */}
+        {/* 5. Google Maps */}
         <div className="bg-white p-6 rounded-xl border border-[#E3E7EE] shadow-xs space-y-4">
           <div className="flex items-center space-x-2 pb-3 border-b border-[#E3E7EE]">
             <MapPin className="w-5 h-5 text-[#3E5FD1]" />
-            <h3 className="font-bold text-base text-[#111827]">Google Maps &amp; Gambar Barcode QRIS</h3>
+            <h3 className="font-bold text-base text-[#111827]">Sematkan Peta Google Maps</h3>
           </div>
 
           <div className="space-y-4">
@@ -679,22 +562,6 @@ export default function AdminSettingsPage() {
               />
               <p className="text-[11px] text-[#6B7280] mt-1">
                 Buka Google Maps &gt; Bagikan &gt; Sematkan Peta &gt; Ambil link di dalam <code>src=&quot;...&quot;</code>.
-              </p>
-            </div>
-
-            <div>
-              <label className="block text-xs font-semibold text-[#374151] mb-1">
-                URL Gambar Barcode QRIS Infaq
-              </label>
-              <input
-                type="text"
-                value={settings.qris_image || ''}
-                onChange={(e) => setSettings({ ...settings, qris_image: e.target.value })}
-                placeholder="/images/qris-yimi.svg atau https://..."
-                className="w-full text-sm p-2.5 bg-white border border-[#E3E7EE] rounded-lg font-mono text-xs"
-              />
-              <p className="text-[11px] text-[#6B7280] mt-1">
-                Gambar barcode QRIS yang tampil di halaman Donasi &amp; Pembebasan Lahan.
               </p>
             </div>
           </div>

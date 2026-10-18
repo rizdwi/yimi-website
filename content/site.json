@@ -22,7 +22,6 @@
       "atasNama": "Yayasan Insan Muslim Istiqomah",
       "kodeBank": "147"
     },
-    "qrisImage": "/images/qris-yimi.svg",
     "catatan": "Tambahkan kode unik 01 untuk Pembebasan Lahan atau cantumkan berita transfer.",
     "waTemplateLahan": "Bismillah, saya ingin konfirmasi donasi Pembebasan Lahan YIMI.\nNama: [Nama Donatur]\nNominal: Rp [Nominal]\nTanggal Transfer: [Tanggal]\nBukti transfer terlampir. Jazakumullahu khairan.",
     "waTemplateUmum": "Bismillah, saya ingin konfirmasi donasi program YIMI.\nNama: [Nama Donatur]\nProgram: [Pilihan Program]\nNominal: Rp [Nominal]\nBukti transfer terlampir. Jazakumullahu khairan."
