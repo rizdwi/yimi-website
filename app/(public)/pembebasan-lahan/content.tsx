@@ -240,19 +240,11 @@ export default function PembebasanLahanPage() {
                     setModalNominal(500000);
                     setIsModalOpen(true);
                   }}
-                  className="w-full py-3 px-4 rounded-xl bg-yimi-blue-600 hover:bg-yimi-blue-700 text-white font-bold text-xs sm:text-sm flex items-center justify-center gap-2 shadow-xs transition cursor-pointer"
+                  className="w-full py-3.5 px-4 rounded-xl bg-yimi-blue-600 hover:bg-yimi-blue-700 text-white font-bold text-xs sm:text-sm flex items-center justify-center gap-2 shadow-xs transition cursor-pointer"
                 >
                   <Award className="w-4 h-4 text-yimi-yellow-400" />
                   <span>Konfirmasi Wakaf Langsung</span>
                 </button>
-                <Button
-                  href="#rekening"
-                  variant="secondary"
-                  size="md"
-                  className="w-full"
-                >
-                  Saluran Rekening Resmi
-                </Button>
                 <Button
                   href={waConfirmUrl}
                   variant="secondary"
