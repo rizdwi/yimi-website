@@ -15,7 +15,6 @@ import {
   FileText,
   Award,
   ArrowRight,
-  HeartHandshake,
 } from 'lucide-react';
 import { Card } from '@/components/ui/Card';
 import { PageHero } from '@/components/ui/PageHero';
@@ -461,8 +460,8 @@ export default function PembebasanLahanPage() {
       {/* Rekening Transfer Resmi */}
       <section id="rekening" className="py-20 bg-white">
         <div className="max-w-[1200px] w-full mx-auto px-5 md:px-8">
-          <div className="max-w-4xl mx-auto">
-            <div className="text-center mb-12">
+          <div className="max-w-2xl mx-auto">
+            <div className="text-center mb-10">
               <h2 className="text-2xl sm:text-3xl font-extrabold text-yimi-blue-800 tracking-tight mb-3">
                 Saluran Rekening Transfer Resmi
               </h2>
@@ -471,96 +470,53 @@ export default function PembebasanLahanPage() {
               </p>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-stretch">
-              {/* Rekening Bank Card */}
-              <div className="bg-yimi-blue-50/70 border border-yimi-blue-600/20 rounded-3xl p-8 flex flex-col justify-between gap-6">
+            {/* Rekening Bank Card */}
+            <div className="bg-yimi-blue-50/70 border border-yimi-blue-600/20 rounded-3xl p-8 flex flex-col gap-6 shadow-xs">
+              <div className="flex flex-wrap items-center justify-between gap-2">
                 <div>
-                  <Badge variant="blue" className="mb-3">
+                  <Badge variant="blue" className="mb-2">
                     Rekening Utama Wakaf
                   </Badge>
                   <h3 className="text-2xl font-extrabold text-yimi-blue-800">
                     {bank1Nama}
                   </h3>
-                  <span className="text-xs text-neutral-500">
-                    Kode Bank: {siteData.donasi.kodeBank}
-                  </span>
                 </div>
-
-                <div className="p-4 rounded-2xl bg-white border border-yimi-blue-600/20 flex items-center justify-between">
-                  <div>
-                    <span className="text-xs text-neutral-500 block">
-                      Nomor Rekening:
-                    </span>
-                    <span className="font-mono text-xl sm:text-2xl font-extrabold text-yimi-blue-800 tracking-wider">
-                      {bank1Rekening}
-                    </span>
-                  </div>
-                  <button
-                    type="button"
-                    onClick={copyRekening}
-                    className="p-2.5 rounded-xl bg-yimi-blue-50 hover:bg-yimi-blue-600 text-yimi-blue-600 hover:text-white transition-colors cursor-pointer"
-                    title="Salin Nomor Rekening"
-                    aria-label="Salin nomor rekening ke clipboard"
-                  >
-                    {copied ? (
-                      <Check className="w-5 h-5 text-yimi-green-600" />
-                    ) : (
-                      <Copy className="w-5 h-5" />
-                    )}
-                  </button>
-                </div>
-
-                <div className="text-xs text-neutral-600 leading-relaxed space-y-1">
-                  <p>
-                    <strong>Atas Nama:</strong> {bank1An}
-                  </p>
-                  <p className="text-neutral-500 italic">
-                    {siteData.donasi.catatan}
-                  </p>
-                </div>
+                <span className="text-xs font-semibold px-2.5 py-1 rounded-lg bg-white border border-yimi-blue-200 text-neutral-600">
+                  Kode Bank: {siteData.donasi.kodeBank}
+                </span>
               </div>
 
-              {/* Konfirmasi & Verifikasi Card */}
-              <div className="bg-neutral-50 border border-neutral-200/80 rounded-3xl p-8 flex flex-col justify-between gap-6">
+              <div className="p-4 sm:p-5 rounded-2xl bg-white border border-yimi-blue-600/20 flex items-center justify-between shadow-2xs">
                 <div>
-                  <Badge variant="neutral" className="mb-3">
-                    Konfirmasi Cepat
-                  </Badge>
-                  <h3 className="text-xl font-extrabold text-neutral-800">
-                    Sudah Transfer Wakaf?
-                  </h3>
-                  <p className="text-xs text-neutral-600 mt-2 leading-relaxed">
-                    Kirim konfirmasi transfer Anda agar tercatat resmi di sistem dan terbit E-Sertifikat Wakaf atas nama Anda atau orang tua tercinta.
-                  </p>
+                  <span className="text-xs text-neutral-500 block">
+                    Nomor Rekening:
+                  </span>
+                  <span className="font-mono text-xl sm:text-2xl font-extrabold text-yimi-blue-800 tracking-wider">
+                    {bank1Rekening}
+                  </span>
                 </div>
+                <button
+                  type="button"
+                  onClick={copyRekening}
+                  className="p-3 rounded-xl bg-yimi-blue-50 hover:bg-yimi-blue-600 text-yimi-blue-600 hover:text-white transition-colors cursor-pointer"
+                  title="Salin Nomor Rekening"
+                  aria-label="Salin nomor rekening ke clipboard"
+                >
+                  {copied ? (
+                    <Check className="w-5 h-5 text-yimi-green-600" />
+                  ) : (
+                    <Copy className="w-5 h-5" />
+                  )}
+                </button>
+              </div>
 
-                <div className="space-y-3">
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setModalNominal(500000);
-                      setIsModalOpen(true);
-                    }}
-                    className="w-full py-3.5 px-4 rounded-2xl bg-yimi-blue-600 hover:bg-yimi-blue-700 text-white font-bold text-xs sm:text-sm flex items-center justify-center gap-2 shadow-xs transition cursor-pointer"
-                  >
-                    <HeartHandshake className="w-4 h-4 text-yimi-yellow-400" />
-                    <span>Konfirmasi Donasi Langsung (Web)</span>
-                  </button>
-
-                  <Button
-                    href={waConfirmUrl}
-                    variant="outline"
-                    size="sm"
-                    className="w-full flex items-center justify-center gap-2"
-                  >
-                    <MessageCircle className="w-4 h-4 text-yimi-green-500" />
-                    <span>Konfirmasi via WhatsApp</span>
-                  </Button>
-                </div>
-
-                <div className="text-[11px] text-neutral-500 text-center">
-                  Laporan dan progres pembebasan lahan diperbarui secara transparan dan berkala.
-                </div>
+              <div className="text-xs text-neutral-600 leading-relaxed space-y-1">
+                <p>
+                  <strong>Atas Nama:</strong> {bank1An}
+                </p>
+                <p className="text-neutral-500 italic">
+                  {siteData.donasi.catatan}
+                </p>
               </div>
             </div>
           </div>
