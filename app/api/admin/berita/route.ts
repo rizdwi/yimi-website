@@ -27,7 +27,7 @@ export async function GET(req: NextRequest) {
     supabase
       .from('visitor_logs')
       .select('path')
-      .or('path.ilike./berita/%,path.ilike.like:/berita/%'),
+      .or('path.ilike./berita/%,path.ilike.like:/berita/%,path.ilike.unlike:/berita/%'),
   ]);
 
   if (error) return NextResponse.json({ error: 'Database error' }, { status: 500 });
@@ -40,6 +40,9 @@ export async function GET(req: NextRequest) {
     if (l.path.startsWith('like:/berita/')) {
       const s = l.path.replace('like:/berita/', '').split('?')[0].split('/')[0];
       if (s) likesMap[s] = (likesMap[s] || 0) + 1;
+    } else if (l.path.startsWith('unlike:/berita/')) {
+      const s = l.path.replace('unlike:/berita/', '').split('?')[0].split('/')[0];
+      if (s) likesMap[s] = (likesMap[s] || 0) - 1;
     } else if (l.path.startsWith('/berita/')) {
       const s = l.path.replace('/berita/', '').split('?')[0].split('/')[0];
       if (s) viewsMap[s] = (viewsMap[s] || 0) + 1;
@@ -53,7 +56,7 @@ export async function GET(req: NextRequest) {
       isi: cleanIsi,
       galeri,
       views: viewsMap[post.slug] || 0,
-      likes: likesMap[post.slug] || 0,
+      likes: Math.max(0, likesMap[post.slug] || 0),
     };
   });
 

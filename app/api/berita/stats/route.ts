@@ -5,211 +5,177 @@ import { supabase } from '@/lib/supabase';
 export const dynamic = 'force-dynamic';
 export const revalidate = 0;
 
-// Pola bot/crawler yang tidak dicatat
-const BOT_PATTERN =
-  /bot|crawler|spider|crawling|slurp|mediapartners|baidu|yandex|duckduck|sogou|exabot|facebot|ia_archiver|semrush|ahrefs|mj12bot|dotbot|petalbot/i;
+function hashIp(rawIp: string): string {
+  const salt = process.env.ANALYTICS_SALT || 'yimi-secret-salt-2026';
+  return crypto.createHash('sha256').update(rawIp + salt).digest('hex').slice(0, 16);
+}
 
-function getClientIpHash(req: NextRequest): { ipHash: string; rawIp: string } {
-  const forwardedFor = req.headers.get('x-forwarded-for') || '';
-  const realIp = req.headers.get('x-real-ip') || '';
-  const cfIp = req.headers.get('cf-connecting-ip') || '';
-  const rawIp = (forwardedFor.split(',')[0] || realIp || cfIp || '127.0.0.1').trim();
+function getClientIp(req: NextRequest): string {
+  const forwarded = req.headers.get('x-forwarded-for');
+  if (forwarded) {
+    const list = forwarded.split(',');
+    if (list[0]) return list[0].trim();
+  }
+  const realIp = req.headers.get('x-real-ip');
+  if (realIp) return realIp.trim();
+  const cfIp = req.headers.get('cf-connecting-ip');
+  if (cfIp) return cfIp.trim();
+  return '127.0.0.1';
+}
 
-  // Hash konsisten untuk identifikasi suka / tayangan unik tanpa menyimpan IP polos
-  const salt = 'yimi-article-stats-salt';
-  const ipHash = crypto.createHash('sha256').update(rawIp + salt).digest('hex').substring(0, 16);
+async function getStatsForSlug(slug: string, ipHash?: string) {
+  const path = `/berita/${slug}`;
+  const likePath = `like:/berita/${slug}`;
+  const unlikePath = `unlike:/berita/${slug}`;
 
-  return { ipHash, rawIp };
+  const [viewsRes, likesRes, unlikesRes, userLogRes] = await Promise.all([
+    supabase.from('visitor_logs').select('*', { count: 'exact', head: true }).eq('path', path),
+    supabase.from('visitor_logs').select('*', { count: 'exact', head: true }).eq('path', likePath),
+    supabase.from('visitor_logs').select('*', { count: 'exact', head: true }).eq('path', unlikePath),
+    ipHash
+      ? supabase
+          .from('visitor_logs')
+          .select('path')
+          .in('path', [likePath, unlikePath])
+          .eq('ip_hash', ipHash)
+          .order('created_at', { ascending: false })
+          .limit(1)
+      : Promise.resolve({ data: [] }),
+  ]);
+
+  const views = viewsRes.count || 0;
+  const rawLikes = likesRes.count || 0;
+  const rawUnlikes = unlikesRes.count || 0;
+  const netLikes = Math.max(0, rawLikes - rawUnlikes);
+
+  const latestUserLog = userLogRes.data?.[0]?.path;
+  const userLiked = latestUserLog === likePath;
+
+  return { views, likes: netLikes, userLiked };
 }
 
 export async function GET(req: NextRequest) {
   try {
     const { searchParams } = new URL(req.url);
     const slug = searchParams.get('slug');
-    const slugsParam = searchParams.get('slugs');
 
-    const { ipHash } = getClientIpHash(req);
-
-    // Kasus 1: Batch request untuk beberapa slug
-    if (slugsParam) {
-      const slugs = slugsParam.split(',').map((s) => s.trim()).filter(Boolean);
-      if (slugs.length === 0) {
-        return NextResponse.json({ stats: {} });
-      }
-
-      // Ambil log yang relevan
-      const { data: logs } = await supabase
-        .from('visitor_logs')
-        .select('path')
-        .or('path.ilike./berita/%,path.ilike.like:/berita/%');
-
-      const statsMap: Record<string, { views: number; likes: number }> = {};
-      slugs.forEach((s) => {
-        statsMap[s] = { views: 0, likes: 0 };
-      });
-
-      (logs || []).forEach((l) => {
-        if (!l.path) return;
-        if (l.path.startsWith('like:/berita/')) {
-          const s = l.path.replace('like:/berita/', '').split('?')[0].split('/')[0];
-          if (statsMap[s]) statsMap[s].likes += 1;
-        } else if (l.path.startsWith('/berita/')) {
-          const s = l.path.replace('/berita/', '').split('?')[0].split('/')[0];
-          if (statsMap[s]) statsMap[s].views += 1;
-        }
-      });
-
-      return NextResponse.json({ stats: statsMap });
-    }
-
-    // Kasus 2: Single slug
     if (!slug) {
-      return NextResponse.json({ error: 'Parameter slug wajib diisi' }, { status: 400 });
+      return NextResponse.json({ error: 'Slug warta wajib diisi' }, { status: 400 });
     }
 
-    const cleanSlug = slug.trim();
-    const viewPath = `/berita/${cleanSlug}`;
-    const likePath = `like:/berita/${cleanSlug}`;
+    const ip = getClientIp(req);
+    const ipHash = hashIp(ip);
 
-    // Hitung tayangan
-    const { count: viewCount } = await supabase
-      .from('visitor_logs')
-      .select('*', { count: 'exact', head: true })
-      .eq('path', viewPath);
+    const stats = await getStatsForSlug(slug, ipHash);
 
-    // Hitung likes
-    const { count: likeCount } = await supabase
-      .from('visitor_logs')
-      .select('*', { count: 'exact', head: true })
-      .eq('path', likePath);
-
-    // Cek apakah pengunjung saat ini sudah menyukai artikel
-    const { data: userLike } = await supabase
-      .from('visitor_logs')
-      .select('id')
-      .eq('path', likePath)
-      .eq('ip_hash', ipHash)
-      .limit(1)
-      .maybeSingle();
-
-    return NextResponse.json({
-      slug: cleanSlug,
-      views: viewCount ?? 0,
-      likes: likeCount ?? 0,
-      userLiked: Boolean(userLike),
-    });
-  } catch (err) {
-    console.error('Error in GET /api/berita/stats:', err);
-    return NextResponse.json({ error: 'Gagal memuat statistik warta' }, { status: 500 });
+    return NextResponse.json(
+      { slug, ...stats },
+      {
+        headers: {
+          'Cache-Control': 'no-store, no-cache, must-revalidate',
+        },
+      }
+    );
+  } catch (error) {
+    console.error('Error fetching news stats:', error);
+    return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
   }
 }
 
 export async function POST(req: NextRequest) {
   try {
-    const userAgent = req.headers.get('user-agent') || '';
-    if (BOT_PATTERN.test(userAgent)) {
-      return NextResponse.json({ ignored: true, reason: 'bot' });
-    }
-
     const body = await req.json().catch(() => ({}));
-    const slug = typeof body.slug === 'string' ? body.slug.trim() : '';
-    const action = body.action; // 'view' | 'like' | 'unlike'
-    const referrer = typeof body.referrer === 'string' ? body.referrer : '';
+    const { slug, action, referrer } = body;
 
-    if (!slug) {
-      return NextResponse.json({ error: 'Slug artikel wajib diisi' }, { status: 400 });
+    if (!slug || typeof slug !== 'string') {
+      return NextResponse.json({ error: 'Slug warta tidak valid' }, { status: 400 });
     }
 
-    const { ipHash } = getClientIpHash(req);
-    const isMobile = /Android|iPhone|iPad|iPod|Mobile/i.test(userAgent);
-    const deviceType = isMobile ? 'mobile' : 'desktop';
-
-    const viewPath = `/berita/${slug}`;
+    const ip = getClientIp(req);
+    const ipHash = hashIp(ip);
+    const userAgent = (req.headers.get('user-agent') || '').slice(0, 255);
+    const path = `/berita/${slug}`;
     const likePath = `like:/berita/${slug}`;
+    const unlikePath = `unlike:/berita/${slug}`;
 
     if (action === 'view') {
-      // Deduplikasi tayangan: 1 tayangan per IP per artikel dalam 30 menit
+      // Cek apakah IP yang sama sudah mencatat kunjungan dalam 30 menit terakhir
       const thirtyMinutesAgo = new Date(Date.now() - 30 * 60 * 1000).toISOString();
-      const { data: existingView } = await supabase
+      const { data: recentVisits } = await supabase
         .from('visitor_logs')
         .select('id')
-        .eq('path', viewPath)
+        .eq('path', path)
         .eq('ip_hash', ipHash)
         .gte('created_at', thirtyMinutesAgo)
-        .limit(1)
-        .maybeSingle();
+        .limit(1);
 
-      if (!existingView) {
-        await supabase.from('visitor_logs').insert([
-          {
-            path: viewPath,
-            referrer: referrer ? referrer.slice(0, 100) : 'Langsung',
-            ip_hash: ipHash,
-            device_type: deviceType,
-            user_agent: userAgent.slice(0, 150),
-            created_at: new Date().toISOString(),
-          },
-        ]);
+      if (!recentVisits || recentVisits.length === 0) {
+        await supabase.from('visitor_logs').insert({
+          path,
+          referrer: typeof referrer === 'string' ? referrer.slice(0, 255) : '',
+          user_agent: userAgent,
+          ip_hash: ipHash,
+          device_type: /mobile/i.test(userAgent) ? 'mobile' : 'desktop',
+        });
       }
     } else if (action === 'like') {
-      // Cek apakah sudah like
-      const { data: existingLike } = await supabase
+      // Cek interaksi terakhir pengguna
+      const { data: latestInteractions } = await supabase
         .from('visitor_logs')
-        .select('id')
-        .eq('path', likePath)
+        .select('path')
+        .in('path', [likePath, unlikePath])
         .eq('ip_hash', ipHash)
-        .limit(1)
-        .maybeSingle();
+        .order('created_at', { ascending: false })
+        .limit(1);
 
-      if (!existingLike) {
-        await supabase.from('visitor_logs').insert([
-          {
-            path: likePath,
-            referrer: 'like',
-            ip_hash: ipHash,
-            device_type: deviceType,
-            user_agent: 'like-reaction',
-            created_at: new Date().toISOString(),
-          },
-        ]);
+      const alreadyLiked = latestInteractions?.[0]?.path === likePath;
+
+      if (!alreadyLiked) {
+        await supabase.from('visitor_logs').insert({
+          path: likePath,
+          referrer: 'client-like',
+          user_agent: userAgent,
+          ip_hash: ipHash,
+          device_type: /mobile/i.test(userAgent) ? 'mobile' : 'desktop',
+        });
       }
     } else if (action === 'unlike') {
-      await supabase
+      // Cek interaksi terakhir pengguna
+      const { data: latestInteractions } = await supabase
         .from('visitor_logs')
-        .delete()
-        .eq('path', likePath)
-        .eq('ip_hash', ipHash);
+        .select('path')
+        .in('path', [likePath, unlikePath])
+        .eq('ip_hash', ipHash)
+        .order('created_at', { ascending: false })
+        .limit(1);
+
+      const currentlyLiked = latestInteractions?.[0]?.path === likePath;
+
+      if (currentlyLiked) {
+        await supabase.from('visitor_logs').insert({
+          path: unlikePath,
+          referrer: 'client-unlike',
+          user_agent: userAgent,
+          ip_hash: ipHash,
+          device_type: /mobile/i.test(userAgent) ? 'mobile' : 'desktop',
+        });
+      }
+    } else {
+      return NextResponse.json({ error: 'Aksi tidak dikenali' }, { status: 400 });
     }
 
-    // Ambil nilai terbaru
-    const [{ count: viewCount }, { count: likeCount }, { data: currentUserLike }] =
-      await Promise.all([
-        supabase
-          .from('visitor_logs')
-          .select('*', { count: 'exact', head: true })
-          .eq('path', viewPath),
-        supabase
-          .from('visitor_logs')
-          .select('*', { count: 'exact', head: true })
-          .eq('path', likePath),
-        supabase
-          .from('visitor_logs')
-          .select('id')
-          .eq('path', likePath)
-          .eq('ip_hash', ipHash)
-          .limit(1)
-          .maybeSingle(),
-      ]);
+    const updatedStats = await getStatsForSlug(slug, ipHash);
 
-    return NextResponse.json({
-      success: true,
-      slug,
-      views: viewCount ?? 0,
-      likes: likeCount ?? 0,
-      userLiked: Boolean(currentUserLike),
-    });
-  } catch (err) {
-    console.error('Error in POST /api/berita/stats:', err);
-    return NextResponse.json({ error: 'Gagal memperbarui reaksi warta' }, { status: 500 });
+    return NextResponse.json(
+      { success: true, slug, ...updatedStats },
+      {
+        headers: {
+          'Cache-Control': 'no-store, no-cache, must-revalidate',
+        },
+      }
+    );
+  } catch (error) {
+    console.error('Error handling news interaction:', error);
+    return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
   }
 }
