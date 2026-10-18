@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getAdminSessionFromRequest } from '@/lib/auth';
 import { supabase } from '@/lib/supabase';
 import { createAuditLog } from '@/lib/audit';
+import { extractGalleryFromPost, embedGalleryIntoPost } from '@/lib/news';
 
 export async function GET(req: NextRequest) {
   const session = await getAdminSessionFromRequest(req);
@@ -24,7 +25,16 @@ export async function GET(req: NextRequest) {
   const { data, error } = await query;
   if (error) return NextResponse.json({ error: 'Database error' }, { status: 500 });
 
-  return NextResponse.json({ news: data || [] });
+  const formatted = (data || []).map((post) => {
+    const { cleanIsi, galeri } = extractGalleryFromPost(post.gambar_utama, post.isi);
+    return {
+      ...post,
+      isi: cleanIsi,
+      galeri,
+    };
+  });
+
+  return NextResponse.json({ news: formatted });
 }
 
 export async function POST(req: NextRequest) {
@@ -38,14 +48,19 @@ export async function POST(req: NextRequest) {
 
   const slug = (body.slug || body.judul.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '')) || 'berita-' + Date.now();
 
+  const { cleanGambarUtama, packagedIsi } = embedGalleryIntoPost(
+    body.isi,
+    Array.isArray(body.galeri) ? body.galeri : (body.gambar_utama ? [body.gambar_utama] : [])
+  );
+
   const { data, error } = await supabase
     .from('news_posts')
     .insert({
       judul: body.judul,
       slug,
       ringkasan: body.ringkasan || '',
-      isi: body.isi || '',
-      gambar_utama: body.gambar_utama || 'https://images.unsplash.com/photo-1542810634-71277d95dcbb?w=800&q=80',
+      isi: packagedIsi,
+      gambar_utama: cleanGambarUtama,
       kategori: body.kategori || 'Umum',
       penulis: body.penulis || session.nama || 'Tim Dakwah YIMI',
       status: body.status || 'draf',
@@ -75,14 +90,19 @@ export async function PUT(req: NextRequest) {
   const body = await req.json();
   if (!body.id) return NextResponse.json({ error: 'ID berita wajib diisi.' }, { status: 400 });
 
+  const { cleanGambarUtama, packagedIsi } = embedGalleryIntoPost(
+    body.isi,
+    Array.isArray(body.galeri) ? body.galeri : (body.gambar_utama ? [body.gambar_utama] : [])
+  );
+
   const { data, error } = await supabase
     .from('news_posts')
     .update({
       judul: body.judul,
       slug: body.slug,
       ringkasan: body.ringkasan,
-      isi: body.isi,
-      gambar_utama: body.gambar_utama,
+      isi: packagedIsi,
+      gambar_utama: cleanGambarUtama,
       kategori: body.kategori,
       penulis: body.penulis,
       status: body.status,

@@ -62,7 +62,7 @@ export default function AdminGaleriPage() {
 
   async function loadPhotos() {
     try {
-      const res = await fetch('/api/admin/galeri');
+      const res = await fetch('/api/admin/galeri', { cache: 'no-store' });
       if (res.ok) {
         const data = await res.json();
         setPhotos(data.items || []);
@@ -357,14 +357,20 @@ export default function AdminGaleriPage() {
   async function handleDeletePhoto() {
     if (!confirmDeleteId) return;
     try {
-      await fetch(
+      const res = await fetch(
         `/api/admin/galeri?id=${confirmDeleteId}&delete_asset=${deleteAssetToo}`,
         { method: 'DELETE' }
       );
+      if (!res.ok) {
+        const errData = await res.json();
+        alert(errData.error || 'Gagal menghapus foto.');
+        return;
+      }
       setConfirmDeleteId(null);
-      loadPhotos();
+      await loadPhotos();
     } catch (err) {
       console.error(err);
+      alert('Terjadi kesalahan saat menghapus foto.');
     }
   }
 

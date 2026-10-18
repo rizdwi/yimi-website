@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { supabase } from '@/lib/supabase';
 import fallbackNews from '@/content/news/index.json';
 import { parsePagination, publicCacheHeaders } from '@/lib/security';
+import { extractGalleryFromPost } from '@/lib/news';
 
 export const dynamic = 'force-dynamic';
 export const revalidate = 0;
@@ -27,24 +28,29 @@ export async function GET(req: NextRequest) {
     if (error) {
       console.error('Supabase error fetching public news_posts:', error);
     } else {
-      const formatted = (data || []).map((post) => ({
-        id: post.id,
-        slug: post.slug,
-        judul: post.judul,
-        tanggal: post.terbit_pada || (post.created_at ? post.created_at.split('T')[0] : '2026-10-09'),
-        penulis: post.penulis || 'Tim Dakwah YIMI',
-        kategori: post.kategori || 'Umum',
-        gambar:
-          post.gambar_utama ||
-          'https://images.unsplash.com/photo-1542816417-0983c9c9ad53?q=80&w=1200&auto=format&fit=crop',
-        ringkasan:
-          post.ringkasan ||
-          (post.isi ? post.isi.slice(0, 160) + '...' : 'Warta kegiatan dan dakwah Yayasan Insan Muslim Istiqomah.'),
-        konten: post.isi
-          ? post.isi.split('\n\n').map((p: string) => p.trim()).filter(Boolean)
-          : [],
-        ayatRujukan: '',
-      }));
+      const formatted = (data || []).map((post) => {
+        const { cleanIsi, galeri } = extractGalleryFromPost(post.gambar_utama, post.isi);
+        return {
+          id: post.id,
+          slug: post.slug,
+          judul: post.judul,
+          tanggal: post.terbit_pada || (post.created_at ? post.created_at.split('T')[0] : '2026-10-09'),
+          penulis: post.penulis || 'Tim Dakwah YIMI',
+          kategori: post.kategori || 'Umum',
+          gambar:
+            galeri[0] ||
+            post.gambar_utama ||
+            'https://images.unsplash.com/photo-1542816417-0983c9c9ad53?q=80&w=1200&auto=format&fit=crop',
+          galeri,
+          ringkasan:
+            post.ringkasan ||
+            (cleanIsi ? cleanIsi.slice(0, 160) + '...' : 'Warta kegiatan dan dakwah Yayasan Insan Muslim Istiqomah.'),
+          konten: cleanIsi
+            ? cleanIsi.split('\n\n').map((p: string) => p.trim()).filter(Boolean)
+            : [],
+          ayatRujukan: '',
+        };
+      });
 
       return NextResponse.json(
         { news: formatted, pagination: { page, limit, total: count ?? formatted.length } },

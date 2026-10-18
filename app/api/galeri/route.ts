@@ -56,7 +56,7 @@ export async function GET(req: NextRequest) {
     console.error('Error fetching gallery from Supabase:', err);
   }
 
-  // Fallback to gallery.json
+  // Fallback to gallery.json HANYA jika query database error / gagal terhubung
   const fallback = galleryFallback.filter((i) => i.izinOrangTua === true);
   const paged = fallback.slice(offset, offset + limit);
   return NextResponse.json(

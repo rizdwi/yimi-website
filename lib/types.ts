@@ -100,6 +100,7 @@ export interface NewsPostItem {
   ringkasan: string;
   isi: string;
   gambar_utama: string;
+  galeri?: string[];
   kategori: string;
   penulis: string;
   status: ContentStatus;

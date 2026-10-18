@@ -3,7 +3,7 @@
 import React, { useState, useMemo, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { Newspaper, Calendar, User, Search, ArrowRight, Tag } from 'lucide-react';
+import { Newspaper, Calendar, User, Search, ArrowRight, Tag, Images } from 'lucide-react';
 import { Card } from '@/components/ui/Card';
 import { PageHero } from '@/components/ui/PageHero';
 import { Badge } from '@/components/ui/Badge';
@@ -17,6 +17,7 @@ interface NewsItem {
   penulis: string;
   kategori: string;
   gambar: string;
+  galeri?: string[];
   ringkasan: string;
 }
 
@@ -137,6 +138,14 @@ export default function BeritaPage() {
                           {item.kategori}
                         </Badge>
                       </div>
+                      {item.galeri && item.galeri.length > 1 && (
+                        <div className="absolute top-3 right-3">
+                          <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-black/60 text-white text-[10px] font-semibold backdrop-blur-xs">
+                            <Images className="w-3 h-3" />
+                            <span>{item.galeri.length} Foto</span>
+                          </span>
+                        </div>
+                      )}
                     </div>
 
                     {/* Content */}

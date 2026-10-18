@@ -11,6 +11,8 @@ import { constructMetadata } from '@/lib/seo';
 import { supabase } from '@/lib/supabase';
 import newsData from '@/content/news/index.json';
 import siteData from '@/content/site.json';
+import { extractGalleryFromPost } from '@/lib/news';
+import { NewsGallery } from '@/components/news/NewsGallery';
 
 const FALLBACK_IMAGE = '/images/og-default.jpg';
 
@@ -28,6 +30,7 @@ interface ArticleItem {
   penulis: string;
   kategori: string;
   gambar: string;
+  galeri?: string[];
   ringkasan: string;
   konten: string[];
   ayatRujukan?: string;
@@ -66,6 +69,8 @@ async function getArticle(slug: string): Promise<ArticleItem | null> {
       .maybeSingle();
 
     if (!error && post) {
+      const { cleanIsi, galeri } = extractGalleryFromPost(post.gambar_utama, post.isi);
+
       return {
         id: post.id,
         slug: post.slug,
@@ -74,13 +79,15 @@ async function getArticle(slug: string): Promise<ArticleItem | null> {
         penulis: post.penulis || 'Tim Dakwah YIMI',
         kategori: post.kategori || 'Umum',
         gambar:
+          galeri[0] ||
           post.gambar_utama ||
           FALLBACK_IMAGE,
+        galeri,
         ringkasan:
           post.ringkasan ||
-          (post.isi ? post.isi.slice(0, 160) + '...' : 'Warta kegiatan dan dakwah Yayasan Insan Muslim Istiqomah.'),
-        konten: post.isi
-          ? post.isi.split('\n\n').map((p: string) => p.trim()).filter(Boolean)
+          (cleanIsi ? cleanIsi.slice(0, 160) + '...' : 'Warta kegiatan dan dakwah Yayasan Insan Muslim Istiqomah.'),
+        konten: cleanIsi
+          ? cleanIsi.split('\n\n').map((p: string) => p.trim()).filter(Boolean)
           : [],
         ayatRujukan: '',
       };
@@ -307,6 +314,13 @@ export default async function BeritaDetailPage({ params }: Props) {
             </div>
           )}
         </div>
+
+        {/* Seksi Galeri Dokumentasi Foto Kegiatan (Jika ada 2/3+ foto) */}
+        {article.galeri && article.galeri.length > 1 && (
+          <div className="max-w-[800px] mx-auto">
+            <NewsGallery images={article.galeri} judul={article.judul} />
+          </div>
+        )}
 
         {/* Share Section */}
         <div className="max-w-[68ch] mx-auto border-t border-b border-neutral-100 py-6 my-10 flex flex-col sm:flex-row sm:items-center justify-between gap-4">

@@ -14,6 +14,10 @@ import {
   Loader2,
   X,
   Check,
+  Images,
+  Star,
+  ChevronLeft,
+  ChevronRight,
 } from 'lucide-react';
 import { NewsPostItem, ContentStatus } from '@/lib/types';
 import { AdminStatusBadge } from '@/components/admin/AdminStatusBadge';
@@ -42,6 +46,8 @@ export default function AdminBeritaPage() {
 
   // Upload & Media Picker State
   const [uploadingImage, setUploadingImage] = useState(false);
+  const [uploadProgressText, setUploadProgressText] = useState('');
+  const [manualImageUrl, setManualImageUrl] = useState('');
   const [showMediaPicker, setShowMediaPicker] = useState(false);
   const [mediaList, setMediaList] = useState<MediaItem[]>([]);
   const [loadingMedia, setLoadingMedia] = useState(false);
@@ -101,23 +107,35 @@ export default function AdminBeritaPage() {
   }
 
   async function handleFileUpload(e: React.ChangeEvent<HTMLInputElement>) {
-    const file = e.target.files?.[0];
-    if (!file) return;
+    const fileList = e.target.files;
+    if (!fileList || fileList.length === 0) return;
 
-    if (!file.type.startsWith('image/')) {
-      alert('Hanya berkas gambar (JPG, PNG, WebP, SVG) yang diperbolehkan.');
+    const files = Array.from(fileList);
+
+    const invalidFiles = files.filter((f) => !f.type.startsWith('image/'));
+    if (invalidFiles.length > 0) {
+      alert('Semua berkas harus berformat gambar (JPG, PNG, WebP, SVG).');
       return;
     }
 
-    if (file.size > 5 * 1024 * 1024) {
-      alert('Ukuran berkas maksimal adalah 5MB.');
+    const oversizedFiles = files.filter((f) => f.size > 10 * 1024 * 1024);
+    if (oversizedFiles.length > 0) {
+      alert('Ukuran setiap berkas foto maksimal adalah 10MB.');
       return;
     }
 
     setUploadingImage(true);
+    setUploadProgressText(
+      files.length > 1
+        ? `Mengunggah ${files.length} foto kegiatan...`
+        : 'Mengunggah foto...'
+    );
+
     try {
       const formData = new FormData();
-      formData.append('file', file);
+      files.forEach((f) => {
+        formData.append('files', f);
+      });
 
       const res = await fetch('/api/admin/upload', {
         method: 'POST',
@@ -129,19 +147,115 @@ export default function AdminBeritaPage() {
         throw new Error(data.error || 'Gagal mengunggah foto.');
       }
 
-      setSelectedNews((prev) => ({
-        ...prev,
-        gambar_utama: data.url,
-      }));
+      const newUrls: string[] = [];
+      if (Array.isArray(data.files) && data.files.length > 0) {
+        data.files.forEach((item: { url?: string }) => {
+          if (item?.url) newUrls.push(item.url);
+        });
+      } else if (data.url) {
+        newUrls.push(data.url);
+      }
+
+      if (newUrls.length === 0) {
+        throw new Error('Tidak ada tautan gambar yang diterima dari server.');
+      }
+
+      setSelectedNews((prev) => {
+        const existing = prev.galeri && prev.galeri.length > 0
+          ? [...prev.galeri]
+          : (prev.gambar_utama ? [prev.gambar_utama] : []);
+
+        const merged = [...existing, ...newUrls];
+        return {
+          ...prev,
+          gambar_utama: merged[0] || '',
+          galeri: merged,
+        };
+      });
     } catch (err: unknown) {
       const msg = err instanceof Error ? err.message : 'Terjadi kesalahan saat unggah';
       alert(`Gagal upload foto: ${msg}`);
     } finally {
       setUploadingImage(false);
+      setUploadProgressText('');
       if (fileInputRef.current) {
         fileInputRef.current.value = '';
       }
     }
+  }
+
+  function handleSetCover(idx: number) {
+    setSelectedNews((prev) => {
+      const list = [...(prev.galeri || (prev.gambar_utama ? [prev.gambar_utama] : []))];
+      if (idx <= 0 || idx >= list.length) return prev;
+      const target = list[idx];
+      list.splice(idx, 1);
+      list.unshift(target);
+      return {
+        ...prev,
+        gambar_utama: list[0] || '',
+        galeri: list,
+      };
+    });
+  }
+
+  function handleRemovePhoto(idx: number) {
+    setSelectedNews((prev) => {
+      const list = [...(prev.galeri || (prev.gambar_utama ? [prev.gambar_utama] : []))];
+      list.splice(idx, 1);
+      return {
+        ...prev,
+        gambar_utama: list[0] || '',
+        galeri: list,
+      };
+    });
+  }
+
+  function handleMovePhoto(idx: number, direction: 'left' | 'right') {
+    setSelectedNews((prev) => {
+      const list = [...(prev.galeri || (prev.gambar_utama ? [prev.gambar_utama] : []))];
+      const targetIdx = direction === 'left' ? idx - 1 : idx + 1;
+      if (targetIdx < 0 || targetIdx >= list.length) return prev;
+      const temp = list[idx];
+      list[idx] = list[targetIdx];
+      list[targetIdx] = temp;
+      return {
+        ...prev,
+        gambar_utama: list[0] || '',
+        galeri: list,
+      };
+    });
+  }
+
+  function handleAddManualUrl(url: string) {
+    if (!url || !url.trim()) return;
+    const trimmed = url.trim();
+    setSelectedNews((prev) => {
+      const list = [...(prev.galeri || (prev.gambar_utama ? [prev.gambar_utama] : []))];
+      if (!list.includes(trimmed)) {
+        list.push(trimmed);
+      }
+      return {
+        ...prev,
+        gambar_utama: list[0] || '',
+        galeri: list,
+      };
+    });
+  }
+
+  function handleSelectFromMediaLibrary(url: string) {
+    setSelectedNews((prev) => {
+      const list = [...(prev.galeri || (prev.gambar_utama ? [prev.gambar_utama] : []))];
+      if (!list.includes(url)) {
+        list.push(url);
+      }
+      return {
+        ...prev,
+        gambar_utama: list[0] || '',
+        galeri: list,
+      };
+    });
+    setShowMediaPicker(false);
   }
 
   async function handleSaveNews(statusTarget: ContentStatus) {
@@ -167,6 +281,10 @@ export default function AdminBeritaPage() {
         ? selectedNews.isi.slice(0, 160) + '...'
         : 'Warta dakwah dan kegiatan yayasan.';
 
+    const finalGallery = selectedNews.galeri && selectedNews.galeri.length > 0
+      ? selectedNews.galeri
+      : (selectedNews.gambar_utama ? [selectedNews.gambar_utama] : []);
+
     setSubmitting(true);
 
     try {
@@ -176,6 +294,8 @@ export default function AdminBeritaPage() {
         slug: autoSlug,
         ringkasan: autoRingkasan,
         status: statusTarget,
+        gambar_utama: finalGallery[0] || selectedNews.gambar_utama || '',
+        galeri: finalGallery,
       };
 
       const res = await fetch('/api/admin/berita', {
@@ -248,7 +368,8 @@ export default function AdminBeritaPage() {
               slug: '',
               ringkasan: '',
               isi: '',
-              gambar_utama: 'https://images.unsplash.com/photo-1542810634-71277d95dcbb?w=800&q=80',
+              gambar_utama: '',
+              galeri: [],
               kategori: 'Kajian',
               penulis: 'Tim Dakwah YIMI',
               status: 'draf',
@@ -346,7 +467,13 @@ export default function AdminBeritaPage() {
                         )}
                         <button
                           onClick={() => {
-                            setSelectedNews(n);
+                            const galeri = n.galeri && n.galeri.length > 0
+                              ? [...n.galeri]
+                              : (n.gambar_utama ? [n.gambar_utama] : []);
+                            setSelectedNews({
+                              ...n,
+                              galeri,
+                            });
                             setActiveModal('edit');
                           }}
                           title="Edit Berita"
@@ -517,45 +644,162 @@ export default function AdminBeritaPage() {
                   />
                 </div>
 
-                {/* Seksi Unggah & Pratinjau Foto Utama Artikel */}
-                <div className="pt-2 border-t border-[#E3E7EE]/80 space-y-2">
-                  <label className="block font-semibold text-[#374151]">
-                    Foto Utama Artikel
-                  </label>
-
-                  {/* Pratinjau Gambar */}
-                  {selectedNews.gambar_utama && (
-                    <div className="relative aspect-video rounded-lg overflow-hidden border border-[#E3E7EE] bg-white group">
-                      <img
-                        src={selectedNews.gambar_utama}
-                        alt="Pratinjau Foto"
-                        className="w-full h-full object-cover"
-                        onError={(e) => {
-                          const target = e.currentTarget;
-                          target.src =
-                            'https://images.unsplash.com/photo-1542816417-0983c9c9ad53?q=80&w=600&auto=format&fit=crop';
-                        }}
-                      />
-                      <button
-                        type="button"
-                        onClick={() => setSelectedNews({ ...selectedNews, gambar_utama: '' })}
-                        className="absolute top-1 right-1 p-1 rounded-full bg-black/60 text-white hover:bg-red-600 transition"
-                        title="Hapus Foto"
-                      >
-                        <X className="w-3.5 h-3.5" />
-                      </button>
+                {/* Seksi Foto Berita & Dokumentasi Kegiatan (Mendukung upload 2-3+ foto sekaligus) */}
+                <div className="pt-2 border-t border-[#E3E7EE]/80 space-y-3">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <label className="block font-semibold text-[#374151] text-xs">
+                        Foto Berita &amp; Dokumentasi Kegiatan
+                      </label>
+                      <p className="text-[11px] text-[#6B7280]">
+                        Bisa upload 2, 3, atau banyak foto sekaligus.
+                      </p>
                     </div>
-                  )}
+                    {(selectedNews.galeri && selectedNews.galeri.length > 0
+                      ? selectedNews.galeri
+                      : selectedNews.gambar_utama
+                      ? [selectedNews.gambar_utama]
+                      : []
+                    ).length > 0 && (
+                      <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-[#EEF2FC] text-[#3E5FD1]">
+                        {(selectedNews.galeri && selectedNews.galeri.length > 0
+                          ? selectedNews.galeri
+                          : selectedNews.gambar_utama
+                          ? [selectedNews.gambar_utama]
+                          : []
+                        ).length} Foto
+                      </span>
+                    )}
+                  </div>
 
-                  {/* Tombol Aksi: Upload dari HP/Komputer ATAU Pilih dari Media Library */}
+                  {/* Daftar Pratinjau Foto Galeri */}
+                  {(() => {
+                    const gallery = selectedNews.galeri && selectedNews.galeri.length > 0
+                      ? selectedNews.galeri
+                      : selectedNews.gambar_utama
+                      ? [selectedNews.gambar_utama]
+                      : [];
+
+                    if (gallery.length === 0) {
+                      return (
+                        <div
+                          onClick={() => fileInputRef.current?.click()}
+                          className="p-4 rounded-xl border-2 border-dashed border-[#3E5FD1]/40 bg-[#EEF2FC]/30 hover:bg-[#EEF2FC]/60 text-center cursor-pointer transition flex flex-col items-center justify-center space-y-1"
+                        >
+                          <div className="w-8 h-8 rounded-full bg-white text-[#3E5FD1] flex items-center justify-center shadow-xs">
+                            <Images className="w-4 h-4" />
+                          </div>
+                          <span className="text-xs font-bold text-[#1F2F6B]">
+                            Pilih 2 atau 3 Foto Sekaligus
+                          </span>
+                          <span className="text-[10px] text-[#6B7280]">
+                            Bisa pilih banyak foto langsung dari galeri HP atau komputer
+                          </span>
+                        </div>
+                      );
+                    }
+
+                    return (
+                      <div className="space-y-2">
+                        <div className="grid grid-cols-2 gap-2 max-h-56 overflow-y-auto p-1 bg-white rounded-lg border border-[#E3E7EE]">
+                          {gallery.map((imgUrl, idx) => {
+                            const isCover = idx === 0;
+                            return (
+                              <div
+                                key={`${imgUrl}-${idx}`}
+                                className={`relative rounded-lg overflow-hidden border group transition ${
+                                  isCover
+                                    ? 'border-[#3E5FD1] ring-2 ring-[#3E5FD1]/30'
+                                    : 'border-[#E3E7EE]'
+                                }`}
+                              >
+                                <div className="relative aspect-video bg-neutral-100">
+                                  <img
+                                    src={imgUrl}
+                                    alt={`Foto ${idx + 1}`}
+                                    className="w-full h-full object-cover"
+                                    onError={(e) => {
+                                      const target = e.currentTarget;
+                                      target.src =
+                                        'https://images.unsplash.com/photo-1542816417-0983c9c9ad53?q=80&w=600&auto=format&fit=crop';
+                                    }}
+                                  />
+
+                                  {isCover ? (
+                                    <span className="absolute top-1 left-1 px-1.5 py-0.5 rounded-md bg-[#3E5FD1] text-white text-[9px] font-bold flex items-center gap-0.5 shadow-xs">
+                                      <Star className="w-2.5 h-2.5 fill-current" />
+                                      <span>Sampul</span>
+                                    </span>
+                                  ) : (
+                                    <span className="absolute top-1 left-1 px-1.5 py-0.5 rounded-md bg-black/60 text-white text-[9px] font-semibold">
+                                      #{idx + 1}
+                                    </span>
+                                  )}
+
+                                  <button
+                                    type="button"
+                                    onClick={() => handleRemovePhoto(idx)}
+                                    className="absolute top-1 right-1 p-1 rounded-full bg-black/60 text-white hover:bg-red-600 transition cursor-pointer"
+                                    title="Hapus Foto Ini"
+                                  >
+                                    <X className="w-3 h-3" />
+                                  </button>
+                                </div>
+
+                                <div className="p-1 bg-[#F9FAFB] flex items-center justify-between text-[10px] border-t border-[#E3E7EE]">
+                                  <div className="flex items-center space-x-0.5">
+                                    <button
+                                      type="button"
+                                      disabled={idx === 0}
+                                      onClick={() => handleMovePhoto(idx, 'left')}
+                                      className="p-0.5 rounded hover:bg-gray-200 text-[#4B5563] disabled:opacity-20 cursor-pointer"
+                                      title="Geser Kiri"
+                                    >
+                                      <ChevronLeft className="w-3 h-3" />
+                                    </button>
+                                    <button
+                                      type="button"
+                                      disabled={idx === gallery.length - 1}
+                                      onClick={() => handleMovePhoto(idx, 'right')}
+                                      className="p-0.5 rounded hover:bg-gray-200 text-[#4B5563] disabled:opacity-20 cursor-pointer"
+                                      title="Geser Kanan"
+                                    >
+                                      <ChevronRight className="w-3 h-3" />
+                                    </button>
+                                  </div>
+
+                                  {!isCover && (
+                                    <button
+                                      type="button"
+                                      onClick={() => handleSetCover(idx)}
+                                      className="text-[#3E5FD1] hover:underline font-semibold text-[10px] cursor-pointer"
+                                    >
+                                      Jadikan Sampul
+                                    </button>
+                                  )}
+                                </div>
+                              </div>
+                            );
+                          })}
+                        </div>
+                        <p className="text-[10px] text-[#6B7280]">
+                          Foto pertama otomatis jadi sampul. Foto lainnya tampil di Galeri Dokumentasi Kegiatan di halaman baca warta.
+                        </p>
+                      </div>
+                    );
+                  })()}
+
+                  {/* Input File Multiple Tersembunyi */}
                   <input
                     type="file"
                     ref={fileInputRef}
                     onChange={handleFileUpload}
                     accept="image/*"
+                    multiple
                     className="sr-only"
                   />
 
+                  {/* Tombol Aksi Upload Multiple / Media Library */}
                   <div className="grid grid-cols-2 gap-2">
                     <button
                       type="button"
@@ -566,12 +810,12 @@ export default function AdminBeritaPage() {
                       {uploadingImage ? (
                         <>
                           <Loader2 className="w-3.5 h-3.5 animate-spin" />
-                          <span>Mengunggah...</span>
+                          <span>{uploadProgressText || 'Mengunggah...'}</span>
                         </>
                       ) : (
                         <>
                           <UploadCloud className="w-3.5 h-3.5" />
-                          <span>Select Foto</span>
+                          <span>Upload 2/3 Foto</span>
                         </>
                       )}
                     </button>
@@ -586,15 +830,27 @@ export default function AdminBeritaPage() {
                     </button>
                   </div>
 
-                  {/* Input URL Manual (Opsional) */}
-                  <div className="pt-1">
+                  {/* Input Tempel URL Manual */}
+                  <div className="flex gap-1.5 pt-1">
                     <input
                       type="text"
-                      value={selectedNews.gambar_utama || ''}
-                      onChange={(e) => setSelectedNews({ ...selectedNews, gambar_utama: e.target.value })}
+                      value={manualImageUrl}
+                      onChange={(e) => setManualImageUrl(e.target.value)}
                       placeholder="Atau tempel URL gambar..."
-                      className="w-full p-2 bg-white border border-[#E3E7EE] rounded-lg text-[10px] text-[#4B5563]"
+                      className="flex-1 p-2 bg-white border border-[#E3E7EE] rounded-lg text-[10px] text-[#4B5563]"
                     />
+                    <button
+                      type="button"
+                      onClick={() => {
+                        if (manualImageUrl.trim()) {
+                          handleAddManualUrl(manualImageUrl);
+                          setManualImageUrl('');
+                        }
+                      }}
+                      className="px-2.5 py-1.5 bg-[#EEF2FC] text-[#3E5FD1] hover:bg-[#3E5FD1] hover:text-white rounded-lg text-[10px] font-bold transition cursor-pointer"
+                    >
+                      + Tambah
+                    </button>
                   </div>
                 </div>
 
@@ -660,8 +916,7 @@ export default function AdminBeritaPage() {
                     <div
                       key={m.id}
                       onClick={() => {
-                        setSelectedNews((prev) => ({ ...prev, gambar_utama: m.url }));
-                        setShowMediaPicker(false);
+                        handleSelectFromMediaLibrary(m.url);
                       }}
                       className="cursor-pointer group relative rounded-lg border border-[#E3E7EE] overflow-hidden hover:border-[#3E5FD1] hover:ring-2 hover:ring-[#3E5FD1]/30 transition"
                     >
@@ -675,7 +930,9 @@ export default function AdminBeritaPage() {
                       <div className="p-1.5 bg-white text-[10px]">
                         <span className="font-semibold text-[#111827] block truncate">{m.name}</span>
                       </div>
-                      {selectedNews.gambar_utama === m.url && (
+                      {((selectedNews.galeri && selectedNews.galeri.length > 0)
+                        ? selectedNews.galeri.includes(m.url)
+                        : selectedNews.gambar_utama === m.url) && (
                         <div className="absolute top-1 right-1 bg-[#138A3A] text-white p-0.5 rounded-full">
                           <Check className="w-3 h-3" />
                         </div>
