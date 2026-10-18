@@ -4,7 +4,9 @@
 @theme {
   /* Skema warna YIMI (60-30-10): biru pucat dominan, biru tua sekunder, biru langit aksen */
   --color-yimi-blue-950: #002846;
+  --color-yimi-blue-900: #002846;
   --color-yimi-blue-800: #002846;
+  --color-yimi-blue-700: #1b3d58;
   --color-yimi-blue-600: #567790;
   --color-yimi-blue-50: #baddef;
   --color-yimi-green-500: #5eb2f2;
@@ -25,7 +27,9 @@
 
 :root {
   --yimi-blue-950: #002846;
+  --yimi-blue-900: #002846;
   --yimi-blue-800: #002846;
+  --yimi-blue-700: #1b3d58;
   --yimi-blue-600: #567790;
   --yimi-blue-50: #baddef;
   --yimi-green-500: #5eb2f2;

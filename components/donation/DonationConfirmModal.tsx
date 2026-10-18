@@ -97,6 +97,16 @@ export function DonationConfirmModal({
     }
   }, [defaultProgram, defaultNominal, isOpen]);
 
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape' && isOpen) {
+        onClose();
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [isOpen, onClose]);
+
   if (!isOpen) return null;
 
   const handleSelectPreset = (amt: number) => {
@@ -220,20 +230,25 @@ export function DonationConfirmModal({
 
   return (
     <>
-      <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 overflow-y-auto bg-black/60 backdrop-blur-xs">
+      <div
+        className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 overflow-y-auto bg-black/60 backdrop-blur-xs"
+        onClick={(e) => {
+          if (e.target === e.currentTarget) onClose();
+        }}
+      >
         <div className="relative w-full max-w-xl bg-white rounded-3xl shadow-2xl border border-neutral-200 overflow-hidden my-6 max-h-[90vh] flex flex-col">
           
           {/* Modal Header */}
-          <div className="flex items-center justify-between px-6 py-4 bg-yimi-blue-900 text-white shrink-0">
+          <div className="flex items-center justify-between px-6 py-4.5 bg-[#002846] text-white shrink-0 border-b border-[#001b30]">
             <div className="flex items-center gap-2.5">
-              <div className="w-8 h-8 rounded-xl bg-white/10 flex items-center justify-center text-yimi-yellow-400">
+              <div className="w-9 h-9 rounded-xl bg-white/10 flex items-center justify-center text-yimi-yellow-400">
                 <Heart className="w-4 h-4 fill-current" />
               </div>
               <div>
                 <h3 className="text-sm sm:text-base font-bold text-white leading-tight">
                   {submittedData ? 'Konfirmasi Berhasil Diterima' : 'Formulir Konfirmasi Donasi'}
                 </h3>
-                <p className="text-[11px] text-white/70">
+                <p className="text-[11px] text-white/80">
                   Yayasan Insan Muslim Istiqomah (YIMI)
                 </p>
               </div>
@@ -241,10 +256,11 @@ export function DonationConfirmModal({
             <button
               type="button"
               onClick={onClose}
-              className="p-1.5 rounded-xl text-white/70 hover:text-white hover:bg-white/10 transition cursor-pointer"
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-white/15 hover:bg-white/25 active:bg-white/30 text-white text-xs font-bold transition cursor-pointer shadow-2xs"
               aria-label="Tutup form konfirmasi"
             >
-              <X className="w-5 h-5" />
+              <X className="w-4 h-4" />
+              <span>Tutup</span>
             </button>
           </div>
 
@@ -325,9 +341,10 @@ export function DonationConfirmModal({
                   <button
                     type="button"
                     onClick={onClose}
-                    className="text-xs text-neutral-500 hover:text-neutral-800 pt-2 block mx-auto underline cursor-pointer"
+                    className="w-full py-3 px-4 rounded-2xl bg-neutral-100 hover:bg-neutral-200 text-neutral-700 font-bold text-xs flex items-center justify-center gap-2 transition cursor-pointer"
                   >
-                    Kembali ke Halaman
+                    <X className="w-4 h-4" />
+                    <span>Tutup Jendela</span>
                   </button>
                 </div>
               </div>
@@ -589,21 +606,31 @@ export function DonationConfirmModal({
                   />
                 </div>
 
-                {/* Submit Button */}
-                <button
-                  type="submit"
-                  disabled={submitting || uploading}
-                  className="w-full py-3.5 px-6 rounded-2xl bg-yimi-blue-600 hover:bg-yimi-blue-700 active:bg-yimi-blue-800 text-white font-bold text-xs sm:text-sm flex items-center justify-center gap-2 shadow-xs transition disabled:opacity-60 cursor-pointer"
-                >
-                  {submitting ? (
-                    <span>Memproses Konfirmasi…</span>
-                  ) : (
-                    <>
-                      <span>Kirim Konfirmasi Donasi Sekarang</span>
-                      <ArrowRight className="w-4 h-4" />
-                    </>
-                  )}
-                </button>
+                {/* Submit & Cancel Buttons */}
+                <div className="flex items-center gap-2.5 pt-2">
+                  <button
+                    type="button"
+                    onClick={onClose}
+                    className="w-1/3 py-3.5 px-3 rounded-2xl bg-neutral-100 hover:bg-neutral-200 text-neutral-700 font-bold text-xs flex items-center justify-center gap-1.5 transition cursor-pointer"
+                  >
+                    <X className="w-4 h-4" />
+                    <span>Tutup</span>
+                  </button>
+                  <button
+                    type="submit"
+                    disabled={submitting || uploading}
+                    className="flex-1 py-3.5 px-5 rounded-2xl bg-yimi-blue-600 hover:bg-yimi-blue-700 active:bg-yimi-blue-800 text-white font-bold text-xs sm:text-sm flex items-center justify-center gap-2 shadow-xs transition disabled:opacity-60 cursor-pointer"
+                  >
+                    {submitting ? (
+                      <span>Memproses Konfirmasi…</span>
+                    ) : (
+                      <>
+                        <span>Kirim Konfirmasi Donasi</span>
+                        <ArrowRight className="w-4 h-4" />
+                      </>
+                    )}
+                  </button>
+                </div>
               </form>
             )}
           </div>
