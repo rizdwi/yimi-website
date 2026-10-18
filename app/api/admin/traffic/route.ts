@@ -43,6 +43,7 @@ export async function GET(req: NextRequest) {
     const pageCounts: Record<string, number> = {};
     allLogs.forEach((l) => {
       const p = l.path || '/';
+      if (p.startsWith('like:')) return;
       pageCounts[p] = (pageCounts[p] || 0) + 1;
     });
 

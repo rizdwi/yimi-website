@@ -16,12 +16,35 @@ export async function GET(req: NextRequest) {
   const { page, limit, offset } = parsePagination(searchParams);
 
   try {
-    const { data, error, count } = await supabase
-      .from('news_posts')
-      .select('*', { count: 'exact' })
-      .eq('status', 'terbit')
-      .order('terbit_pada', { ascending: false })
-      .range(offset, offset + limit - 1);
+    const [newsRes, statsRes] = await Promise.all([
+      supabase
+        .from('news_posts')
+        .select('*', { count: 'exact' })
+        .eq('status', 'terbit')
+        .order('terbit_pada', { ascending: false })
+        .range(offset, offset + limit - 1),
+      supabase
+        .from('visitor_logs')
+        .select('path')
+        .or('path.ilike./berita/%,path.ilike.like:/berita/%'),
+    ]);
+
+    const { data, error, count } = newsRes;
+    const statsLogs = statsRes.data || [];
+
+    const viewsMap: Record<string, number> = {};
+    const likesMap: Record<string, number> = {};
+
+    statsLogs.forEach((l) => {
+      if (!l.path) return;
+      if (l.path.startsWith('like:/berita/')) {
+        const s = l.path.replace('like:/berita/', '').split('?')[0].split('/')[0];
+        if (s) likesMap[s] = (likesMap[s] || 0) + 1;
+      } else if (l.path.startsWith('/berita/')) {
+        const s = l.path.replace('/berita/', '').split('?')[0].split('/')[0];
+        if (s) viewsMap[s] = (viewsMap[s] || 0) + 1;
+      }
+    });
 
     // Bedakan "database error" vs "database kosong": error → fallback,
     // kosong → hormati CMS (jangan tampilkan data cadangan basi).
@@ -42,6 +65,8 @@ export async function GET(req: NextRequest) {
             post.gambar_utama ||
             'https://images.unsplash.com/photo-1542816417-0983c9c9ad53?q=80&w=1200&auto=format&fit=crop',
           galeri,
+          views: viewsMap[post.slug] || 0,
+          likes: likesMap[post.slug] || 0,
           ringkasan:
             post.ringkasan ||
             (cleanIsi ? cleanIsi.slice(0, 160) + '...' : 'Warta kegiatan dan dakwah Yayasan Insan Muslim Istiqomah.'),

@@ -22,8 +22,29 @@ export async function GET(req: NextRequest) {
     query = query.ilike('judul', `%${search}%`);
   }
 
-  const { data, error } = await query;
+  const [{ data, error }, { data: statsLogs }] = await Promise.all([
+    query,
+    supabase
+      .from('visitor_logs')
+      .select('path')
+      .or('path.ilike./berita/%,path.ilike.like:/berita/%'),
+  ]);
+
   if (error) return NextResponse.json({ error: 'Database error' }, { status: 500 });
+
+  const viewsMap: Record<string, number> = {};
+  const likesMap: Record<string, number> = {};
+
+  (statsLogs || []).forEach((l) => {
+    if (!l.path) return;
+    if (l.path.startsWith('like:/berita/')) {
+      const s = l.path.replace('like:/berita/', '').split('?')[0].split('/')[0];
+      if (s) likesMap[s] = (likesMap[s] || 0) + 1;
+    } else if (l.path.startsWith('/berita/')) {
+      const s = l.path.replace('/berita/', '').split('?')[0].split('/')[0];
+      if (s) viewsMap[s] = (viewsMap[s] || 0) + 1;
+    }
+  });
 
   const formatted = (data || []).map((post) => {
     const { cleanIsi, galeri } = extractGalleryFromPost(post.gambar_utama, post.isi);
@@ -31,6 +52,8 @@ export async function GET(req: NextRequest) {
       ...post,
       isi: cleanIsi,
       galeri,
+      views: viewsMap[post.slug] || 0,
+      likes: likesMap[post.slug] || 0,
     };
   });
 

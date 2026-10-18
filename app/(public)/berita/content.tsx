@@ -3,7 +3,7 @@
 import React, { useState, useMemo, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { Newspaper, Calendar, User, Search, ArrowRight, Tag, Images } from 'lucide-react';
+import { Newspaper, Calendar, User, Search, ArrowRight, Tag, Images, Eye, Heart } from 'lucide-react';
 import { Card } from '@/components/ui/Card';
 import { PageHero } from '@/components/ui/PageHero';
 import { Badge } from '@/components/ui/Badge';
@@ -18,6 +18,8 @@ interface NewsItem {
   kategori: string;
   gambar: string;
   galeri?: string[];
+  views?: number;
+  likes?: number;
   ringkasan: string;
 }
 
@@ -173,14 +175,26 @@ export default function BeritaPage() {
                     </div>
                   </div>
 
-                  <div className="px-6 pb-6 pt-0">
+                  <div className="px-6 pb-6 pt-3 flex items-center justify-between border-t border-neutral-100">
                     <Link
                       href={`/berita/${item.slug}`}
-                      className="inline-flex items-center gap-2 text-xs font-bold text-yimi-blue-600 hover:text-yimi-blue-800 transition-colors"
+                      className="inline-flex items-center gap-1.5 text-xs font-bold text-yimi-blue-600 hover:text-yimi-blue-800 transition-colors"
                     >
                       <span>Baca Selengkapnya</span>
                       <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
                     </Link>
+
+                    {/* Indikator Tayangan & Suka */}
+                    <div className="flex items-center gap-3 text-[11px] text-neutral-400 font-medium">
+                      <span className="inline-flex items-center gap-1 hover:text-neutral-600 transition-colors" title={`${item.views || 0} pembaca`}>
+                        <Eye className="w-3.5 h-3.5" />
+                        <span>{(item.views || 0).toLocaleString('id-ID')}</span>
+                      </span>
+                      <span className="inline-flex items-center gap-1 hover:text-rose-600 transition-colors" title={`${item.likes || 0} suka`}>
+                        <Heart className="w-3.5 h-3.5 text-rose-500 fill-rose-500/20" />
+                        <span>{(item.likes || 0).toLocaleString('id-ID')}</span>
+                      </span>
+                    </div>
                   </div>
                 </Card>
               ))}

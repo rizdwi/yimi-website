@@ -3,7 +3,7 @@ import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import Image from 'next/image';
 import Link from 'next/link';
-import { Calendar, User, ArrowLeft, Share2, BookOpen, ArrowRight } from 'lucide-react';
+import { Calendar, User, ArrowLeft, BookOpen, ArrowRight } from 'lucide-react';
 import { Badge } from '@/components/ui/Badge';
 import { Card } from '@/components/ui/Card';
 import { formatTanggal } from '@/lib/format';
@@ -13,6 +13,7 @@ import newsData from '@/content/news/index.json';
 import siteData from '@/content/site.json';
 import { extractGalleryFromPost } from '@/lib/news';
 import { NewsGallery } from '@/components/news/NewsGallery';
+import { ArticleInteractions } from '@/components/news/ArticleInteractions';
 
 const FALLBACK_IMAGE = '/images/og-default.jpg';
 
@@ -178,7 +179,6 @@ export default async function BeritaDetailPage({ params }: Props) {
   }
 
   const relatedArticles = await getRelatedArticles(article.slug);
-  const shareText = encodeURIComponent(`${article.judul}\n\nBaca selengkapnya di Website Resmi YIMI:`);
 
   // Schema.org NewsArticle: membantu Google memahami artikel sebagai berita.
   const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://yimi.my.id';
@@ -237,9 +237,19 @@ export default async function BeritaDetailPage({ params }: Props) {
             {article.judul}
           </h1>
 
-          <div className="flex items-center gap-2 text-xs text-neutral-600">
-            <User className="w-3.5 h-3.5 text-yimi-green-700" />
-            <span className="font-semibold">{article.penulis}</span>
+          <div className="flex flex-wrap items-center justify-between gap-3 pt-1">
+            <div className="flex items-center gap-2 text-xs text-neutral-600">
+              <User className="w-3.5 h-3.5 text-yimi-green-700" />
+              <span className="font-semibold">{article.penulis}</span>
+            </div>
+
+            {/* Statistik Ringkas: Dilihat & Suka */}
+            <ArticleInteractions
+              slug={article.slug}
+              judul={article.judul}
+              ringkasan={article.ringkasan}
+              variant="meta-bar"
+            />
           </div>
         </div>
       </section>
@@ -322,20 +332,14 @@ export default async function BeritaDetailPage({ params }: Props) {
           </div>
         )}
 
-        {/* Share Section */}
-        <div className="max-w-[68ch] mx-auto border-t border-b border-neutral-100 py-6 my-10 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-          <span className="text-xs font-bold text-neutral-500 uppercase tracking-wider">
-            Bagikan Kebaikan Ini:
-          </span>
-          <a
-            href={`https://wa.me/?text=${shareText}`}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-yimi-green-500 hover:bg-yimi-green-700 text-yimi-blue-800 hover:text-white font-bold text-xs transition-colors cursor-pointer w-fit"
-          >
-            <Share2 className="w-3.5 h-3.5" />
-            <span>Bagikan ke WhatsApp</span>
-          </a>
+        {/* Seksi Interaksi (Suka & Jumlah Dilihat) serta Berbagi Media Sosial Lengkap */}
+        <div className="max-w-[800px] mx-auto">
+          <ArticleInteractions
+            slug={article.slug}
+            judul={article.judul}
+            ringkasan={article.ringkasan}
+            variant="full"
+          />
         </div>
 
         {/* Related Articles */}

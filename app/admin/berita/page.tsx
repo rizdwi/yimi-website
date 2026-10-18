@@ -18,6 +18,8 @@ import {
   Star,
   ChevronLeft,
   ChevronRight,
+  Eye,
+  Heart,
 } from 'lucide-react';
 import { NewsPostItem, ContentStatus } from '@/lib/types';
 import { AdminStatusBadge } from '@/components/admin/AdminStatusBadge';
@@ -438,11 +440,19 @@ export default function AdminBeritaPage() {
                   <tr key={n.id} className="hover:bg-[#EEF2FC]/40 transition">
                     <td className="py-3.5 px-4">
                       <span className="font-bold text-[#111827] block text-sm">{n.judul}</span>
-                      <div className="flex items-center space-x-2 mt-0.5">
+                      <div className="flex flex-wrap items-center gap-2 mt-1">
                         <span className="px-1.5 py-0.5 rounded-sm bg-[#EEF2FC] text-[#3E5FD1] text-[10px] font-semibold">
                           {n.kategori}
                         </span>
                         <span className="font-mono text-[10px] text-[#6B7280]">/berita/{n.slug}</span>
+                        <span className="inline-flex items-center gap-1 text-[10px] text-neutral-500 font-medium ml-1">
+                          <Eye className="w-3 h-3 text-[#3E5FD1]" />
+                          <span>{(n.views || 0).toLocaleString('id-ID')} tayangan</span>
+                        </span>
+                        <span className="inline-flex items-center gap-1 text-[10px] text-neutral-500 font-medium">
+                          <Heart className="w-3 h-3 text-rose-500 fill-rose-500/20" />
+                          <span>{(n.likes || 0).toLocaleString('id-ID')} suka</span>
+                        </span>
                       </div>
                     </td>
                     <td className="py-3.5 px-4 whitespace-nowrap text-[#4B5563] font-mono">
