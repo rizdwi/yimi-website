@@ -9,7 +9,6 @@ import {
   Calendar,
   Copy,
   Check,
-  MessageCircle,
   Clock,
   Sparkles,
   FileText,
@@ -229,7 +228,7 @@ export default function PembebasanLahanPage() {
               </div>
 
               {/* Action Button Quick */}
-              <div className="lg:col-span-4 flex flex-col gap-3 p-4 rounded-2xl bg-yimi-blue-50/60 border border-yimi-blue-600/15">
+              <div className="lg:col-span-4 flex flex-col justify-center gap-3 p-5 rounded-2xl bg-yimi-blue-50/60 border border-yimi-blue-600/15">
                 <span className="text-xs font-bold text-yimi-blue-800">
                   Mari Berpartisipasi Sekarang:
                 </span>
@@ -239,20 +238,11 @@ export default function PembebasanLahanPage() {
                     setModalNominal(500000);
                     setIsModalOpen(true);
                   }}
-                  className="w-full py-3.5 px-4 rounded-xl bg-yimi-blue-600 hover:bg-yimi-blue-700 text-white font-bold text-xs sm:text-sm flex items-center justify-center gap-2 shadow-xs transition cursor-pointer"
+                  className="w-full py-3.5 px-5 rounded-xl bg-yimi-blue-600 hover:bg-yimi-blue-700 active:bg-yimi-blue-800 text-white font-bold text-sm flex items-center justify-center gap-2.5 shadow-md hover:shadow-lg transition-all duration-200 cursor-pointer"
                 >
                   <Award className="w-4 h-4 text-yimi-yellow-400" />
-                  <span>Konfirmasi Wakaf Langsung</span>
+                  <span>Ikut Program sekarang</span>
                 </button>
-                <Button
-                  href={waConfirmUrl}
-                  variant="secondary"
-                  size="md"
-                  className="w-full flex items-center justify-center gap-2"
-                >
-                  <MessageCircle className="w-4 h-4 text-yimi-blue-800" />
-                  <span>Konfirmasi via WhatsApp</span>
-                </Button>
               </div>
             </div>
           </div>
