@@ -9,14 +9,8 @@ interface NewsGalleryProps {
   judul: string;
 }
 
-export function NewsGallery({ images, judul }: NewsGalleryProps) {
+export function NewsGallery({ images = [], judul }: NewsGalleryProps) {
   const [activeIdx, setActiveIdx] = useState<number | null>(null);
-
-  // Jika tidak ada gambar atau hanya 1 gambar (yang sudah jadi sampul utama),
-  // kita tetap bisa menampilkan galeri dokumentasi jika ada 2 atau lebih foto.
-  if (!images || images.length <= 1) {
-    return null;
-  }
 
   // Keyboard navigation untuk lightbox modal
   const handleKeyDown = useCallback(
@@ -45,6 +39,12 @@ export function NewsGallery({ images, judul }: NewsGalleryProps) {
       document.body.style.overflow = 'unset';
     };
   }, [activeIdx, handleKeyDown]);
+
+  // Jika tidak ada gambar atau hanya 1 gambar (yang sudah jadi sampul utama),
+  // kita tidak perlu menampilkan galeri dokumentasi tambahan.
+  if (!images || images.length <= 1) {
+    return null;
+  }
 
   return (
     <section className="my-12 pt-8 border-t border-neutral-200/90">

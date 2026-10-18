@@ -81,7 +81,6 @@ export default function PembebasanLahanPage() {
     faqSubjudul: 'Seputar pelaksanaan dan transparansi program wakaf tanah yayasan.',
   });
   const [updates, setUpdates] = useState<LandUpdateItem[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     async function fetchLiveData() {
@@ -120,8 +119,6 @@ export default function PembebasanLahanPage() {
         }
       } catch (err) {
         console.error('Gagal mengambil data live pembebasan lahan:', err);
-      } finally {
-        setIsLoading(false);
       }
     }
 
