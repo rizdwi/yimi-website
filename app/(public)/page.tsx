@@ -16,7 +16,7 @@ export const revalidate = 0;
 export const metadata: Metadata = constructMetadata({
   title: 'Yayasan Sunnah Salafiyah Cikampek & Karawang',
   description:
-    'Yayasan Insan Muslim Istiqomah (YIMI) — yayasan dakwah sunnah bermanhaj salaf di Cikampek, Karawang. TK/PAUD Islam, kajian rutin, Jumat Berkah, dan wakaf pembebasan lahan.',
+    'Yayasan Insan Muslim Istiqomah (YIMI) — yayasan dakwah sunnah bermanhaj salaf di Cikampek, Karawang. TK Islam, kajian rutin, Jumat Berkah, dan wakaf pembebasan lahan.',
   canonical: '/',
 });
 

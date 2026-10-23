@@ -176,7 +176,7 @@ export default function AdminLahanPage() {
           ? meta.rencana_penggunaan
           : [
               'Pembangunan Masjid Jami\' YIMI berkapasitas 600 jamaah untuk shalat fardhu dan majelis taklim',
-              'Penyediaan 4 ruang kelas representatif dan sarana bermain luar untuk santri TK/PAUD',
+              'Penyediaan 4 ruang kelas representatif dan sarana bermain luar untuk santri TK',
               'Ruang perpustakaan kitab syar\'i dan ruang talaqqi tahfidz Al-Qur\'an',
               'Kantor operasional sekretariat yayasan, posko kemanusiaan, dan area parkir jamaah',
             ]

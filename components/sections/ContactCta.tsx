@@ -86,7 +86,7 @@ export function ContactCta() {
             </h2>
 
             <p className="text-base text-blue-100/80 leading-relaxed">
-              Tim sekretariat yayasan siap melayani pertanyaan seputar pendaftaran santri TK/PAUD, jadwal kajian, titipan infaq Jumat Berkah, serta wakaf pembebasan lahan.
+              Tim sekretariat yayasan siap melayani pertanyaan seputar pendaftaran santri TK, jadwal kajian, titipan infaq Jumat Berkah, serta wakaf pembebasan lahan.
             </p>
 
             <div className="flex flex-col gap-4 pt-2">
@@ -232,7 +232,7 @@ export function ContactCta() {
                       className="w-full h-11 px-3 text-sm rounded-xl border border-neutral-200 focus:border-yimi-blue-600 focus:ring-2 focus:ring-yimi-green-500/30 outline-none transition-colors bg-white"
                     >
                       <option value="Umum">Pertanyaan Umum</option>
-                      <option value="Pendaftaran TK/PAUD">Pendaftaran TK / PAUD</option>
+                      <option value="Pendaftaran TK">Pendaftaran TK</option>
                       <option value="Jadwal Kajian">Jadwal Kajian</option>
                       <option value="Infaq & Wakaf Lahan">Infaq &amp; Wakaf Lahan</option>
                       <option value="Jumat Berkah">Jumat Berkah</option>

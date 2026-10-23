@@ -41,7 +41,7 @@ export default function AdminHalamanPage() {
   );
   const [misiList, setMisiList] = useState<string[]>([
     'Menyelenggarakan kajian Islam ilmiah berlandaskan Al-Qur\'an dan As-Sunnah sesuai pemahaman Salafus Shalih.',
-    'Mengembangkan pendidikan anak usia dini (TK/PAUD) yang berakhlak mulia, beraqidah shahihah, dan cinta Al-Qur\'an.',
+    'Mengembangkan pendidikan anak usia dini (TK) yang berakhlak mulia, beraqidah shahihah, dan cinta Al-Qur\'an.',
     'Menyalurkan kepedulian sosial kaum muslimin melalui program rutin seperti Jumat Berkah dan bantuan kemanusiaan.',
     'Mewujudkan sarana ibadah dan pusat dakwah permanen melalui pembebasan lahan wakaf yang berkelanjutan.',
   ]);

@@ -305,7 +305,7 @@ export default function KontakPage() {
                         className="w-full px-4 py-3 bg-neutral-50 border border-neutral-200 rounded-xl text-xs sm:text-sm text-neutral-800 focus:outline-hidden focus:border-yimi-blue-600 focus:bg-white transition-colors"
                       >
                         <option value="Umum">Pertanyaan Umum</option>
-                        <option value="TK-PAUD">Pendaftaran TK &amp; PAUD</option>
+                        <option value="TK">Pendaftaran TK</option>
                         <option value="Kajian">Jadwal &amp; Majelis Kajian</option>
                         <option value="Donasi">Konfirmasi Donasi / Infaq</option>
                         <option value="Wakaf">Wakaf Pembebasan Lahan</option>

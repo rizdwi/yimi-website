@@ -377,6 +377,8 @@ export default function AdminGaleriPage() {
   const filteredPhotos = photos.filter((p) => {
     if (filterKategori === 'Semua') return true;
     if (filterKategori === 'Beranda') return p.tampil_beranda !== false;
+    // Nilai kategori lama ('TK & PAUD' / 'TK/PAUD') ikut tampil pada tab 'TK'
+    if (filterKategori === 'TK') return ['TK', 'TK & PAUD', 'TK/PAUD'].includes(p.kategori);
     return p.kategori === filterKategori;
   });
 
@@ -439,7 +441,7 @@ export default function AdminGaleriPage() {
 
       {/* Filter Kategori Tab */}
       <div className="flex items-center space-x-2 overflow-x-auto pb-2 text-xs font-semibold">
-        {['Semua', 'Beranda', 'Kajian', 'Jumat Berkah', 'Pembebasan Lahan', 'TK & PAUD'].map((kat) => (
+        {['Semua', 'Beranda', 'Kajian', 'Jumat Berkah', 'Pembebasan Lahan', 'TK'].map((kat) => (
           <button
             key={kat}
             type="button"
@@ -500,7 +502,7 @@ export default function AdminGaleriPage() {
                   )}
 
                   {/* Peringatan Izin Anak */}
-                  {(item.kategori === 'TK & PAUD' || item.kategori === 'TK/PAUD') && (
+                  {(item.kategori === 'TK' || item.kategori === 'TK & PAUD' || item.kategori === 'TK/PAUD') && (
                     <span
                       className={`absolute bottom-2 left-2 px-2 py-0.5 rounded-md text-[10px] font-bold flex items-center space-x-1 ${
                         item.izin_orang_tua
@@ -692,7 +694,7 @@ export default function AdminGaleriPage() {
                     <option value="Kajian">Kajian</option>
                     <option value="Jumat Berkah">Jumat Berkah</option>
                     <option value="Pembebasan Lahan">Pembebasan Lahan</option>
-                    <option value="TK & PAUD">TK &amp; PAUD</option>
+                    <option value="TK">TK</option>
                     <option value="Sosial">Bakti Sosial</option>
                   </select>
                 </div>
@@ -737,7 +739,7 @@ export default function AdminGaleriPage() {
               {/* Izin Wali Murid / Anak (F-FOTO-03) */}
               <div
                 className={`p-3 rounded-xl border text-xs space-y-1 ${
-                  batchKategori === 'TK & PAUD' || batchKategori === 'TK/PAUD'
+                  batchKategori === 'TK' || batchKategori === 'TK & PAUD' || batchKategori === 'TK/PAUD'
                     ? 'bg-[#FEF3C7] border-[#FDE68A] text-[#92400E]'
                     : 'bg-[#F5F7FA] border-[#E3E7EE] text-[#4B5563]'
                 }`}
@@ -754,10 +756,10 @@ export default function AdminGaleriPage() {
                     Ada Izin Wali / Orang Tua Santri untuk Dokumentasi Ini
                   </label>
                 </div>
-                {(batchKategori === 'TK & PAUD' || batchKategori === 'TK/PAUD') &&
+                {(batchKategori === 'TK' || batchKategori === 'TK & PAUD' || batchKategori === 'TK/PAUD') &&
                   !batchIzinOrangTua && (
                     <p className="text-[11px] text-[#D7261E] font-medium pl-5">
-                      Peringatan Privasi: Jika tidak dicentang, foto kategori TK/PAUD tidak akan dimunculkan ke publik demi melindungi privasi santri.
+                      Peringatan Privasi: Jika tidak dicentang, foto kategori TK tidak akan dimunculkan ke publik demi melindungi privasi santri.
                     </p>
                   )}
               </div>
@@ -912,7 +914,7 @@ export default function AdminGaleriPage() {
                     <option value="Kajian">Kajian</option>
                     <option value="Jumat Berkah">Jumat Berkah</option>
                     <option value="Pembebasan Lahan">Pembebasan Lahan</option>
-                    <option value="TK & PAUD">TK &amp; PAUD</option>
+                    <option value="TK">TK</option>
                     <option value="Sosial">Bakti Sosial</option>
                   </select>
                 </div>
@@ -963,7 +965,7 @@ export default function AdminGaleriPage() {
               {/* Aturan Khusus Anak-Anak (PRD F-GAL-03 & AGENTS.md 4.2.2) */}
               <div
                 className={`p-3 rounded-xl border text-xs space-y-1.5 ${
-                  kategori === 'TK & PAUD' || kategori === 'TK/PAUD'
+                  kategori === 'TK' || kategori === 'TK & PAUD' || kategori === 'TK/PAUD'
                     ? 'bg-[#FEF3C7] border-[#FDE68A] text-[#92400E]'
                     : 'bg-[#F5F7FA] border-[#E3E7EE] text-[#4B5563]'
                 }`}
@@ -980,9 +982,9 @@ export default function AdminGaleriPage() {
                     Ada Izin Tertulis dari Orang Tua Santri
                   </label>
                 </div>
-                {(kategori === 'TK & PAUD' || kategori === 'TK/PAUD') && !izinOrangTua && (
+                {(kategori === 'TK' || kategori === 'TK & PAUD' || kategori === 'TK/PAUD') && !izinOrangTua && (
                   <p className="text-[11px] text-[#D7261E] font-medium pl-5">
-                    Peringatan Privasi: Foto kategori TK/PAUD tanpa centang izin ini secara otomatis TIDAK AKAN ditampilkan pada website publik demi melindungi privasi anak.
+                    Peringatan Privasi: Foto kategori TK tanpa centang izin ini secara otomatis TIDAK AKAN ditampilkan pada website publik demi melindungi privasi anak.
                   </p>
                 )}
               </div>

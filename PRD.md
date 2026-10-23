@@ -17,7 +17,7 @@ YIMI adalah yayasan dakwah yang bertujuan mengajak kaum muslimin kepada Islam ya
 Website ini berfungsi sebagai:
 
 1. **Etalase identitas** — memperkenalkan visi, misi, dan manhaj yayasan secara jelas.
-2. **Pusat informasi program** — TK/PAUD, Jumat Berkah, kajian pekanan, dan program lain.
+2. **Pusat informasi program** — TK, Jumat Berkah, kajian pekanan, dan program lain.
 3. **Media ajakan berinfaq** — kampanye pembebasan lahan dan sarana donasi.
 4. **Kanal komunikasi** — jadwal kegiatan, berita, galeri, dan kontak.
 
@@ -33,7 +33,7 @@ Website ini berfungsi sebagai:
 ## 3. Target Pengguna
 
 - **Jamaah & simpatisan** — ingin tahu jadwal kajian, Jumat Berkah, dan cara berinfaq.
-- **Orang tua calon murid TK/PAUD** — ingin tahu profil, kurikulum singkat, dan kontak pendaftaran.
+- **Orang tua calon murid TK** — ingin tahu profil, kurikulum singkat, dan kontak pendaftaran.
 - **Donatur** — ingin melihat progres dan tujuan pembebasan lahan, serta cara transfer yang jelas.
 - **Pengurus & relawan** — memperbarui konten (kajian, berita, galeri).
 - **Mesin pencari** — perlu metadata Indonesia yang baik agar mudah ditemukan.
@@ -46,7 +46,7 @@ Mayoritas pengguna mengakses melalui **ponsel**, sehingga desain mobile-first wa
 
 - Landing page satu halaman dengan beranda, profil, program, berita, galeri, donasi, dan kontak
 - Efek **parallax scroll** pada section utama (hero, pembuka program, banner pembebasan lahan)
-- Halaman program khusus untuk TK/PAUD, Jumat Berkah, dan Kajian Pekanan
+- Halaman program khusus untuk TK, Jumat Berkah, dan Kajian Pekanan
 - Halaman kampanye Pembebasan Lahan dengan progres donasi
 - Halaman berita/artikel (daftar dan detail)
 - Galeri foto kegiatan
@@ -68,7 +68,7 @@ Mayoritas pengguna mengakses melalui **ponsel**, sehingga desain mobile-first wa
 /                       Beranda (hero parallax, ringkasan semua section)
 ├── /tentang            Profil: visi, misi, manhaj, sejarah, struktur pengurus
 ├── /program
-│   ├── /program/tk-paud        TK/PAUD
+│   ├── /program/tk-paud        TK
 │   ├── /program/jumat-berkah   Jumat Berkah
 │   └── /program/kajian         Kajian Pekanan (jadwal & pemateri)
 ├── /pembebasan-lahan   Kampanye pembebasan lahan + progres + cara berinfaq
@@ -90,7 +90,7 @@ Navigasi utama (navbar): Beranda · Tentang · Program · Pembebasan Lahan · Be
 | F-HOME-01 | Hero section full-screen dengan logo, nama yayasan, dan tagline dakwah | Wajib |
 | F-HOME-02 | Parallax scroll pada hero (lapisan latar bergerak lebih lambat dari teks) | Wajib |
 | F-HOME-03 | Ayat/hadits pembuka yang dirotasi secara acak atau dipilih admin | Opsional |
-| F-HOME-04 | Section ringkasan program (TK/PAUD, Jumat Berkah, Kajian) dengan kartu | Wajib |
+| F-HOME-04 | Section ringkasan program (TK, Jumat Berkah, Kajian) dengan kartu | Wajib |
 | F-HOME-05 | Banner pembebasan lahan dengan parallax dan tombol "Ikut Berinfaq" | Wajib |
 | F-HOME-06 | Tiga berita/artikel terbaru | Wajib |
 | F-HOME-07 | Jadwal kajian pekanan terdekat | Wajib |
@@ -110,7 +110,7 @@ Navigasi utama (navbar): Beranda · Tentang · Program · Pembebasan Lahan · Be
 
 | ID | Kebutuhan | Prioritas |
 |---|---|---|
-| F-PROG-01 | Halaman TK/PAUD: deskripsi, kegiatan belajar, usia, info pendaftaran | Wajib |
+| F-PROG-01 | Halaman TK: deskripsi, kegiatan belajar, usia, info pendaftaran | Wajib |
 | F-PROG-02 | Halaman Jumat Berkah: tujuan, mekanisme, cara ikut serta | Wajib |
 | F-PROG-03 | Halaman Kajian Pekanan: hari, jam, tempat, tema, pemateri | Wajib |
 | F-PROG-04 | Tombol "Tambahkan ke Kalender" (file .ics) untuk jadwal kajian | Opsional |
@@ -135,7 +135,7 @@ Navigasi utama (navbar): Beranda · Tentang · Program · Pembebasan Lahan · Be
 | F-NEWS-02 | Halaman detail artikel: judul, tanggal, penulis, isi, kategori | Wajib |
 | F-NEWS-03 | Pencarian artikel sederhana berdasarkan judul | Opsional |
 | F-GAL-01 | Galeri grid dengan lightbox | Wajib |
-| F-GAL-02 | Kategori galeri (Kajian, Jumat Berkah, TK/PAUD, Pembebasan Lahan) | Opsional |
+| F-GAL-02 | Kategori galeri (Kajian, Jumat Berkah, TK, Pembebasan Lahan) | Opsional |
 
 ### 6.6 Kontak & Donasi
 
@@ -163,7 +163,7 @@ Navigasi utama (navbar): Beranda · Tentang · Program · Pembebasan Lahan · Be
 | Animasi | Parallax dinonaktifkan atau dikurangi jika pengguna mengaktifkan `prefers-reduced-motion` |
 | SEO | Meta title & description per halaman; `lang="id"`; sitemap.xml; robots.txt; Open Graph |
 | Keamanan | HTTPS; form terlindungi CSRF/spam (honeypot); tidak menyimpan data sensitif |
-| Privasi | Foto anak-anak TK/PAUD hanya ditampilkan dengan izin orang tua tertulis |
+| Privasi | Foto anak-anak TK hanya ditampilkan dengan izin orang tua tertulis |
 | Ketersediaan | Target uptime 99% |
 | Browser | Chrome, Safari, Edge, Firefox, Samsung Internet |
 

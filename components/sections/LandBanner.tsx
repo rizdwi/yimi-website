@@ -78,7 +78,7 @@ export function LandBanner() {
               <strong className="text-white font-bold">
                 {campaign.luasTargetM2.toLocaleString('id-ID')} m²
               </strong>{' '}
-              untuk pembangunan Masjid Jami&apos; YIMI dan gedung representatif TK/PAUD Islam Istiqomah.
+              untuk pembangunan Masjid Jami&apos; YIMI dan gedung representatif TK Islam Insan Muslim Istiqomah.
             </p>
 
             <div className="flex items-center gap-2 text-xs md:text-sm text-blue-200 mt-1">

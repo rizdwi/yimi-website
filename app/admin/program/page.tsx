@@ -902,7 +902,7 @@ export default function AdminProgramPage() {
                 <span>1. Umum &amp; Media</span>
               </button>
 
-              {/* Tab Khusus Program Pendidikan (TK / PAUD) */}
+              {/* Tab Khusus Program Pendidikan (TK) */}
               {isPendidikan && (
                 <>
                   <button
@@ -1103,7 +1103,7 @@ export default function AdminProgramPage() {
                               slug: activeModal === 'create' ? slug : selectedProgram.slug || slug,
                             });
                           }}
-                          placeholder="Contoh: Pendidikan TK & PAUD Islam"
+                          placeholder="Contoh: Pendidikan TK Islam"
                           className="w-full text-xs p-2.5 bg-white border border-[#E3E7EE] rounded-lg focus:border-[#3E5FD1] focus:ring-1 focus:ring-[#3E5FD1]"
                         />
                       </div>
@@ -1828,7 +1828,7 @@ export default function AdminProgramPage() {
                       </div>
                       <div>
                         <label className="block font-medium text-[#4B5563] mb-1">
-                          Alamat Fisik Sekolah / TK PAUD (Gambar 3)
+                          Alamat Fisik Sekolah / TK (Gambar 3)
                         </label>
                         <input
                           type="text"

@@ -618,7 +618,7 @@ export default function AdminBeritaPage() {
                     <option value="Kajian">Kajian &amp; Majelis</option>
                     <option value="Wakaf Lahan">Pembebasan Lahan</option>
                     <option value="Jumat Berkah">Jumat Berkah</option>
-                    <option value="TK/PAUD">TK/PAUD Islam</option>
+                    <option value="TK">TK Islam</option>
                     <option value="Umum">Warta Umum Yayasan</option>
                   </select>
                 </div>

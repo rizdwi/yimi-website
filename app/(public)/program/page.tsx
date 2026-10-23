@@ -6,7 +6,7 @@ import ProgramIndexPage from './content';
 export const metadata: Metadata = constructMetadata({
   title: 'Program Dakwah & Pendidikan',
   description:
-    'Program YIMI Cikampek Karawang: TK/PAUD Islam, kajian sunnah rutin, Jumat Berkah, dan wakaf pembebasan lahan untuk dakwah.',
+    'Program YIMI Cikampek Karawang: TK Islam, kajian sunnah rutin, Jumat Berkah, dan wakaf pembebasan lahan untuk dakwah.',
   canonical: '/program',
 });
 

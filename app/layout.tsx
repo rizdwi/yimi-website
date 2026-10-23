@@ -50,7 +50,7 @@ const jsonLd = {
       name: 'TK Islam Insan Muslim Istiqomah',
       url: `${baseUrl}/program/tk-paud`,
       description:
-        'TK/PAUD Islam di Cikampek, Karawang: pendidikan anak usia dini dengan kurikulum dan adab islami.',
+        'TK Islam di Cikampek, Karawang: pendidikan anak usia dini dengan kurikulum dan adab islami.',
       parentOrganization: { '@id': `${baseUrl}/#yayasan` },
       address: alamatYayasan,
       areaServed: [

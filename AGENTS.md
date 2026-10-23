@@ -94,7 +94,7 @@ Konten yang sering berubah **harus** berada di folder `content/`, bukan di-hardc
 
 ### 4.2 Privasi
 
-- Foto anak-anak (TK/PAUD) hanya dipakai jika ada flag `izinOrangTua: true` di metadata gambar. Jika tidak ada, jangan tampilkan foto tersebut.
+- Foto anak-anak (TK) hanya dipakai jika ada flag `izinOrangTua: true` di metadata gambar. Jika tidak ada, jangan tampilkan foto tersebut.
 - Jangan menyimpan atau menampilkan data pribadi pengunjung (nama, nomor HP) di log, analytics, atau kode sumber.
 - Data form kontak dikirim ke endpoint server, bukan langsung ke pihak ketiga tanpa persetujuan.
 - Nomor rekening dan QRIS hanya diambil dari `content/site.json`.

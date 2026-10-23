@@ -42,7 +42,7 @@ export async function POST(req: NextRequest) {
 
     const rows = validItems.map((item) => {
       let tampilPublik = item.tampil_publik !== false;
-      if (item.kategori === 'TK/PAUD' && !item.izin_orang_tua) {
+      if ((item.kategori === 'TK' || item.kategori === 'TK & PAUD' || item.kategori === 'TK/PAUD') && !item.izin_orang_tua) {
         tampilPublik = false;
       }
       return {
@@ -79,9 +79,9 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'URL atau file gambar wajib diisi.' }, { status: 400 });
   }
 
-  // Aturan F-GAL-03: jika kategori TK/PAUD dan izin orang tua false, jangan aktifkan tampil_publik
+  // Aturan F-GAL-03: jika kategori TK dan izin orang tua false, jangan aktifkan tampil_publik
   let tampilPublik = body.tampil_publik !== false;
-  if (body.kategori === 'TK/PAUD' && !body.izin_orang_tua) {
+  if ((body.kategori === 'TK' || body.kategori === 'TK & PAUD' || body.kategori === 'TK/PAUD') && !body.izin_orang_tua) {
     tampilPublik = false;
   }
 
@@ -121,7 +121,7 @@ export async function PUT(req: NextRequest) {
   if (!body.id) return NextResponse.json({ error: 'ID foto wajib diisi.' }, { status: 400 });
 
   let tampilPublik = body.tampil_publik !== false;
-  if (body.kategori === 'TK/PAUD' && !body.izin_orang_tua) {
+  if ((body.kategori === 'TK' || body.kategori === 'TK & PAUD' || body.kategori === 'TK/PAUD') && !body.izin_orang_tua) {
     tampilPublik = false;
   }
 
