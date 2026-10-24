@@ -9,6 +9,7 @@ type ProgressBarProps = {
   fillColor?: string;
   className?: string;
   showLabel?: boolean;
+  label?: string;
 };
 
 export function ProgressBar({
@@ -18,6 +19,7 @@ export function ProgressBar({
   fillColor = 'bg-yimi-green-500',
   className = '',
   showLabel = false,
+  label = 'Progres capaian',
 }: ProgressBarProps) {
   const [animatedWidth, setAnimatedWidth] = useState(0);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -47,6 +49,7 @@ export function ProgressBar({
       <div
         className={`w-full ${height} ${trackColor} rounded-full overflow-hidden p-0.5`}
         role="progressbar"
+        aria-label={label}
         aria-valuenow={percentage}
         aria-valuemin={0}
         aria-valuemax={100}

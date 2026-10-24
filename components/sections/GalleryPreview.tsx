@@ -31,15 +31,12 @@ interface PublicGalleryApiItem {
 
 function GalleryCardItem({
   item,
-  index,
   onSelect,
 }: {
   item: GalleryItem;
-  index: number;
   onSelect: () => void;
 }) {
   const [imgSrc, setImgSrc] = useState(item.gambar || FALLBACK_IMAGE);
-  const isSupabase = Boolean(imgSrc && imgSrc.includes('supabase.co'));
 
   return (
     <div
@@ -50,11 +47,10 @@ function GalleryCardItem({
         src={imgSrc}
         alt={item.judul}
         fill
-        unoptimized={isSupabase}
         onError={() => setImgSrc(FALLBACK_IMAGE)}
         className="object-cover transition-transform duration-700 group-hover:scale-108"
         sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-        priority={index < 3}
+        loading="lazy"
       />
 
       {/* Gradient Overlay */}
@@ -303,7 +299,6 @@ export function GalleryPreview() {
               >
                 <GalleryCardItem
                   item={item}
-                  index={idx}
                   onSelect={() => setSelectedPhotoIndex(idx)}
                 />
               </div>
@@ -331,13 +326,17 @@ export function GalleryPreview() {
                   key={dotIdx}
                   type="button"
                   onClick={() => setCurrentIndex(dotIdx)}
-                  className={`h-2 rounded-full transition-all duration-300 cursor-pointer ${
-                    currentIndex === dotIdx
-                      ? 'w-6 bg-yimi-blue-600'
-                      : 'w-2 bg-neutral-300 hover:bg-neutral-400'
-                  }`}
+                  className={`min-h-[44px] min-w-[32px] inline-flex items-center justify-center cursor-pointer group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-yimi-blue-600 rounded-full`}
                   aria-label={`Pindah ke slide ${dotIdx + 1}`}
-                />
+                >
+                  <span
+                    className={`h-2 rounded-full transition-all duration-300 ${
+                      currentIndex === dotIdx
+                        ? 'w-6 bg-yimi-blue-600'
+                        : 'w-2 bg-neutral-300 group-hover:bg-neutral-400'
+                    }`}
+                  />
+                </button>
               ))}
             </div>
           </div>
@@ -405,9 +404,6 @@ export function GalleryPreview() {
                 src={selectedPhoto.gambar || FALLBACK_IMAGE}
                 alt={selectedPhoto.judul}
                 fill
-                unoptimized={Boolean(
-                  selectedPhoto.gambar && selectedPhoto.gambar.includes('supabase.co')
-                )}
                 className="object-contain"
                 sizes="(max-width: 1024px) 100vw, 1000px"
                 priority

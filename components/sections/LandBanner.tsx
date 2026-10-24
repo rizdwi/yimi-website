@@ -122,6 +122,7 @@ export function LandBanner() {
                 height="h-3"
                 trackColor="bg-white/20"
                 fillColor="bg-yimi-green-500"
+                label="Progres penggalangan dana pembebasan lahan"
               />
             </div>
 

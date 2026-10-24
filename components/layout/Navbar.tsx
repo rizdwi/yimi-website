@@ -77,7 +77,7 @@ export function Navbar() {
                 width={44}
                 height={44}
                 priority
-                unoptimized
+                unoptimized={Boolean(logoUrl && logoUrl.endsWith('.svg'))}
                 className="w-full h-full object-contain"
               />
             </div>
@@ -168,7 +168,7 @@ export function Navbar() {
                   alt={`Logo ${singkatan}`}
                   width={36}
                   height={36}
-                  unoptimized
+                  unoptimized={Boolean(logoUrl && logoUrl.endsWith('.svg'))}
                   className="w-full h-full object-contain"
                 />
               </div>

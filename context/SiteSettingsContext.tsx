@@ -70,7 +70,7 @@ export function SiteSettingsProvider({
 
   const refreshSettings = useCallback(async () => {
     try {
-      const res = await fetch('/api/site-settings', { cache: 'no-store' });
+      const res = await fetch('/api/site-settings');
       if (res.ok) {
         const data = await res.json();
         if (data.settings) {
@@ -86,7 +86,7 @@ export function SiteSettingsProvider({
     let ignore = false;
     async function load() {
       try {
-        const res = await fetch('/api/site-settings', { cache: 'no-store' });
+        const res = await fetch('/api/site-settings');
         if (res.ok && !ignore) {
           const data = await res.json();
           if (data.settings) {

@@ -55,7 +55,7 @@ export function Footer() {
                   alt={`Logo ${singkatan}`}
                   width={48}
                   height={48}
-                  unoptimized
+                  unoptimized={Boolean(logoUrl && logoUrl.endsWith('.svg'))}
                   className="w-full h-full object-contain"
                 />
               </div>

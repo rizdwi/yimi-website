@@ -156,9 +156,10 @@ export function ProgramCards() {
                     <Link
                       href={item.href}
                       className="inline-flex items-center gap-1 text-sm font-bold text-yimi-blue-600 group-hover:text-yimi-blue-800 transition-colors shrink-0"
+                      aria-label={`Detail program ${item.judul}`}
                     >
                       <span>Detail</span>
-                      <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
+                      <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" aria-hidden="true" />
                     </Link>
                   </div>
                 </div>

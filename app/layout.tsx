@@ -68,6 +68,18 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="id" className="scroll-smooth">
+      <head>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link
+          rel="preconnect"
+          href="https://fonts.gstatic.com"
+          crossOrigin="anonymous"
+        />
+        <link
+          rel="preconnect"
+          href="https://fopqfjqztvmktzvahjrh.supabase.co"
+        />
+      </head>
       <body className="antialiased min-h-screen flex flex-col bg-[#F5F7FA] text-[#111827]">
         <script
           type="application/ld+json"

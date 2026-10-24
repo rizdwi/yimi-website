@@ -11,15 +11,17 @@ import siteData from '@/content/site.json';
 export function Hero() {
   const { logoUrl, namaYayasan } = useSiteSettings();
   // Tagline dikelola dari CMS (satu per baris di admin). Tidak ada hardcoded di sini.
-  const [taglines, setTaglines] = useState<string[]>([]);
+  const [taglines, setTaglines] = useState<string[]>(
+    siteData.tagline ? [siteData.tagline] : []
+  );
   const [taglineIndex, setTaglineIndex] = useState(0);
   const [fade, setFade] = useState(true);
-  const [subtitle, setSubtitle] = useState('');
+  const [subtitle, setSubtitle] = useState(siteData.deskripsi || '');
 
   useEffect(() => {
     async function fetchHomeContent() {
       try {
-        const res = await fetch('/api/halaman?kunci=beranda', { cache: 'no-store' });
+        const res = await fetch('/api/halaman?kunci=beranda');
         if (res.ok) {
           const data = await res.json();
           if (data.page?.konten) {
@@ -55,7 +57,7 @@ export function Hero() {
     return () => clearInterval(id);
   }, [taglines.length]);
 
-  const tagline = taglines[taglineIndex] ?? '';
+  const tagline = taglines[taglineIndex] ?? (siteData.tagline || '');
 
   const scrollToContent = () => {
     const nextSection = document.getElementById('pengantar');
@@ -91,7 +93,7 @@ export function Hero() {
               width={210}
               height={210}
               priority
-              unoptimized
+              unoptimized={Boolean(logoUrl && logoUrl.endsWith('.svg'))}
               className="w-full h-full object-contain drop-shadow-[0_12px_32px_rgba(31,47,107,0.12)]"
             />
           </div>

@@ -95,9 +95,9 @@ export function ContactCta() {
                   <MessageCircle className="w-5 h-5" />
                 </div>
                 <div>
-                  <h4 className="text-sm font-bold text-white">
+                  <h3 className="text-sm font-bold text-white">
                     Layanan WhatsApp Pengurus
-                  </h4>
+                  </h3>
                   <p className="text-xs text-blue-200/70 mb-1">
                     Respons cepat di jam kerja (08.00 – 17.00 WIB)
                   </p>
@@ -117,9 +117,9 @@ export function ContactCta() {
                   <Mail className="w-5 h-5" />
                 </div>
                 <div>
-                  <h4 className="text-sm font-bold text-white">
+                  <h3 className="text-sm font-bold text-white">
                     Surat Elektronik
-                  </h4>
+                  </h3>
                   <p className="text-xs text-blue-200/70 mb-1">
                     Untuk urusan legalitas dan kerja sama resmi
                   </p>

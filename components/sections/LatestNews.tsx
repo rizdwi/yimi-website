@@ -56,7 +56,7 @@ export function LatestNews() {
         {/* Header */}
         <div className="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-4">
           <div>
-            <div className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-yimi-green-700 mb-2">
+            <div className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-yimi-blue-700 mb-2">
               <span className="w-1.5 h-1.5 rounded-full bg-yimi-green-500" />
               Kabar &amp; Faedah Ilmu
             </div>
@@ -66,7 +66,7 @@ export function LatestNews() {
           </div>
           <Link
             href="/berita"
-            className="inline-flex items-center gap-1.5 text-sm font-bold text-yimi-blue-600 hover:text-yimi-blue-800 transition-colors"
+            className="inline-flex items-center gap-1.5 text-sm font-bold text-yimi-blue-800 hover:text-yimi-blue-950 transition-colors"
           >
             <span>Semua Artikel</span>
             <ArrowRight className="w-4 h-4" />
@@ -82,15 +82,14 @@ export function LatestNews() {
                 className="overflow-hidden h-full flex flex-col justify-between border-neutral-200/80 group-hover:border-yimi-blue-600/30"
               >
                 <div>
-                  {/* 16:9 Image container */}
                   <div className="relative aspect-video w-full overflow-hidden bg-neutral-200">
                     <Image
                       src={item.gambar}
                       alt={item.judul}
                       fill
-                      unoptimized={Boolean(item.gambar && item.gambar.includes('supabase.co'))}
                       className="object-cover transition-transform duration-500 group-hover:scale-105"
                       sizes="(max-width: 768px) 100vw, 33vw"
+                      loading="lazy"
                     />
                     <div className="absolute top-3 left-3">
                       <Badge variant="blue" className="bg-white/90 backdrop-blur-xs font-bold text-yimi-blue-800">

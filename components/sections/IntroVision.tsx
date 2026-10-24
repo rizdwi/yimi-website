@@ -14,7 +14,7 @@ export function IntroVision() {
   useEffect(() => {
     async function loadIntro() {
       try {
-        const res = await fetch('/api/halaman?kunci=tentang', { cache: 'no-store' });
+        const res = await fetch('/api/halaman?kunci=tentang');
         if (res.ok) {
           const data = await res.json();
           const q = data.page?.konten?.manhaj?.dalilQuran;

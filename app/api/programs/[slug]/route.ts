@@ -6,10 +6,11 @@ import jumatFallback from '@/content/programs/jumat-berkah.json';
 export const dynamic = 'force-dynamic';
 export const revalidate = 0;
 
+// Cache 60 detik di CDN Vercel untuk performa optimal
 const CACHE_HEADERS = {
-  'Cache-Control': 'no-cache, no-store, must-revalidate',
-  'CDN-Cache-Control': 'no-cache, no-store, must-revalidate',
-  'Vercel-CDN-Cache-Control': 'no-cache, no-store, must-revalidate',
+  'Cache-Control': 'public, s-maxage=60, stale-while-revalidate=300',
+  'CDN-Cache-Control': 'public, s-maxage=60, stale-while-revalidate=300',
+  'Vercel-CDN-Cache-Control': 'public, s-maxage=60, stale-while-revalidate=300',
 };
 
 type RouteContext = {
