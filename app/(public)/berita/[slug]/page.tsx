@@ -257,13 +257,12 @@ export default async function BeritaDetailPage({ params }: Props) {
       {/* Main Content Article (max-width 68ch as specified in design.md) */}
       <article className="max-w-[800px] w-full mx-auto px-5 pt-8">
         {/* Featured Image */}
-        <div className="relative aspect-16/9 w-full rounded-3xl overflow-hidden mb-10 shadow-xs">
+        <div className="relative aspect-16/9 w-full rounded-3xl overflow-hidden mb-8 shadow-sm">
           <Image
             src={article.gambar}
             alt={article.judul}
             fill
             priority
-            unoptimized={Boolean(article.gambar && article.gambar.includes('supabase.co'))}
             sizes="(max-width: 800px) 100vw, 800px"
             className="object-cover"
           />

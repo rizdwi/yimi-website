@@ -203,6 +203,7 @@ export default function PembebasanLahanPage() {
                   height="h-4"
                   trackColor="bg-neutral-100"
                   fillColor="bg-yimi-green-500"
+                  label="Progres penggalangan dana pembebasan lahan"
                 />
 
                 <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 pt-2 text-xs text-neutral-600">

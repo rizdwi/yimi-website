@@ -20,7 +20,6 @@ interface GalleryPhotoItemLocal {
 
 function GalleryPhotoCard({ photo, onSelect }: { photo: GalleryPhotoItemLocal; onSelect: () => void }) {
   const [imgSrc, setImgSrc] = useState(photo.gambar || FALLBACK_IMAGE);
-  const isSupabase = Boolean(imgSrc && imgSrc.includes('supabase.co'));
 
   return (
     <div
@@ -31,9 +30,9 @@ function GalleryPhotoCard({ photo, onSelect }: { photo: GalleryPhotoItemLocal; o
         src={imgSrc}
         alt={photo.judul}
         fill
-        unoptimized={isSupabase}
         onError={() => setImgSrc(FALLBACK_IMAGE)}
         sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+        loading="lazy"
         className="object-cover group-hover:scale-105 transition-transform duration-500"
       />
 
@@ -184,7 +183,6 @@ export default function GaleriPage() {
                 src={activePhoto.gambar || FALLBACK_IMAGE}
                 alt={activePhoto.judul}
                 fill
-                unoptimized={Boolean(activePhoto.gambar && activePhoto.gambar.includes('supabase.co'))}
                 sizes="(max-width: 1024px) 100vw, 900px"
                 className="object-contain"
               />

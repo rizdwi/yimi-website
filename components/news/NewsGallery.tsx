@@ -88,7 +88,7 @@ export function NewsGallery({ images = [], judul }: NewsGalleryProps) {
                 alt={`${judul} - Foto ${idx + 1}`}
                 fill
                 sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-                unoptimized={Boolean(imgUrl && imgUrl.includes('supabase.co'))}
+                loading="lazy"
                 className="object-cover group-hover:scale-105 transition-transform duration-500"
               />
 
@@ -176,7 +176,6 @@ export function NewsGallery({ images = [], judul }: NewsGalleryProps) {
               fill
               priority
               sizes="100vw"
-              unoptimized={Boolean(images[activeIdx] && images[activeIdx].includes('supabase.co'))}
               className="object-contain"
             />
           </div>
@@ -217,7 +216,6 @@ export function NewsGallery({ images = [], judul }: NewsGalleryProps) {
                   alt={`Thumbnail ${tIdx + 1}`}
                   fill
                   sizes="48px"
-                  unoptimized={Boolean(thumb && thumb.includes('supabase.co'))}
                   className="object-cover"
                 />
               </button>

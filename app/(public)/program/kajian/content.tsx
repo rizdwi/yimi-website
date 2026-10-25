@@ -340,7 +340,7 @@ export default function KajianProgramPage() {
                   src={activeFlyer.url}
                   alt={activeFlyer.tema}
                   fill
-                  unoptimized
+                  sizes="(max-width: 768px) 100vw, 600px"
                   className="object-contain"
                 />
               </div>

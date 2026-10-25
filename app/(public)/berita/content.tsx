@@ -131,7 +131,6 @@ export default function BeritaPage() {
                         src={item.gambar}
                         alt={item.judul}
                         fill
-                        unoptimized={Boolean(item.gambar && item.gambar.includes('supabase.co'))}
                         sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                         className="object-cover group-hover:scale-105 transition-transform duration-500"
                       />

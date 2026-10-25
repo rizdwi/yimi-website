@@ -314,7 +314,7 @@ export default async function TentangPage() {
                   alt="Logo Lengkap YIMI"
                   width={224}
                   height={224}
-                  unoptimized
+                  unoptimized={Boolean(logoUrl && logoUrl.endsWith('.svg'))}
                   className="w-full h-full object-contain"
                 />
               </div>
