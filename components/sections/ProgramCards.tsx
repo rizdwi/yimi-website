@@ -121,7 +121,6 @@ export function ProgramCards() {
                       alt={item.judul}
                       fill
                       sizes="(max-width: 640px) 92vw, (max-width: 1024px) 45vw, 280px"
-                      quality={70}
                       className="object-cover transition-transform duration-500 group-hover:scale-105"
                     />
                     <div
