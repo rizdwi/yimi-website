@@ -7,6 +7,7 @@ import { PageHero } from '@/components/ui/PageHero';
 import { StarOrnament } from '@/components/ui/StarOrnament';
 import { constructMetadata } from '@/lib/seo';
 import aboutData from '@/content/about.json';
+import siteData from '@/content/site.json';
 import { supabase } from '@/lib/supabase';
 
 export const dynamic = 'force-dynamic';
@@ -49,6 +50,74 @@ interface AboutContent {
     makna: string;
   }>;
 }
+
+// Wilayah jangkauan dakwah & layanan YIMI. Sekretariat YIMI hanya ada satu,
+// di Jatisari, Karawang — keempat wilayah ini adalah wilayah jangkauan,
+// bukan kantor cabang.
+const wilayahLayanan: Array<{ wilayah: string; deskripsi: string }> = [
+  {
+    wilayah: 'Cikampek',
+    deskripsi:
+      'Di Cikampek, YIMI menyelenggarakan pendidikan TK Islam serta menggalang wakaf pembebasan lahan untuk Masjid Jami\u2019 YIMI dan sentra dakwah.',
+  },
+  {
+    wilayah: 'Karawang',
+    deskripsi:
+      'Sebagai yayasan yang berkedudukan di Kabupaten Karawang, YIMI melayani kaum muslimin Karawang melalui kajian rutin, TK Islam, dan program sosial Jumat Berkah.',
+  },
+  {
+    wilayah: 'Jatisari',
+    deskripsi:
+      'Sekretariat YIMI berada di Desa Balonggandu, Kecamatan Jatisari, dan menjadi pusat layanan dakwah, pendidikan, serta sosial bagi warga Jatisari.',
+  },
+  {
+    wilayah: 'Cilamaya',
+    deskripsi:
+      'Kaum muslimin di Cilamaya dapat mengikuti kajian rutin YIMI yang gratis dan terbuka untuk umum serta program sosial Jumat Berkah.',
+  },
+];
+
+// Tanya jawab seputar YIMI — tampil sebagai teks di halaman dan sebagai
+// FAQPage JSON-LD (dibangun dari array yang sama) agar Google dapat
+// mengutipnya di hasil pencarian dan Ringkasan AI.
+const faqItems: Array<{ pertanyaan: string; jawaban: string }> = [
+  {
+    pertanyaan: 'Yayasan Islam apa saja yang ada di Cikampek?',
+    jawaban: `Salah satu yayasan Islam di Cikampek adalah Yayasan Insan Muslim Istiqomah (YIMI), yayasan dakwah dan pendidikan Islam bermanhaj salaf yang berkedudukan di ${siteData.kontak.alamat}. YIMI menyelenggarakan TK Islam, kajian rutin, program sosial Jumat Berkah, dan pembebasan lahan wakaf.`,
+  },
+  {
+    pertanyaan: 'Di mana alamat Yayasan Insan Muslim Istiqomah (YIMI)?',
+    jawaban: `Sekretariat Yayasan Insan Muslim Istiqomah (YIMI) beralamat di ${siteData.kontak.alamat}. Jam operasional ${siteData.kontak.jamOperasional}.`,
+  },
+  {
+    pertanyaan: 'Apakah YIMI melayani warga Jatisari?',
+    jawaban:
+      'Ya. Sekretariat YIMI berada di Desa Balonggandu, Kecamatan Jatisari, sehingga warga Jatisari dapat mengikuti kajian rutin, mendaftarkan putra-putrinya ke TK Islam Insan Muslim Istiqomah, serta mengikuti program sosial Jumat Berkah.',
+  },
+  {
+    pertanyaan: 'Apakah ada yayasan Islam di Cilamaya?',
+    jawaban:
+      'YIMI tidak berkantor di Cilamaya — satu-satunya sekretariat YIMI berada di Jatisari, Karawang — tetapi kaum muslimin di Cilamaya dapat mengikuti kajian rutin YIMI yang gratis dan terbuka untuk umum serta program sosial Jumat Berkah.',
+  },
+  {
+    pertanyaan: 'Apa saja program Yayasan Insan Muslim Istiqomah di Karawang?',
+    jawaban:
+      'Program YIMI di Karawang meliputi pendidikan anak usia dini di TK Islam Insan Muslim Istiqomah, kajian ilmiah salaf yang gratis dan terbuka untuk umum, sedekah Jumat Berkah berupa makanan dan sembako untuk yatim piatu, dhuafa, dan jamaah shalat Jumat, serta pembebasan lahan wakaf untuk Masjid Jami\u2019 YIMI dan ruang kelas TK.',
+  },
+];
+
+const faqJsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqItems.map((item) => ({
+    '@type': 'Question',
+    name: item.pertanyaan,
+    acceptedAnswer: {
+      '@type': 'Answer',
+      text: item.jawaban,
+    },
+  })),
+};
 
 export default async function TentangPage() {
   let content: AboutContent = aboutData;
@@ -106,6 +175,10 @@ export default async function TentangPage() {
 
   return (
     <div className="pt-[72px]">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }}
+      />
       {/* Subpage Hero (Height 320px) */}
       <PageHero
         image="/images/banners/tentang.jpg"
@@ -333,6 +406,86 @@ export default async function TentangPage() {
                   </h3>
                   <p className="text-xs text-neutral-600 leading-relaxed">
                     {item.makna}
+                  </p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Wilayah Dakwah & Layanan */}
+      <section className="py-20 bg-neutral-100/60">
+        <div className="max-w-[1200px] w-full mx-auto px-5 md:px-8">
+          <div className="text-center max-w-2xl mx-auto mb-12">
+            <div className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-yimi-green-700 mb-2">
+              <Compass className="w-4 h-4" />
+              <span>Jangkauan Layanan</span>
+            </div>
+            <h2 className="text-2xl sm:text-3xl md:text-4xl font-extrabold text-yimi-blue-800 tracking-tight mb-3">
+              Wilayah Dakwah &amp; Layanan
+            </h2>
+            <p className="text-sm text-neutral-600">
+              Sekretariat YIMI hanya ada satu, yaitu di Jatisari, Karawang.
+              Keempat wilayah berikut adalah wilayah jangkauan dakwah dan
+              layanan YIMI, bukan kantor cabang.
+            </p>
+          </div>
+
+          <div className="max-w-3xl mx-auto mb-10 p-6 rounded-3xl bg-white border border-yimi-blue-600/15 text-center">
+            <p className="text-xs font-bold uppercase tracking-wider text-yimi-blue-600 mb-2">
+              Alamat Sekretariat Yayasan
+            </p>
+            <p className="text-base sm:text-lg font-bold text-yimi-blue-800 leading-relaxed">
+              {siteData.kontak.alamat}
+            </p>
+            <p className="text-sm text-neutral-600 mt-2">
+              Jam operasional: {siteData.kontak.jamOperasional}
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 max-w-4xl mx-auto">
+            {wilayahLayanan.map((item) => (
+              <div
+                key={item.wilayah}
+                className="p-6 rounded-2xl bg-white border border-neutral-100 hover:border-yimi-blue-600/20 transition-colors"
+              >
+                <h3 className="text-lg font-bold text-yimi-blue-800 mb-2">
+                  {item.wilayah}
+                </h3>
+                <p className="text-sm text-neutral-600 leading-relaxed">
+                  {item.deskripsi}
+                </p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Pertanyaan yang Sering Diajukan */}
+      <section className="py-20 bg-white">
+        <div className="max-w-[1200px] w-full mx-auto px-5 md:px-8">
+          <div className="max-w-3xl mx-auto">
+            <div className="text-center mb-12">
+              <h2 className="text-2xl sm:text-3xl md:text-4xl font-extrabold text-yimi-blue-800 tracking-tight mb-3">
+                Pertanyaan yang Sering Diajukan
+              </h2>
+              <p className="text-sm text-neutral-600">
+                Jawaban seputar lokasi, wilayah layanan, dan program Yayasan
+                Insan Muslim Istiqomah.
+              </p>
+            </div>
+            <div className="flex flex-col gap-4">
+              {faqItems.map((item) => (
+                <div
+                  key={item.pertanyaan}
+                  className="p-6 rounded-2xl bg-neutral-50 border border-neutral-100"
+                >
+                  <h3 className="text-base sm:text-lg font-bold text-yimi-blue-800 mb-2">
+                    {item.pertanyaan}
+                  </h3>
+                  <p className="text-sm sm:text-base text-neutral-700 leading-relaxed">
+                    {item.jawaban}
                   </p>
                 </div>
               ))}

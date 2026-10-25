@@ -33,7 +33,7 @@ const alamatYayasan = {
 };
 
 // Data terstruktur Schema.org untuk SEO lokal: membantu Google memahami
-// YIMI sebagai yayasan dan sekolah Islam di Cikampek, Karawang.
+// YIMI sebagai yayasan dan sekolah Islam di Cikampek, Karawang, Jatisari, dan Cilamaya.
 const jsonLd = {
   '@context': 'https://schema.org',
   '@graph': [
@@ -51,6 +51,8 @@ const jsonLd = {
       areaServed: [
         { '@type': 'City', name: 'Cikampek' },
         { '@type': 'City', name: 'Karawang' },
+        { '@type': 'City', name: 'Jatisari' },
+        { '@type': 'City', name: 'Cilamaya' },
       ],
       sameAs: [
         siteData.sosmed.instagram,
@@ -71,6 +73,8 @@ const jsonLd = {
       areaServed: [
         { '@type': 'City', name: 'Cikampek' },
         { '@type': 'City', name: 'Karawang' },
+        { '@type': 'City', name: 'Jatisari' },
+        { '@type': 'City', name: 'Cilamaya' },
       ],
     },
   ],
