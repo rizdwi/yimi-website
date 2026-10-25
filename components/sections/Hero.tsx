@@ -32,8 +32,10 @@ export function Hero() {
               : typeof k.heroTagline === 'string' && k.heroTagline.trim()
                 ? [k.heroTagline]
                 : [];
-            if (list.length > 0) setTaglines(list);
-            if (k.heroSubtitle) setSubtitle(k.heroSubtitle);
+            setTaglines(list);
+            if (typeof k.heroSubtitle === 'string') {
+              setSubtitle(k.heroSubtitle);
+            }
           }
         }
       } catch (err) {

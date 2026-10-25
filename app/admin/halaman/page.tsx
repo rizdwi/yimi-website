@@ -109,21 +109,13 @@ export default function AdminHalamanPage() {
 
   // --- STATE HALAMAN BERANDA ---
   // Tagline: satu per baris di textarea, tampil bergantian tiap 5 detik di hero
-  const [heroTaglinesText, setHeroTaglinesText] = useState(
-    'Dakwah di Atas Sunnah Sesuai Pemahaman Salafus Shalih\nMenebar Sunnah, Merajut Ukhuwah, Membangun Generasi Rabbani'
-  );
-  const [heroSubtitle, setHeroSubtitle] = useState(
-    'Wadah dakwah ilmiah, pendidikan Islam usia dini berbasis tauhid & adab, serta kepedulian sosial umat di atas manhaj Salafus Shalih.'
-  );
+  const [heroTaglinesText, setHeroTaglinesText] = useState('');
+  const [heroSubtitle, setHeroSubtitle] = useState('');
 
   // --- STATE HALAMAN KONTAK ---
-  const [alamatKantor, setAlamatKantor] = useState(
-    'Jl. Raya Cilodong No. 45, Kalimulya, Kec. Cilodong, Kota Depok, Jawa Barat 16413'
-  );
+  const [alamatKantor, setAlamatKantor] = useState('');
   const [jamOperasional, setJamOperasional] = useState('Setiap Hari: 08.00 - 17.00 WIB');
-  const [mapsEmbedUrl, setMapsEmbedUrl] = useState(
-    'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3965.1!2d106.8!3d-6.4!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zNsKwMjQnMDAuMCJTIDEwNsKwNDgnMDAuMCJF!5e0!3m2!1sid!2sid!4v1600000000000'
-  );
+  const [mapsEmbedUrl, setMapsEmbedUrl] = useState('');
 
   useEffect(() => {
     async function loadStaticPages() {
@@ -137,13 +129,13 @@ export default function AdminHalamanPage() {
           const tentangPage = pages.find((p: { kunci: string }) => p.kunci === 'tentang');
           if (tentangPage?.konten) {
             const c = tentangPage.konten;
-            if (c.visi) setVisi(c.visi);
+            if (c.visi !== undefined) setVisi(c.visi);
             if (Array.isArray(c.misi)) setMisiList(c.misi);
-            if (c.manhaj?.judul) setManhajJudul(c.manhaj.judul);
-            if (c.manhaj?.penjelasan) setManhajPenjelasan(c.manhaj.penjelasan);
-            if (c.manhaj?.dalilQuran) setDalilQuran(c.manhaj.dalilQuran);
-            if (c.manhaj?.dalilHadits) setDalilHadits(c.manhaj.dalilHadits);
-            if (c.sejarah?.teks) setSejarahTeks(c.sejarah.teks);
+            if (c.manhaj?.judul !== undefined) setManhajJudul(c.manhaj.judul);
+            if (c.manhaj?.penjelasan !== undefined) setManhajPenjelasan(c.manhaj.penjelasan);
+            if (c.manhaj?.dalilQuran !== undefined) setDalilQuran(c.manhaj.dalilQuran);
+            if (c.manhaj?.dalilHadits !== undefined) setDalilHadits(c.manhaj.dalilHadits);
+            if (c.sejarah?.teks !== undefined) setSejarahTeks(c.sejarah.teks);
             if (Array.isArray(c.strukturPengurus)) setPengurusList(c.strukturPengurus);
             if (Array.isArray(c.maknaLambang)) setMaknaLambang(c.maknaLambang);
           }
@@ -152,21 +144,27 @@ export default function AdminHalamanPage() {
           const berandaPage = pages.find((p: { kunci: string }) => p.kunci === 'beranda');
           if (berandaPage?.konten) {
             const c = berandaPage.konten;
-            if (Array.isArray(c.heroTaglines) && c.heroTaglines.length > 0) {
+            if (Array.isArray(c.heroTaglines)) {
               setHeroTaglinesText(c.heroTaglines.join('\n'));
-            } else if (c.heroTagline) {
+            } else if (typeof c.heroTagline === 'string') {
               setHeroTaglinesText(c.heroTagline);
+            } else {
+              setHeroTaglinesText('');
             }
-            if (c.heroSubtitle) setHeroSubtitle(c.heroSubtitle);
+            if (typeof c.heroSubtitle === 'string') {
+              setHeroSubtitle(c.heroSubtitle);
+            } else {
+              setHeroSubtitle('');
+            }
           }
 
           // Load data kontak
           const kontakPage = pages.find((p: { kunci: string }) => p.kunci === 'kontak');
           if (kontakPage?.konten) {
             const c = kontakPage.konten;
-            if (c.alamat) setAlamatKantor(c.alamat);
-            if (c.jamOperasional) setJamOperasional(c.jamOperasional);
-            if (c.mapsEmbed) setMapsEmbedUrl(c.mapsEmbed);
+            if (c.alamat !== undefined) setAlamatKantor(c.alamat);
+            if (c.jamOperasional !== undefined) setJamOperasional(c.jamOperasional);
+            if (c.mapsEmbed !== undefined) setMapsEmbedUrl(c.mapsEmbed);
           }
         }
       } catch (err) {
@@ -715,7 +713,7 @@ export default function AdminHalamanPage() {
                 rows={3}
                 value={heroTaglinesText}
                 onChange={(e) => setHeroTaglinesText(e.target.value)}
-                placeholder={'Dakwah di Atas Sunnah Sesuai Pemahaman Salafus Shalih\nMenebar Sunnah, Merajut Ukhuwah, Membangun Generasi Rabbani'}
+                placeholder={'Contoh:\nDakwah di Atas Sunnah Sesuai Pemahaman Salafus Shalih\nMenebar Sunnah, Merajut Ukhuwah, Membangun Generasi Rabbani'}
                 className="w-full text-sm font-bold p-2.5 bg-white border border-[#E3E7EE] rounded-lg leading-relaxed"
               />
             </div>
@@ -728,6 +726,7 @@ export default function AdminHalamanPage() {
                 rows={3}
                 value={heroSubtitle}
                 onChange={(e) => setHeroSubtitle(e.target.value)}
+                placeholder="Contoh: Wadah dakwah ilmiah, pendidikan Islam usia dini berbasis tauhid & adab, serta kepedulian sosial umat di atas manhaj Salafus Shalih."
                 className="w-full text-xs p-2.5 bg-white border border-[#E3E7EE] rounded-lg leading-relaxed"
               />
             </div>
