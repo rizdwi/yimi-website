@@ -58,13 +58,15 @@ export function Hero() {
 
   return (
     <section className="relative min-h-[100svh] min-h-[560px] flex flex-col justify-between items-center overflow-hidden pt-24 pb-8 bg-linear-to-b from-yimi-blue-50 via-white to-white">
-      {/* Layer 1: Parallax Islamic 8-Pointed Star Silhouette Motif (speed 0.3x) */}
+      {/* Layer 1: Islamic 8-Pointed Star Silhouette Motif (parallax latar).
+          Mode 'background': hanya background-position yang bergerak mengikuti
+          scroll, kotak elemen diam — sebelumnya mode transform membuat div ini
+          jadi satu-satunya penyebab CLS 0,190 di Lighthouse (perbaikan 2026-10-25). */}
       <ParallaxLayer
         speed={0.3}
-        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[720px] h-[720px] pointer-events-none opacity-[0.08]"
-      >
-        <div className="w-full h-full bg-star8-pattern bg-center" />
-      </ParallaxLayer>
+        mode="background"
+        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[720px] h-[720px] pointer-events-none opacity-[0.08] bg-star8-pattern bg-center"
+      />
 
       {/* Layer 2: Ambient Lighting Highlights */}
       <div
@@ -83,6 +85,7 @@ export function Hero() {
               width={210}
               height={210}
               priority
+              fetchPriority="high"
               sizes="(max-width: 768px) 160px, 210px"
               unoptimized={Boolean(logoUrl && logoUrl.endsWith('.svg'))}
               className="w-full h-full object-contain drop-shadow-[0_12px_32px_rgba(31,47,107,0.12)]"
