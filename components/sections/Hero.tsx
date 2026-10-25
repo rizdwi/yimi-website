@@ -10,13 +10,12 @@ import siteData from '@/content/site.json';
 
 export function Hero() {
   const { logoUrl, namaYayasan } = useSiteSettings();
-  // Tagline dikelola dari CMS (satu per baris di admin). Tidak ada hardcoded di sini.
-  // Rotasi otomatis 5 detik DIHAPUS (perintah user 2026-10-25): hanya baris
-  // pertama yang tampil, statis.
-  const [taglines, setTaglines] = useState<string[]>(
-    siteData.tagline ? [siteData.tagline] : []
-  );
-  const [subtitle, setSubtitle] = useState(siteData.deskripsi || '');
+  // Tagline & subtitle HANYA dari CMS (perintah user 2026-10-25: yang di CMS
+  // yang dipertahankan). State awal KOSONG — nilai site.json (tagline &
+  // deskripsi "Yayasan...") sebelumnya tampil dulu di paint pertama lalu
+  // tertimpa nilai CMS setelah fetch, sehingga hero tampak "berganti".
+  const [taglines, setTaglines] = useState<string[]>([]);
+  const [subtitle, setSubtitle] = useState('');
 
   useEffect(() => {
     async function fetchHomeContent() {
@@ -47,7 +46,8 @@ export function Hero() {
   }, []);
 
   // Tagline statis: hanya baris pertama dari CMS yang tampil.
-  const tagline = taglines[0] ?? (siteData.tagline || '');
+  // Tanpa fallback ke site.json — bila CMS kosong, hero kosong.
+  const tagline = taglines[0] ?? '';
 
   const scrollToContent = () => {
     const nextSection = document.getElementById('pengantar');
