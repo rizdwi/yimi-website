@@ -52,19 +52,18 @@ export async function GET(req: NextRequest) {
   }
 
   if (kunci === 'beranda') {
+    // Fallback TANPA teks hardcoded (dihapus 2026-10-25): bila baris beranda
+    // belum ada di DB, hero tampil kosong — bukan teks default yang menutupi
+    // bahwa konten belum pernah disimpan. Sumber kebenaran tunggal = DB.
     return NextResponse.json(
       {
         page: {
           kunci: 'beranda',
           judul: 'Pengantar Beranda & Tagline',
           konten: {
-            heroTaglines: [
-              'Dakwah di Atas Sunnah Sesuai Pemahaman Salafus Shalih',
-              'Menebar Sunnah, Merajut Ukhuwah, Membangun Generasi Rabbani',
-            ],
-            heroTagline: 'Dakwah di Atas Sunnah Sesuai Pemahaman Salafus Shalih',
-            heroSubtitle:
-              'Mengajak kaum muslimin kepada pemurnian aqidah dan ibadah, menyemai generasi Qur\'ani, serta menebar kemaslahatan umat berlandaskan Al-Qur\'an dan As-Sunnah.',
+            heroTaglines: [],
+            heroTagline: '',
+            heroSubtitle: '',
           },
         },
       },

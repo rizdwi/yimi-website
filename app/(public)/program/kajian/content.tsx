@@ -141,9 +141,6 @@ export default function KajianProgramPage() {
                 <p className="text-sm font-semibold text-neutral-600">
                   Belum ada jadwal kajian mendatang.
                 </p>
-                <p className="mt-1 text-xs text-neutral-500">
-                  Jadwal yang sudah terlewat tersimpan sebagai arsip di CMS. Pantau halaman ini untuk info kajian terbaru, insya Allah.
-                </p>
               </div>
             ) : (
             kajianList.map((item) => {

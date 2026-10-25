@@ -11,11 +11,11 @@ import siteData from '@/content/site.json';
 export function Hero() {
   const { logoUrl, namaYayasan } = useSiteSettings();
   // Tagline dikelola dari CMS (satu per baris di admin). Tidak ada hardcoded di sini.
+  // Rotasi otomatis 5 detik DIHAPUS (perintah user 2026-10-25): hanya baris
+  // pertama yang tampil, statis.
   const [taglines, setTaglines] = useState<string[]>(
     siteData.tagline ? [siteData.tagline] : []
   );
-  const [taglineIndex, setTaglineIndex] = useState(0);
-  const [fade, setFade] = useState(true);
   const [subtitle, setSubtitle] = useState(siteData.deskripsi || '');
 
   useEffect(() => {
@@ -46,20 +46,8 @@ export function Hero() {
     fetchHomeContent();
   }, []);
 
-  // Rotasi tagline tiap 5 detik jika ada lebih dari satu (fade via opacity)
-  useEffect(() => {
-    if (taglines.length <= 1) return;
-    const id = setInterval(() => {
-      setFade(false);
-      setTimeout(() => {
-        setTaglineIndex((i) => (i + 1) % taglines.length);
-        setFade(true);
-      }, 350);
-    }, 5000);
-    return () => clearInterval(id);
-  }, [taglines.length]);
-
-  const tagline = taglines[taglineIndex] ?? (siteData.tagline || '');
+  // Tagline statis: hanya baris pertama dari CMS yang tampil.
+  const tagline = taglines[0] ?? (siteData.tagline || '');
 
   const scrollToContent = () => {
     const nextSection = document.getElementById('pengantar');
@@ -108,11 +96,8 @@ export function Hero() {
           <span>{namaYayasan || siteData.namaLengkap}</span>
         </div>
 
-        {/* Hero Title — rotasi tagline CMS tiap 5 detik */}
-        <h1
-          className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold text-yimi-blue-800 tracking-tight max-w-4xl leading-[1.15] mb-5"
-          style={{ opacity: fade ? 1 : 0, transition: 'opacity 350ms ease' }}
-        >
+        {/* Hero Title — tagline CMS statis (baris pertama) */}
+        <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold text-yimi-blue-800 tracking-tight max-w-4xl leading-[1.15] mb-5">
           {tagline}
         </h1>
 

@@ -74,9 +74,6 @@ export function KajianSchedule() {
               <p className="text-sm font-semibold text-neutral-600">
                 Belum ada jadwal kajian mendatang.
               </p>
-              <p className="mt-1 text-xs text-neutral-500">
-                Pantau halaman ini untuk informasi kajian terbaru, insya Allah.
-              </p>
             </div>
           ) : (
           kajianList.slice(0, 4).map((item) => {

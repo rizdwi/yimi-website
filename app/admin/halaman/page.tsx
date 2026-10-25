@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import {
   Save,
   CheckCircle2,
@@ -108,7 +108,12 @@ export default function AdminHalamanPage() {
   ]);
 
   // --- STATE HALAMAN BERANDA ---
-  // Tagline: satu per baris di textarea, tampil bergantian tiap 5 detik di hero
+  // Tagline: satu per baris di textarea; hanya baris pertama yang tampil (statis) di hero — rotasi 5 detik dihapus 2026-10-25
+  // Penanda: user sudah mengetik di form beranda sebelum load selesai.
+  // Bila sudah true, load TIDAK BOLEH menimpa ketikan user (fetch lambat +
+  // ketikan cepat = edit user hilang, lalu yang tersimpan justru nilai lama;
+  // itulah "subtitle terkadang tidak tersimpan").
+  const berandaEditedRef = useRef(false);
   const [heroTaglinesText, setHeroTaglinesText] = useState('');
   const [heroSubtitle, setHeroSubtitle] = useState('');
 
@@ -140,9 +145,9 @@ export default function AdminHalamanPage() {
             if (Array.isArray(c.maknaLambang)) setMaknaLambang(c.maknaLambang);
           }
 
-          // Load data beranda
+          // Load data beranda — JANGAN timpa bila user sudah mengetik
           const berandaPage = pages.find((p: { kunci: string }) => p.kunci === 'beranda');
-          if (berandaPage?.konten) {
+          if (berandaPage?.konten && !berandaEditedRef.current) {
             const c = berandaPage.konten;
             if (Array.isArray(c.heroTaglines)) {
               setHeroTaglinesText(c.heroTaglines.join('\n'));
@@ -707,12 +712,15 @@ export default function AdminHalamanPage() {
 
             <div>
               <label className="block text-xs font-semibold text-[#374151] mb-1">
-                Tagline Beranda — satu per baris, tampil bergantian tiap 5 detik
+                Tagline Beranda — satu per baris, hanya baris pertama yang tampil
               </label>
               <textarea
                 rows={3}
                 value={heroTaglinesText}
-                onChange={(e) => setHeroTaglinesText(e.target.value)}
+                onChange={(e) => {
+                  berandaEditedRef.current = true;
+                  setHeroTaglinesText(e.target.value);
+                }}
                 placeholder={'Contoh:\nDakwah di Atas Sunnah Sesuai Pemahaman Salafus Shalih\nMenebar Sunnah, Merajut Ukhuwah, Membangun Generasi Rabbani'}
                 className="w-full text-sm font-bold p-2.5 bg-white border border-[#E3E7EE] rounded-lg leading-relaxed"
               />
@@ -725,7 +733,10 @@ export default function AdminHalamanPage() {
               <textarea
                 rows={3}
                 value={heroSubtitle}
-                onChange={(e) => setHeroSubtitle(e.target.value)}
+                onChange={(e) => {
+                  berandaEditedRef.current = true;
+                  setHeroSubtitle(e.target.value);
+                }}
                 placeholder="Contoh: Wadah dakwah ilmiah, pendidikan Islam usia dini berbasis tauhid & adab, serta kepedulian sosial umat di atas manhaj Salafus Shalih."
                 className="w-full text-xs p-2.5 bg-white border border-[#E3E7EE] rounded-lg leading-relaxed"
               />
