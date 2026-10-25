@@ -1,13 +1,6 @@
 'use client';
 
-import React, { useRef } from 'react';
-import { useGSAP } from '@gsap/react';
-import gsap from 'gsap';
-import { ScrollTrigger } from 'gsap/ScrollTrigger';
-
-if (typeof window !== 'undefined') {
-  gsap.registerPlugin(ScrollTrigger);
-}
+import React, { useRef, useEffect } from 'react';
 
 type ParallaxLayerProps = {
   children: React.ReactNode;
@@ -24,21 +17,18 @@ export function ParallaxLayer({
 }: ParallaxLayerProps) {
   const ref = useRef<HTMLDivElement>(null);
 
-  useGSAP(
-    () => {
-      const mm = gsap.matchMedia();
-      mm.add(
-        {
-          isDesktop: '(min-width: 768px)',
-          reduce: '(prefers-reduced-motion: reduce)',
-        },
-        (ctx) => {
-          const { isDesktop, reduce } = (ctx.conditions || {}) as {
-            isDesktop: boolean;
-            reduce: boolean;
-          };
-          if (!isDesktop || reduce || !ref.current) return;
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    const isDesktop = window.matchMedia('(min-width: 768px)').matches;
+    const isReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (!isDesktop || isReduced || !ref.current) return;
 
+    let ctx: { revert: () => void } | null = null;
+    Promise.all([import('gsap'), import('gsap/ScrollTrigger')]).then(
+      ([{ default: gsap }, { ScrollTrigger }]) => {
+        gsap.registerPlugin(ScrollTrigger);
+        ctx = gsap.context(() => {
+          if (!ref.current) return;
           gsap.to(ref.current, {
             yPercent: speed * 60,
             ease: 'none',
@@ -49,12 +39,14 @@ export function ParallaxLayer({
               scrub: true,
             },
           });
-        }
-      );
-      return () => mm.revert();
-    },
-    { scope: ref }
-  );
+        }, ref);
+      }
+    );
+
+    return () => {
+      ctx?.revert();
+    };
+  }, [speed]);
 
   return (
     <div

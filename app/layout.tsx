@@ -1,7 +1,22 @@
 import type { Metadata } from 'next';
+import { Plus_Jakarta_Sans, Amiri } from 'next/font/google';
 import './globals.css';
 import { constructMetadata } from '@/lib/seo';
 import siteData from '@/content/site.json';
+
+const fontSans = Plus_Jakarta_Sans({
+  subsets: ['latin'],
+  weight: ['400', '500', '600', '700', '800'],
+  variable: '--font-sans',
+  display: 'swap',
+});
+
+const fontArabic = Amiri({
+  subsets: ['arabic'],
+  weight: ['400', '700'],
+  variable: '--font-arabic',
+  display: 'swap',
+});
 
 export const metadata: Metadata = constructMetadata();
 
@@ -67,14 +82,11 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="id" className="scroll-smooth">
+    <html
+      lang="id"
+      className={`scroll-smooth ${fontSans.variable} ${fontArabic.variable}`}
+    >
       <head>
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link
-          rel="preconnect"
-          href="https://fonts.gstatic.com"
-          crossOrigin="anonymous"
-        />
         <link
           rel="preconnect"
           href="https://fopqfjqztvmktzvahjrh.supabase.co"

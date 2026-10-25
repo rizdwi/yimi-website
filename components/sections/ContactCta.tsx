@@ -67,7 +67,8 @@ export function ContactCta() {
           src="/images/banners/beranda.jpg"
           alt=""
           fill
-          sizes="100vw"
+          sizes="(max-width: 768px) 100vw, 1200px"
+          quality={45}
           className="object-cover opacity-20"
         />
         <div className="absolute inset-0 bg-linear-to-b from-yimi-blue-950/70 via-yimi-blue-950/85 to-yimi-blue-950" />

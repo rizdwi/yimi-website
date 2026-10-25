@@ -88,7 +88,8 @@ export function LatestNews() {
                       alt={item.judul}
                       fill
                       className="object-cover transition-transform duration-500 group-hover:scale-105"
-                      sizes="(max-width: 768px) 100vw, 33vw"
+                      sizes="(max-width: 640px) 92vw, (max-width: 1024px) 45vw, 380px"
+                      quality={70}
                       loading="lazy"
                     />
                     <div className="absolute top-3 left-3">

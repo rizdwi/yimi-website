@@ -93,6 +93,7 @@ export function Hero() {
               width={210}
               height={210}
               priority
+              sizes="(max-width: 768px) 160px, 210px"
               unoptimized={Boolean(logoUrl && logoUrl.endsWith('.svg'))}
               className="w-full h-full object-contain drop-shadow-[0_12px_32px_rgba(31,47,107,0.12)]"
             />
