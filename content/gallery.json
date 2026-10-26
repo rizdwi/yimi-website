@@ -52,5 +52,14 @@
     "gambar": "https://images.unsplash.com/photo-1544717305-2782549b5136?q=80&w=1200&auto=format&fit=crop",
     "deskripsi": "Kebersamaan para relawan dan warga sekitar membersihkan rumput liar di lahan rencana pembangunan.",
     "izinOrangTua": true
+  },
+  {
+    "id": "gal-07",
+    "judul": "Kegiatan Motorik Halus: Melukis Pohon Warna Warni",
+    "kategori": "TK",
+    "tanggal": "2026-10-23",
+    "gambar": "https://fopqfjqztvmktzvahjrh.supabase.co/storage/v1/object/public/yimi-media/1792977240020_3ig7j-20b44e7fc92eeb2cb5cb088575bee8cc2ab4e97069ead8643bcbe899feb5ff42.jpg",
+    "deskripsi": "Anak-anak TK Islam Insan Muslim Istiqomah melukis pohon warna-warni dengan teknik cotton bud painting, Jumat 23 Oktober 2026.",
+    "izinOrangTua": true
   }
 ]
