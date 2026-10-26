@@ -306,7 +306,7 @@ export default function AdminProgramPage() {
       file_formulir: meta.file_formulir !== undefined ? meta.file_formulir : '',
       file_formulir_nama: meta.file_formulir_nama !== undefined ? meta.file_formulir_nama : (isTk ? 'Formulir Pendaftaran Santri Baru (PDF)' : ''),
       jam_pelayanan: meta.jam_pelayanan !== undefined ? meta.jam_pelayanan : (isTk ? 'Senin – Jumat: 07.30 – 12.00 WIB' : ''),
-      alamat_sekolah: meta.alamat_sekolah !== undefined ? meta.alamat_sekolah : (isTk ? 'Jl. Raya Cilodong No. 45, Kalimulya, Kec. Cilodong, Kota Depok, Jawa Barat 16413' : ''),
+      alamat_sekolah: meta.alamat_sekolah !== undefined ? meta.alamat_sekolah : (isTk ? 'Perum Bumi Cikampek Baru Blok B3 No. 10, RT 002/RW 007, Desa Balonggandu, Kecamatan Jatisari, Kabupaten Karawang, Jawa Barat 41375' : ''),
       kegiatan_judul:
         meta.kegiatan_judul !== undefined ? meta.kegiatan_judul : (isTk ? 'Jadwal Rutinitas Santri' : 'Jadwal Rutinitas & Kegiatan'),
       kegiatan_subjudul:
@@ -1836,7 +1836,7 @@ export default function AdminProgramPage() {
                           onChange={(e) =>
                             setProgramMeta({ ...programMeta, alamat_sekolah: e.target.value })
                           }
-                          placeholder="Jl. Raya Cilodong No. 45, Kalimulya, Kec. Cilodong, Kota Depok"
+                          placeholder="Perum Bumi Cikampek Baru Blok B3 No. 10, Jatisari, Karawang"
                           className="w-full text-xs p-2 bg-white border border-[#E3E7EE] rounded-lg"
                         />
                       </div>
