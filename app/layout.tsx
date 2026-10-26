@@ -28,7 +28,7 @@ const alamatYayasan = {
     'Perum Bumi Cikampek Baru Blok B3 No. 10, RT 002/RW 007, Desa Balonggandu, Kecamatan Jatisari',
   addressLocality: 'Karawang',
   addressRegion: 'Jawa Barat',
-  postalCode: '41375',
+  postalCode: '41373',
   addressCountry: 'ID',
 };
 

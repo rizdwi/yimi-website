@@ -134,7 +134,7 @@ export function DonationCertificateModal({
               {isWakaf ? 'SERTIFIKAT WAKAF LAHAN DAKWAH' : 'TANDA TERIMA & KUITANSI INFAQ'}
             </h2>
             <p className="text-[11px] text-neutral-500 mt-1 max-w-md mx-auto">
-              Perum Bumi Cikampek Baru Blok B3 No. 10, RT 002/RW 007, Desa Balonggandu, Kecamatan Jatisari, Kabupaten Karawang, Jawa Barat 41375
+              Perum Bumi Cikampek Baru Blok B3 No. 10, RT 002/RW 007, Desa Balonggandu, Kecamatan Jatisari, Kabupaten Karawang, Jawa Barat 41373
             </p>
             <div className="inline-flex items-center gap-1.5 mt-2 px-3 py-0.5 rounded-full bg-yimi-blue-50 border border-yimi-blue-100 text-[10px] font-mono font-bold text-yimi-blue-700">
               <ShieldCheck className="w-3 h-3 text-emerald-600" />
