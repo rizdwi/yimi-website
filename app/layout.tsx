@@ -25,12 +25,22 @@ const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://yimi.my.id';
 const alamatYayasan = {
   '@type': 'PostalAddress',
   streetAddress:
-    'Perum Bumi Cikampek Baru Blok B3 No 10, RT002/RW007, Desa Balonggandu, Kecamatan Jatisari',
+    'Perum Bumi Cikampek Baru Blok B3 No. 10, RT 002/RW 007, Desa Balonggandu, Kecamatan Jatisari',
   addressLocality: 'Karawang',
   addressRegion: 'Jawa Barat',
-  postalCode: '41374',
+  postalCode: '41375',
   addressCountry: 'ID',
 };
+
+// Koordinat pin Google Maps terverifikasi (sama dengan hasil geocode alamat
+// jalan ini; pin di antara Jl. Melati 3 dan Jl. Melati 4, Perum Bumi Cikampek Baru).
+const geoYayasan = {
+  '@type': 'GeoCoordinates',
+  latitude: -6.38651,
+  longitude: 107.51168,
+};
+
+const mapsUrl = 'https://maps.google.com/maps?q=-6.38651,107.51168';
 
 // Data terstruktur Schema.org untuk SEO lokal: membantu Google memahami
 // YIMI sebagai yayasan dan sekolah Islam di Cikampek, Karawang, Jatisari, dan Cilamaya.
@@ -48,6 +58,8 @@ const jsonLd = {
       email: siteData.kontak.email,
       telephone: siteData.kontak.whatsapp,
       address: alamatYayasan,
+      geo: geoYayasan,
+      hasMap: mapsUrl,
       areaServed: [
         { '@type': 'City', name: 'Cikampek' },
         { '@type': 'City', name: 'Karawang' },
@@ -70,6 +82,8 @@ const jsonLd = {
         'TK Islam di Cikampek, Karawang: pendidikan anak usia dini dengan kurikulum dan adab islami.',
       parentOrganization: { '@id': `${baseUrl}/#yayasan` },
       address: alamatYayasan,
+      geo: geoYayasan,
+      hasMap: mapsUrl,
       areaServed: [
         { '@type': 'City', name: 'Cikampek' },
         { '@type': 'City', name: 'Karawang' },
