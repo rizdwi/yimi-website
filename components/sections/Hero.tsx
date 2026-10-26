@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import Image from 'next/image';
 import { ChevronDown, ArrowRight, Heart } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
@@ -8,46 +8,19 @@ import { ParallaxLayer } from '@/components/motion/ParallaxLayer';
 import { useSiteSettings } from '@/context/SiteSettingsContext';
 import siteData from '@/content/site.json';
 
-export function Hero() {
+// Tagline & subtitle DARI SERVER (props dari halaman beranda, yang mengambil
+// dari CMS via lib/home-data). Dulu di-fetch client-side setelah load
+// (useEffect) dengan state awal kosong — H1 kosong di paint pertama, LCP
+// 4,1 dtk. Kini H1 sudah ada di HTML awal. Tanpa fallback ke site.json —
+// bila CMS kosong, hero kosong (perintah user 2026-10-25).
+export function Hero({
+  tagline,
+  subtitle,
+}: {
+  tagline: string;
+  subtitle: string;
+}) {
   const { logoUrl, namaYayasan } = useSiteSettings();
-  // Tagline & subtitle HANYA dari CMS (perintah user 2026-10-25: yang di CMS
-  // yang dipertahankan). State awal KOSONG — nilai site.json (tagline &
-  // deskripsi "Yayasan...") sebelumnya tampil dulu di paint pertama lalu
-  // tertimpa nilai CMS setelah fetch, sehingga hero tampak "berganti".
-  const [taglines, setTaglines] = useState<string[]>([]);
-  const [subtitle, setSubtitle] = useState('');
-
-  useEffect(() => {
-    async function fetchHomeContent() {
-      try {
-        const res = await fetch('/api/halaman?kunci=beranda');
-        if (res.ok) {
-          const data = await res.json();
-          if (data.page?.konten) {
-            const k = data.page.konten;
-            // Dukung format baru (array) & lama (string tunggal)
-            const list: string[] = Array.isArray(k.heroTaglines)
-              ? k.heroTaglines.filter((t: unknown) => typeof t === 'string' && t.trim())
-              : typeof k.heroTagline === 'string' && k.heroTagline.trim()
-                ? [k.heroTagline]
-                : [];
-            setTaglines(list);
-            if (typeof k.heroSubtitle === 'string') {
-              setSubtitle(k.heroSubtitle);
-            }
-          }
-        }
-      } catch (err) {
-        console.error('Failed to load hero content:', err);
-      }
-    }
-
-    fetchHomeContent();
-  }, []);
-
-  // Tagline statis: hanya baris pertama dari CMS yang tampil.
-  // Tanpa fallback ke site.json — bila CMS kosong, hero kosong.
-  const tagline = taglines[0] ?? '';
 
   const scrollToContent = () => {
     const nextSection = document.getElementById('pengantar');

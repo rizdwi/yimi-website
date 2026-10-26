@@ -1,6 +1,4 @@
-'use client';
-
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import {
@@ -47,39 +45,18 @@ interface ProgramCardItem {
   tampil_beranda?: boolean;
 }
 
-export function ProgramCards() {
-  // CMS adalah sumber kebenaran: mulai kosong, isi dari API.
-  const [programs, setPrograms] = useState<ProgramCardItem[]>([]);
-  const [loaded, setLoaded] = useState(false);
-
-  useEffect(() => {
-    async function fetchLivePrograms() {
-      try {
-        const res = await fetch('/api/programs');
-        if (res.ok) {
-          const data = await res.json();
-          // Hormati CMS: kosong → kosong (jangan fallback ke data lokal basi)
-          const filtered = Array.isArray(data.programs)
-            ? data.programs.filter(
-                (p: ProgramCardItem) => p.tampil_beranda !== false
-              )
-            : [];
-          setPrograms(filtered);
-        }
-      } catch (err) {
-        console.error('Gagal mengambil daftar program live:', err);
-      } finally {
-        setLoaded(true);
-      }
-    }
-
-    fetchLivePrograms();
-  }, []);
+// Server Component: daftar program dari server (props halaman beranda, CMS
+// via lib/home-data). Dulu client component yang fetch /api/programs setelah
+// load — kartu muncul belakangan (SI & CLS) dan menambah blocking time.
+export function ProgramCards({ programs }: { programs: unknown[] }) {
+  const list = programs as ProgramCardItem[];
 
   // Sembunyikan section jika CMS tidak punya program
-  if (loaded && programs.length === 0) {
+  if (list.length === 0) {
     return null;
   }
+
+  const programsToShow = list;
 
   return (
     <section className="py-20 md:py-24 bg-neutral-100/60 relative">
@@ -102,7 +79,7 @@ export function ProgramCards() {
 
         {/* 4 Program Cards Grid — kartu bergambar */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-          {programs.map((item) => {
+          {programsToShow.map((item) => {
             const iconKey = (item.ikon || item.icon || 'BookOpen') as keyof typeof iconMap;
             const IconComponent = iconMap[iconKey] || BookOpen;
             const banner = programBanner[item.slug] || programBanner[item.slug?.split('-')[0]];

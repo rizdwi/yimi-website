@@ -88,12 +88,27 @@ function GalleryCardItem({
   );
 }
 
-export function GalleryPreview() {
+// Client Component (lightbox & carousel butuh interaksi) — tapi datanya dari
+// server (props halaman beranda, CMS via lib/home-data), bukan fetch
+// client-side. Dulu fetch /api/galeri setelah load — foto muncul belakangan
+// (SI & CLS) dan menambah blocking time. Fetch client-side hanya jadi
+// cadangan bila props kosong (mis. fetch server gagal).
+export function GalleryPreview({ items }: { items: unknown[] }) {
   const [selectedPhotoIndex, setSelectedPhotoIndex] = useState<number | null>(null);
-  // CMS adalah sumber kebenaran: mulai kosong, isi dari API.
-  // Jika CMS kosong, section disembunyikan (jangan tampilkan data basi).
-  const [photos, setPhotos] = useState<GalleryItem[]>([]);
-  const [loaded, setLoaded] = useState(false);
+  const initialPhotos = (items || []).map((i) => {
+    const item = i as PublicGalleryApiItem;
+    return {
+      id: item.id,
+      judul: item.judul,
+      deskripsi: item.keterangan || item.deskripsi || '',
+      gambar: item.gambar,
+      kategori: item.kategori,
+      izinOrangTua: item.izin_orang_tua ?? item.izinOrangTua ?? true,
+      tanggal: item.tanggal || new Date().toISOString().split('T')[0],
+    } as GalleryItem;
+  });
+  const [photos, setPhotos] = useState<GalleryItem[]>(initialPhotos);
+  const [loaded, setLoaded] = useState(initialPhotos.length > 0);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isHovered, setIsHovered] = useState(false);
   const [visibleCount, setVisibleCount] = useState(3);
@@ -118,8 +133,10 @@ export function GalleryPreview() {
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
-  // Fetch live photos dari database (CMS = sumber kebenaran)
+  // Fetch live photos dari database (CMS = sumber kebenaran) — hanya bila
+  // props server kosong (cadangan saat fetch server gagal).
   useEffect(() => {
+    if (initialPhotos.length > 0) return;
     async function fetchLivePhotos() {
       try {
         const res = await fetch('/api/galeri?beranda=true');
@@ -146,6 +163,7 @@ export function GalleryPreview() {
     }
 
     fetchLivePhotos();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const totalPhotos = photos.length;

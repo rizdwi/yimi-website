@@ -6,8 +6,10 @@ import { SiteSettingsProvider } from '@/context/SiteSettingsContext';
 import { supabase } from '@/lib/supabase';
 import { SiteSettings } from '@/lib/types';
 
-export const dynamic = 'force-dynamic';
-export const revalidate = 0;
+// ISR 60 dtk (dulu force-dynamic): HTML di-cache di edge agar TTFB cepat.
+// Site settings jarang berubah; SiteSettingsContext tetap me-refresh
+// client-side, jadi perubahan CMS tetap tampil tanpa menunggu revalidasi.
+export const revalidate = 60;
 
 export default async function PublicLayout({
   children,

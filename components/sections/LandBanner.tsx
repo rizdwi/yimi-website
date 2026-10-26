@@ -1,6 +1,4 @@
-'use client';
-
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { Landmark, ArrowRight, Heart, MapPin } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
 import { ProgressBar } from '@/components/ui/ProgressBar';
@@ -9,38 +7,28 @@ import { ParallaxLayer } from '@/components/motion/ParallaxLayer';
 import { formatRupiah, formatPersen } from '@/lib/format';
 import landDataFallback from '@/content/land-campaign.json';
 
-export function LandBanner() {
-  const [campaign, setCampaign] = useState({
-    judul: landDataFallback.judul,
-    lokasi: landDataFallback.lokasi,
-    luasTargetM2: landDataFallback.luasTargetM2,
-    targetDana: landDataFallback.targetDana,
-    terkumpul: landDataFallback.terkumpul,
-  });
-
-  useEffect(() => {
-    async function fetchLiveLand() {
-      try {
-        const res = await fetch('/api/lahan', { cache: 'no-store' });
-        if (res.ok) {
-          const data = await res.json();
-          if (data.campaign) {
-            setCampaign({
-              judul: data.campaign.judul || landDataFallback.judul,
-              lokasi: data.campaign.lokasi || landDataFallback.lokasi,
-              luasTargetM2: Number(data.campaign.luasTargetM2) || landDataFallback.luasTargetM2,
-              targetDana: Number(data.campaign.targetDana) || landDataFallback.targetDana,
-              terkumpul: Number(data.campaign.terkumpul) || 0,
-            });
-          }
-        }
-      } catch (err) {
-        console.error('Failed to fetch live land banner data:', err);
-      }
-    }
-
-    fetchLiveLand();
-  }, []);
+// Server Component: data kampanye dari server (props halaman beranda, CMS
+// via lib/home-data). Dulu client component yang fetch /api/lahan setelah
+// load dengan state awal fallback — angka "berganti" setelah paint (CLS)
+// dan menambah blocking time. ParallaxLayer & CountUp tetap client
+// component (dirender sebagai children), tapi section ini sendiri tidak
+// lagi me-render ulang setelah fetch.
+export function LandBanner({
+  campaign: campaignProp,
+}: {
+  campaign: Record<string, unknown> | null;
+}) {
+  const c = (campaignProp ?? {}) as Record<string, unknown>;
+  const campaign = {
+    judul:
+      (typeof c.judul === 'string' && c.judul) || landDataFallback.judul,
+    lokasi:
+      (typeof c.lokasi === 'string' && c.lokasi) || landDataFallback.lokasi,
+    luasTargetM2:
+      Number(c.luasTargetM2) || landDataFallback.luasTargetM2,
+    targetDana: Number(c.targetDana) || landDataFallback.targetDana,
+    terkumpul: Number(c.terkumpul) || 0,
+  };
 
   const percentage = formatPersen(campaign.terkumpul, campaign.targetDana);
 

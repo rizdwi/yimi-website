@@ -1,37 +1,18 @@
-'use client';
-
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { StarOrnament } from '@/components/ui/StarOrnament';
 import aboutData from '@/content/about.json';
+import type { HomeDalil } from '@/lib/home-data';
 
-export function IntroVision() {
-  const [dalilQuran, setDalilQuran] = useState({
+// Server Component: dalil dari server (props halaman beranda, CMS via
+// lib/home-data), fallback ke about.json bila CMS kosong. Dulu client
+// component yang fetch /api/halaman setelah load — dalil "berganti" setelah
+// paint (CLS) dan menambah blocking time.
+export function IntroVision({ dalil }: { dalil: HomeDalil | null }) {
+  const dalilQuran = dalil ?? {
     arab: aboutData.manhaj.dalilQuran.arab,
     terjemahan: aboutData.manhaj.dalilQuran.terjemahan,
     sumber: aboutData.manhaj.dalilQuran.sumber,
-  });
-
-  useEffect(() => {
-    async function loadIntro() {
-      try {
-        const res = await fetch('/api/halaman?kunci=tentang');
-        if (res.ok) {
-          const data = await res.json();
-          const q = data.page?.konten?.manhaj?.dalilQuran;
-          if (q) {
-            setDalilQuran({
-              arab: q.arab || q.teksArab || aboutData.manhaj.dalilQuran.arab,
-              terjemahan: q.terjemahan || aboutData.manhaj.dalilQuran.terjemahan,
-              sumber: q.sumber || aboutData.manhaj.dalilQuran.sumber,
-            });
-          }
-        }
-      } catch (err) {
-        console.error('Failed to load intro vision dalil:', err);
-      }
-    }
-    loadIntro();
-  }, []);
+  };
 
   return (
     <section id="pengantar" className="py-20 md:py-24 bg-linear-to-b from-yimi-blue-50/70 via-white to-white relative overflow-hidden">

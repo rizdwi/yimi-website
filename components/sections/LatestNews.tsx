@@ -1,6 +1,4 @@
-'use client';
-
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { ArrowRight, Calendar, User } from 'lucide-react';
@@ -19,32 +17,14 @@ interface NewsItem {
   ringkasan: string;
 }
 
-export function LatestNews() {
-  // CMS adalah sumber kebenaran: mulai kosong, isi dari API.
-  const [newsList, setNewsList] = useState<NewsItem[]>([]);
-  const [loaded, setLoaded] = useState(false);
-
-  useEffect(() => {
-    async function fetchLatestNews() {
-      try {
-        const res = await fetch('/api/berita');
-        if (res.ok) {
-          const data = await res.json();
-          // Hormati CMS: kosong → kosong (jangan fallback ke data lokal basi)
-          setNewsList(Array.isArray(data.news) ? data.news : []);
-        }
-      } catch (err) {
-        console.error('Gagal mengambil berita live:', err);
-      } finally {
-        setLoaded(true);
-      }
-    }
-
-    fetchLatestNews();
-  }, []);
+// Server Component: berita dari server (props halaman beranda, CMS via
+// lib/home-data). Dulu client component yang fetch /api/berita setelah
+// load — kartu muncul belakangan (SI & CLS) dan menambah blocking time.
+export function LatestNews({ news }: { news: unknown[] }) {
+  const newsList = news as NewsItem[];
 
   // Sembunyikan section jika CMS tidak punya berita
-  if (loaded && newsList.length === 0) {
+  if (newsList.length === 0) {
     return null;
   }
 

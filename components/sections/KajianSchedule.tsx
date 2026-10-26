@@ -11,14 +11,22 @@ import { downloadIcsFile } from '@/lib/ics';
 import { KajianItem } from '@/lib/types';
 import { saringKajianAktif, tanggalHariIniWIB } from '@/lib/kajian';
 
-export function KajianSchedule() {
-  // CMS adalah sumber kebenaran: mulai kosong, isi dari API.
-  const [kajianList, setKajianList] = useState<KajianItem[]>([]);
-  const [loaded, setLoaded] = useState(false);
+// Client Component (modal flyer & unduh ICS butuh interaksi) — tapi datanya
+// dari server (props halaman beranda, CMS via lib/home-data), bukan fetch
+// client-side. Dulu fetch /api/kajian setelah load — jadwal muncul
+// belakangan (SI & CLS) dan menambah blocking time. Fetch client-side hanya
+// jadi cadangan bila props kosong (mis. fetch server gagal).
+export function KajianSchedule({ kajian }: { kajian: unknown[] }) {
+  const initialList = saringKajianAktif(
+    Array.isArray(kajian) ? (kajian as KajianItem[]) : []
+  );
+  const [kajianList, setKajianList] = useState<KajianItem[]>(initialList);
+  const [loaded, setLoaded] = useState(initialList.length > 0);
   const [activeFlyer, setActiveFlyer] = useState<{ url: string; tema: string } | null>(null);
   const todayStr = tanggalHariIniWIB();
 
   useEffect(() => {
+    if (initialList.length > 0) return;
     async function fetchKajian() {
       try {
         const res = await fetch('/api/kajian');
@@ -37,6 +45,7 @@ export function KajianSchedule() {
     }
 
     fetchKajian();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // Sembunyikan section jika tidak ada jadwal aktif di CMS
