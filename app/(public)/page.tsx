@@ -12,11 +12,11 @@ import { constructMetadata } from '@/lib/seo';
 export const dynamic = 'force-dynamic';
 export const revalidate = 0;
 
-// Metadata homepage dioptimasi untuk kata kunci target: yayasan sunnah salafiyah + lokal Cikampek/Karawang/Jatisari/Cilamaya.
+// Metadata homepage dioptimasi untuk kata kunci target: yayasan sunnah salafiyah + lokal Karawang dulu (scope terbesar, termasuk pencari dari luar Karawang), lalu Cikampek & Jatisari.
 export const metadata: Metadata = constructMetadata({
-  title: 'Yayasan Sunnah Salafiyah Cikampek & Karawang',
+  title: 'Yayasan Sunnah Salafiyah Karawang, Cikampek & Jatisari',
   description:
-    'Yayasan Insan Muslim Istiqomah (YIMI) — yayasan dakwah sunnah bermanhaj salaf di Cikampek, Karawang, Jatisari, dan Cilamaya. TK Islam, kajian rutin, Jumat Berkah, dan wakaf pembebasan lahan.',
+    'Yayasan Insan Muslim Istiqomah (YIMI) — yayasan dakwah sunnah bermanhaj salaf di Karawang: Cikampek, Jatisari dan sekitarnya. TK Islam, tempat kajian Sunnah, Jumat Berkah, dan wakaf pembebasan lahan.',
   canonical: '/',
 });
 

@@ -4,9 +4,9 @@ import KajianProgramPage from './content';
 
 // Metadata unik per halaman (wajib: satu title & description unik, canonical).
 export const metadata: Metadata = constructMetadata({
-  title: 'Jadwal Kajian Sunnah Rutin',
+  title: 'Tempat Kajian Sunnah Karawang, Cikampek & Jatisari',
   description:
-    'Jadwal kajian Islam rutin YIMI di Cikampek, Karawang — aqidah, fiqih, dan adab di atas sunnah sesuai pemahaman salafus shalih.',
+    'Tempat kajian Sunnah di Karawang: Cikampek, Jatisari dan sekitarnya — jadwal kajian Islam rutin YIMI: aqidah, fiqih, dan adab di atas sunnah sesuai pemahaman salafus shalih.',
   canonical: '/program/kajian',
 });
 
