@@ -9,7 +9,7 @@
     "email": "yayasaninsanmuslimistiqomah@gmail.com",
     "alamat": "Perum Bumi Cikampek Baru Blok B3 No. 10, RT 002/RW 007, Desa Balonggandu, Kecamatan Jatisari, Kabupaten Karawang, Jawa Barat 41373",
     "jamOperasional": "Senin – Sabtu, 08.00 – 17.00 WIB",
-    "mapsEmbed": "https://maps.google.com/maps?q=-6.38651,107.51168&t=&z=17&ie=UTF8&iwloc=&output=embed"
+    "mapsEmbed": "https://maps.google.com/maps?q=-6.3874379,107.510405&t=&z=17&ie=UTF8&iwloc=&output=embed"
   },
   "donasi": {
     "bank": "Bank Syariah Indonesia (BSI)",
@@ -22,6 +22,8 @@
       "atasNama": "Yayasan Insan Muslim Istiqomah",
       "kodeBank": "147"
     },
+    "qrisImage": "/images/qris-yimi.svg",
+    "qrisString": "[TBD: string QRIS statis yayasan — hasil pindaian stiker/kartu QRIS resmi, diawali 00020101]",
     "catatan": "Tambahkan kode unik 01 untuk Pembebasan Lahan atau cantumkan berita transfer.",
     "waTemplateLahan": "Bismillah, saya ingin konfirmasi donasi Pembebasan Lahan YIMI.\nNama: [Nama Donatur]\nNominal: Rp [Nominal]\nTanggal Transfer: [Tanggal]\nBukti transfer terlampir. Jazakumullahu khairan.",
     "waTemplateUmum": "Bismillah, saya ingin konfirmasi donasi program YIMI.\nNama: [Nama Donatur]\nProgram: [Pilihan Program]\nNominal: Rp [Nominal]\nBukti transfer terlampir. Jazakumullahu khairan."

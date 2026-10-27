@@ -32,15 +32,18 @@ const alamatYayasan = {
   addressCountry: 'ID',
 };
 
-// Koordinat pin Google Maps terverifikasi (sama dengan hasil geocode alamat
-// jalan ini; pin di antara Jl. Melati 3 dan Jl. Melati 4, Perum Bumi Cikampek Baru).
+// Koordinat pin Google Maps dari tautan yang dibagikan user (tempat
+// "Yayasan Insan Muslim Istiqomah", Plus Code JG76+25 Balonggandu).
+// Pin lama (-6.38651, 107.51168) TERBUKTI meleset ~175 m ke timur laut
+// (mendarat di sekitar Jl. Mangga, bukan di gedung yayasan) — laporan
+// user 2026-10-27 22:38.
 const geoYayasan = {
   '@type': 'GeoCoordinates',
-  latitude: -6.38651,
-  longitude: 107.51168,
+  latitude: -6.3874379,
+  longitude: 107.510405,
 };
 
-const mapsUrl = 'https://maps.google.com/maps?q=-6.38651,107.51168';
+const mapsUrl = 'https://maps.google.com/maps?q=-6.3874379,107.510405';
 
 // Data terstruktur Schema.org untuk SEO lokal: membantu Google memahami
 // YIMI sebagai yayasan dan sekolah Islam di Cikampek, Karawang, Jatisari, dan Cilamaya.
