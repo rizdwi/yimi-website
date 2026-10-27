@@ -23,7 +23,6 @@ interface SiteSettingsContextType {
   bank2Rekening: string;
   bank2An: string;
   qrisImage: string;
-  qrisString: string;
   sosmed: {
     youtube?: string;
     instagram?: string;
@@ -51,8 +50,7 @@ const defaultContext: SiteSettingsContextType = {
   bank2Nama: siteFallback.donasi.rekeningLain.bank,
   bank2Rekening: siteFallback.donasi.rekeningLain.noRekening,
   bank2An: siteFallback.donasi.rekeningLain.atasNama,
-  qrisImage: siteFallback.donasi.qrisImage,
-  qrisString: siteFallback.donasi.qrisString || '',
+  qrisImage: '',
   sosmed: siteFallback.sosmed,
   refreshSettings: async () => {},
 };
@@ -72,7 +70,7 @@ export function SiteSettingsProvider({
 
   const refreshSettings = useCallback(async () => {
     try {
-      const res = await fetch('/api/site-settings', { cache: 'no-store' });
+      const res = await fetch('/api/site-settings');
       if (res.ok) {
         const data = await res.json();
         if (data.settings) {
@@ -85,12 +83,12 @@ export function SiteSettingsProvider({
   }, []);
 
   // TIDAK ada fetch client-side otomatis di mount (dihapus 2026-10-27).
-  // Dulu: useEffect fetch /api/site-settings (no-store) di setiap load —
-  // request + setSettings + re-render itu berebut main thread & bandwidth
-  // tepat saat logo (elemen LCP) berusaha melukis, menyumbang "penundaan
-  // render elemen" 1.500 md di PageSpeed. Settings sudah tersedia dari
-  // server via initialSettings dan ISR revalidasi 60 dtk, jadi fetch ini
-  // murni redundan. refreshSettings tetap tersedia untuk pemakaian manual.
+  // Dulu: useEffect fetch /api/site-settings di setiap load — request +
+  // setSettings + re-render itu berebut main thread & bandwidth tepat saat
+  // logo (elemen LCP) berusaha melukis, menyumbang "penundaan render
+  // elemen" 1.500 md di PageSpeed. Settings sudah tersedia dari server via
+  // initialSettings dan ISR revalidasi 60 dtk, jadi fetch ini murni
+  // redundan. refreshSettings tetap tersedia untuk pemakaian manual.
 
   const logoUrl =
     settings?.logo_yayasan ||
@@ -115,8 +113,7 @@ export function SiteSettingsProvider({
   const bank2Rekening = settings?.bank_2_rekening || siteFallback.donasi.rekeningLain.noRekening;
   const bank2An = settings?.bank_2_an || siteFallback.donasi.rekeningLain.atasNama;
 
-  const qrisImage = settings?.qris_image || siteFallback.donasi.qrisImage;
-  const qrisString = settings?.qris_string || siteFallback.donasi.qrisString || '';
+  const qrisImage = settings?.qris_image || '';
   const sosmed = settings?.sosmed || siteFallback.sosmed;
 
   return (
@@ -140,7 +137,6 @@ export function SiteSettingsProvider({
         bank2Rekening,
         bank2An,
         qrisImage,
-        qrisString,
         sosmed,
         refreshSettings,
       }}
