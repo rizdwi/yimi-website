@@ -1,14 +1,27 @@
 import type { Metadata } from 'next';
+import dynamic from 'next/dynamic';
 import { Hero } from '@/components/sections/Hero';
 import { IntroVision } from '@/components/sections/IntroVision';
 import { ProgramCards } from '@/components/sections/ProgramCards';
 import { LandBanner } from '@/components/sections/LandBanner';
-import { KajianSchedule } from '@/components/sections/KajianSchedule';
 import { LatestNews } from '@/components/sections/LatestNews';
-import { GalleryPreview } from '@/components/sections/GalleryPreview';
-import { ContactCta } from '@/components/sections/ContactCta';
 import { constructMetadata } from '@/lib/seo';
 import { getHomeData } from '@/lib/home-data';
+
+// Section client di bawah fold di-split dari bundle awal (next/dynamic,
+// tetap SSR) agar JS awal lebih ringan — parser & eksekusi JS tidak
+// berebut bandwidth/CPU dengan logo (elemen LCP) di slow 4G. Section
+// server (IntroVision, ProgramCards, LandBanner, LatestNews) tidak punya
+// JS, jadi tidak perlu di-split.
+const KajianSchedule = dynamic(() =>
+  import('@/components/sections/KajianSchedule').then((m) => m.KajianSchedule)
+);
+const GalleryPreview = dynamic(() =>
+  import('@/components/sections/GalleryPreview').then((m) => m.GalleryPreview)
+);
+const ContactCta = dynamic(() =>
+  import('@/components/sections/ContactCta').then((m) => m.ContactCta)
+);
 
 // ISR 60 dtk: HTML beranda di-cache di edge Vercel (TTFB cepat), konten CMS
 // tetap segar (diperbarui maks 60 dtk setelah perubahan). Sebelumnya

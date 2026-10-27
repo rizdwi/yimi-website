@@ -31,13 +31,29 @@ export default async function PublicLayout({
     console.error('Failed to load initial site settings:', err);
   }
 
+  // URL logo untuk preload: SAMA PERSIS dengan logika logoUrl di
+  // SiteSettingsContext (logo_yayasan -> foto_yayasan -> SVG fallback).
+  // URL preload harus identik dengan src <img> hero agar browser memakai
+  // satu unduhan yang sama, bukan dua kali. Preload di head membuat browser
+  // mulai mengunduh logo (elemen LCP) sebelum parser HTML sampai ke hero —
+  // perbaikan audit "Penemuan permintaan LCP" PageSpeed 27 Okt 2026
+  // (LCP 4,9 dtk, tanpa preload logo). React 19 menaikkan <link> ini ke
+  // <head> dokumen.
+  const logoUrl =
+    initialSettings?.logo_yayasan ||
+    initialSettings?.foto_yayasan ||
+    '/logo/logo-yimi.svg';
+
   return (
-    <SiteSettingsProvider initialSettings={initialSettings}>
-      <VisitorTracker />
-      <Navbar />
-      <main className="flex-1">{children}</main>
-      <Footer />
-      <WhatsAppFloating />
-    </SiteSettingsProvider>
+    <>
+      <link rel="preload" as="image" href={logoUrl} fetchPriority="high" />
+      <SiteSettingsProvider initialSettings={initialSettings}>
+        <VisitorTracker />
+        <Navbar />
+        <main className="flex-1">{children}</main>
+        <Footer />
+        <WhatsAppFloating />
+      </SiteSettingsProvider>
+    </>
   );
 }
