@@ -6,7 +6,10 @@ import { Images, Eye, X } from 'lucide-react';
 import { Badge } from '@/components/ui/Badge';
 import { PageHero } from '@/components/ui/PageHero';
 
-const FALLBACK_IMAGE = 'https://images.unsplash.com/photo-1542816417-0983c9c9ad53?q=80&w=1200&auto=format&fit=crop';
+// Bila gambar item gagal dimuat / kosong, pakai logo lokal (bukan foto
+// stok). Dulu: URL Unsplash hardcoded — dihapus 2026-10-27 atas perintah
+// user (galeri tidak boleh menampilkan foto hardcoded).
+const FALLBACK_IMAGE = '/logo/logo-yimi.webp';
 
 interface GalleryPhotoItemLocal {
   id: string;

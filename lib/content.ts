@@ -6,7 +6,6 @@ import jumatBerkahData from '@/content/programs/jumat-berkah.json';
 import kajianProgramData from '@/content/programs/kajian.json';
 import landCampaignData from '@/content/land-campaign.json';
 import kajianScheduleData from '@/content/kajian.json';
-import galleryData from '@/content/gallery.json';
 import newsData from '@/content/news/index.json';
 
 export type SiteData = typeof siteData;
@@ -14,7 +13,19 @@ export type AboutData = typeof aboutData;
 export type ProgramItem = (typeof programsData)[number];
 export type LandCampaignData = typeof landCampaignData;
 export type KajianItem = (typeof kajianScheduleData)[number];
-export type GalleryItem = (typeof galleryData)[number];
+export type GalleryItem = {
+  id: string;
+  judul: string;
+  deskripsi?: string;
+  keterangan?: string;
+  gambar: string;
+  kategori: string;
+  izinOrangTua?: boolean;
+  izin_orang_tua?: boolean;
+  tampil_publik?: boolean;
+  tampil_beranda?: boolean;
+  tanggal?: string;
+};
 export type NewsItem = (typeof newsData)[number];
 
 export function getSiteData(): SiteData {
@@ -42,15 +53,6 @@ export function getLandCampaignData(): LandCampaignData {
 
 export function getKajianList(): KajianItem[] {
   return kajianScheduleData;
-}
-
-export function getGalleryList(kategori?: string): GalleryItem[] {
-  // Respect privacy filter: only items with izinOrangTua === true
-  const safeItems = galleryData.filter((item) => item.izinOrangTua === true);
-  if (!kategori || kategori === 'Semua') {
-    return safeItems;
-  }
-  return safeItems.filter((item) => item.kategori.toLowerCase() === kategori.toLowerCase());
 }
 
 export function getNewsList(kategori?: string): NewsItem[] {

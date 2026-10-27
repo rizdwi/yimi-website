@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { supabase } from '@/lib/supabase';
-import galleryFallback from '@/content/gallery.json';
 import { parsePagination, publicCacheHeaders } from '@/lib/security';
 
 export const dynamic = 'force-dynamic';
@@ -8,15 +7,6 @@ export const revalidate = 0;
 
 // Galeri jarang berubah: cache CDN 5 menit.
 const CACHE_HEADERS = publicCacheHeaders(300);
-
-interface FallbackGalleryItem {
-  id: string;
-  judul: string;
-  deskripsi: string;
-  gambar: string;
-  kategori: string;
-  izinOrangTua: boolean;
-}
 
 export async function GET(req: NextRequest) {
   const { searchParams } = new URL(req.url);
@@ -56,23 +46,10 @@ export async function GET(req: NextRequest) {
     console.error('Error fetching gallery from Supabase:', err);
   }
 
-  // Fallback to gallery.json HANYA jika query database error / gagal terhubung
-  const fallback = galleryFallback.filter((i) => i.izinOrangTua === true);
-  const paged = fallback.slice(offset, offset + limit);
+  // TANPA fallback hardcoded (dihapus 2026-10-27 atas perintah user):
+  // galeri hanya dari database. Query gagal / DB kosong → items kosong.
   return NextResponse.json(
-    {
-      items: paged.map((f: FallbackGalleryItem) => ({
-        id: f.id,
-        judul: f.judul,
-        keterangan: f.deskripsi,
-        gambar: f.gambar,
-        kategori: f.kategori,
-        izin_orang_tua: f.izinOrangTua,
-        tampil_publik: true,
-        tampil_beranda: true,
-      })),
-      pagination: { page, limit, total: fallback.length },
-    },
+    { items: [], pagination: { page, limit, total: 0 } },
     { headers: CACHE_HEADERS }
   );
 }

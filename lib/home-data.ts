@@ -20,7 +20,6 @@ import fallbackPrograms from '@/content/programs/index.json';
 import fallbackNews from '@/content/news/index.json';
 import landFallback from '@/content/land-campaign.json';
 import kajianFallback from '@/content/kajian.json';
-import galleryFallback from '@/content/gallery.json';
 import { saringKajianAktif } from '@/lib/kajian';
 import { formatRupiah } from '@/lib/format';
 import { extractGalleryFromPost } from '@/lib/news';
@@ -372,12 +371,13 @@ async function getGallery(): Promise<unknown[]> {
     const { data, error } = await supabase
       .from('gallery_items')
       // Slim select — HANYA kolom yang ADA di tabel gallery_items.
-      // (Perbaikan 2026-10-27: select sebelumnya memakai 'deskripsi' &
-      // 'tanggal' yang TIDAK ADA di tabel → query 400 → getGallery jatuh
-      // ke fallback lokal content/gallery.json berisi foto stok Unsplash,
-      // sehingga galeri live menampilkan gambar default. Kolom nyata:
-      // id, judul, gambar, kategori, keterangan, izin_orang_tua,
-      // tampil_publik, tampil_beranda, urutan, created_at.)
+      // Kolom nyata: id, judul, gambar, kategori, keterangan,
+      // izin_orang_tua, tampil_publik, tampil_beranda, urutan, created_at.
+      // (Dulu: select memakai 'deskripsi' & 'tanggal' yang TIDAK ADA →
+      // query 400. Dulu juga ada fallback ke content/gallery.json berisi
+      // foto stok Unsplash — DIHAPUS 2026-10-27 atas perintah user:
+      // galeri TIDAK BOLEH menampilkan foto hardcoded. Bila query gagal,
+      // kembalikan array kosong agar galeri tampil kosong, bukan foto stok.)
       .select('id,judul,gambar,kategori,keterangan,izin_orang_tua')
       .eq('tampil_publik', true)
       .eq('tampil_beranda', true)
@@ -394,21 +394,11 @@ async function getGallery(): Promise<unknown[]> {
       );
     }
   } catch {
-    /* abaikan — fallback di bawah */
+    /* abaikan — kembalikan kosong di bawah */
   }
-  return (galleryFallback as Record<string, unknown>[])
-    .filter((i) => i.izinOrangTua === true)
-    .slice(0, 12)
-    .map((f) => ({
-      id: f.id,
-      judul: f.judul,
-      keterangan: f.deskripsi,
-      gambar: f.gambar,
-      kategori: f.kategori,
-      izin_orang_tua: f.izinOrangTua,
-      tampil_publik: true,
-      tampil_beranda: true,
-    }));
+  // TANPA fallback hardcoded: galeri hanya dari database. Query gagal
+  // atau kosong → tampil kosong (section menyembunyikan diri bila kosong).
+  return [];
 }
 
 export async function getHomeData(): Promise<HomeData> {
