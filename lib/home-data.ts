@@ -9,7 +9,7 @@
 // kartu beranda hanya butuh ringkasan). Logika + fallback dipakai ulang
 // dari API route (bukan diduplikasi dari nol).
 //
-// Halaman beranda memakai ISR (revalidate 60 dtk), jadi query ini hanya
+// Halaman beranda memakai ISR (revalidate 3600 dtk), jadi query ini hanya
 // berjalan sekali per 60 dtk (saat revalidasi), bukan di setiap request.
 // Bila query gagal, kembalikan fallback lokal / array kosong — section
 // memakai fallback seperti semula (tidak merusak halaman).
@@ -371,12 +371,12 @@ async function getGallery(): Promise<unknown[]> {
   try {
     const { data, error } = await supabase
       .from('gallery_items')
-      .select('*')
+      .select('id,judul,gambar,kategori,keterangan,deskripsi,izin_orang_tua,tanggal')
       .eq('tampil_publik', true)
       .eq('tampil_beranda', true)
       .order('urutan', { ascending: true })
       .order('created_at', { ascending: false })
-      .limit(12);
+      .limit(6);
     if (!error && data) {
       return (data as Record<string, unknown>[]).filter(
         (item) =>
@@ -391,7 +391,7 @@ async function getGallery(): Promise<unknown[]> {
   }
   return (galleryFallback as Record<string, unknown>[])
     .filter((i) => i.izinOrangTua === true)
-    .slice(0, 12)
+    .slice(0, 6)
     .map((f) => ({
       id: f.id,
       judul: f.judul,
