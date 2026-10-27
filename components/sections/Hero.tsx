@@ -60,7 +60,11 @@ export function Hero({
               priority
               fetchPriority="high"
               sizes="(max-width: 768px) 160px, 210px"
-              unoptimized={Boolean(logoUrl && logoUrl.endsWith('.svg'))}
+              // unoptimized: logo (elemen LCP) disajikan langsung sebagai file
+              // statis, tanpa lewat /_next/image. Endpoint optimasi itu
+              // menambah latensi serverless ke unduhan logo (640 md di
+              // PageSpeed); file-nya sudah WebP kecil (30 KB, 414x420).
+              unoptimized
               className="w-full h-full object-contain drop-shadow-[0_12px_32px_rgba(31,47,107,0.12)]"
             />
           </div>

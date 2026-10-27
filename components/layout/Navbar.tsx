@@ -77,7 +77,9 @@ export function Navbar() {
                 width={44}
                 height={44}
                 priority
-                unoptimized={Boolean(logoUrl && logoUrl.endsWith('.svg'))}
+                // unoptimized: samakan dengan logo hero — sajikan file statis
+                // langsung, tanpa latensi endpoint /_next/image.
+                unoptimized
                 className="w-full h-full object-contain"
               />
             </div>
@@ -168,7 +170,8 @@ export function Navbar() {
                   alt={`Logo ${singkatan}`}
                   width={36}
                   height={36}
-                  unoptimized={Boolean(logoUrl && logoUrl.endsWith('.svg'))}
+                  // unoptimized: samakan dengan logo hero — file statis langsung.
+                  unoptimized
                   className="w-full h-full object-contain"
                 />
               </div>

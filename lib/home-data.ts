@@ -371,12 +371,19 @@ async function getGallery(): Promise<unknown[]> {
   try {
     const { data, error } = await supabase
       .from('gallery_items')
-      .select('id,judul,gambar,kategori,keterangan,deskripsi,izin_orang_tua,tanggal')
+      // Slim select — HANYA kolom yang ADA di tabel gallery_items.
+      // (Perbaikan 2026-10-27: select sebelumnya memakai 'deskripsi' &
+      // 'tanggal' yang TIDAK ADA di tabel → query 400 → getGallery jatuh
+      // ke fallback lokal content/gallery.json berisi foto stok Unsplash,
+      // sehingga galeri live menampilkan gambar default. Kolom nyata:
+      // id, judul, gambar, kategori, keterangan, izin_orang_tua,
+      // tampil_publik, tampil_beranda, urutan, created_at.)
+      .select('id,judul,gambar,kategori,keterangan,izin_orang_tua')
       .eq('tampil_publik', true)
       .eq('tampil_beranda', true)
       .order('urutan', { ascending: true })
       .order('created_at', { ascending: false })
-      .limit(6);
+      .limit(12);
     if (!error && data) {
       return (data as Record<string, unknown>[]).filter(
         (item) =>
@@ -391,7 +398,7 @@ async function getGallery(): Promise<unknown[]> {
   }
   return (galleryFallback as Record<string, unknown>[])
     .filter((i) => i.izinOrangTua === true)
-    .slice(0, 6)
+    .slice(0, 12)
     .map((f) => ({
       id: f.id,
       judul: f.judul,
