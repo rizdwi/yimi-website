@@ -61,8 +61,8 @@ export function constructMetadata({
       follow: !noIndex,
     },
     icons: {
-      icon: '/logo/logo-yimi.svg',
-      apple: '/logo/logo-yimi.svg',
+      icon: '/icon.png',
+      apple: '/apple-icon.png',
     },
   };
 }
