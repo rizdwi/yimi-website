@@ -1,17 +1,19 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { HeartHandshake, Utensils, Heart, Download } from 'lucide-react';
-import { Card } from '@/components/ui/Card';
+import Image from 'next/image';
+import { HeartHandshake, Heart, Download } from 'lucide-react';
 import { PageHero } from '@/components/ui/PageHero';
 import { Button } from '@/components/ui/Button';
-import { formatRupiah } from '@/lib/format';
 import fallbackJumatData from '@/content/programs/jumat-berkah.json';
 
-interface PaketInfaqItem {
-  nama: string;
-  nominal: number;
-  deskripsi: string;
+interface FotoPenyaluran {
+  id: string;
+  judul: string;
+  keterangan?: string;
+  gambar: string;
+  kategori: string;
+  izin_orang_tua?: boolean;
 }
 
 interface MekanismePenyaluranItem {
@@ -31,13 +33,39 @@ interface JumatData {
   deskripsi: string;
   ajakan: string;
   landasanDalil: LandasanDalil;
-  paketInfaq: PaketInfaqItem[];
   mekanismePenyaluran: MekanismePenyaluranItem[];
+}
+
+function FotoPenyaluranCard({ foto }: { foto: FotoPenyaluran }) {
+  const [imgSrc, setImgSrc] = useState(foto.gambar);
+  return (
+    <figure className="group relative aspect-4/3 rounded-3xl overflow-hidden bg-neutral-200 border border-neutral-200/80 shadow-xs">
+      <Image
+        src={imgSrc}
+        alt={foto.judul}
+        fill
+        onError={() => setImgSrc('/logo/logo-yimi.webp')}
+        sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+        loading="lazy"
+        className="object-cover group-hover:scale-105 transition-transform duration-500"
+      />
+      <figcaption className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-yimi-blue-800/90 to-transparent px-5 pt-10 pb-4">
+        <span className="text-white text-sm font-bold leading-snug drop-shadow-xs">
+          {foto.judul}
+        </span>
+        {foto.keterangan ? (
+          <span className="block text-white/80 text-xs mt-1 leading-relaxed">
+            {foto.keterangan}
+          </span>
+        ) : null}
+      </figcaption>
+    </figure>
+  );
 }
 
 export default function JumatBerkahPage() {
   const [jumatData, setJumatData] = useState<JumatData>(fallbackJumatData as JumatData);
-  const [paketInfaq, setPaketInfaq] = useState<PaketInfaqItem[]>(fallbackJumatData.paketInfaq);
+  const [fotoPenyaluran, setFotoPenyaluran] = useState<FotoPenyaluran[]>([]);
   const [fileLampiran, setFileLampiran] = useState<string>('');
 
   useEffect(() => {
@@ -47,12 +75,6 @@ export default function JumatBerkahPage() {
         if (res.ok) {
           const json = await res.json();
           if (json.program) {
-            if (
-              json.program.metadata?.paket_infaq &&
-              Array.isArray(json.program.metadata.paket_infaq)
-            ) {
-              setPaketInfaq(json.program.metadata.paket_infaq as PaketInfaqItem[]);
-            }
             if (json.program.metadata?.file_lampiran) {
               setFileLampiran(json.program.metadata.file_lampiran);
             }
@@ -71,6 +93,25 @@ export default function JumatBerkahPage() {
       }
     }
     loadLiveJumat();
+  }, []);
+
+  useEffect(() => {
+    async function loadFotoPenyaluran() {
+      try {
+        const res = await fetch('/api/galeri', { cache: 'no-store' });
+        if (res.ok) {
+          const json = await res.json();
+          const items = (json.items || []).filter(
+            (i: FotoPenyaluran) =>
+              i.kategori === 'Jumat Berkah' && (i.izin_orang_tua ?? true)
+          );
+          setFotoPenyaluran(items);
+        }
+      } catch (err) {
+        console.error('Gagal memuat foto Jumat Berkah:', err);
+      }
+    }
+    loadFotoPenyaluran();
   }, []);
 
   return (
@@ -141,51 +182,41 @@ export default function JumatBerkahPage() {
         </div>
       </section>
 
-      {/* Pilihan Paket Infaq */}
+      {/* Dokumentasi Penyaluran — foto transparansi */}
       <section className="py-20 bg-neutral-100/60">
         <div className="max-w-[1200px] w-full mx-auto px-5 md:px-8">
           <div className="text-center max-w-2xl mx-auto mb-12">
             <h2 className="text-2xl sm:text-3xl font-extrabold text-yimi-blue-800 tracking-tight mb-3">
-              Pilihan Paket Infaq Jumat Berkah
+              Dokumentasi Penyaluran Jumat Berkah
             </h2>
             <p className="text-sm text-neutral-600">
-              Pilih nominal infaq sesuai keikhlasan dan kemampuan Anda.
+              Foto-foto pembagian makanan dan sembako setiap Jumat — transparansi
+              penyaluran untuk para donatur.
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {paketInfaq.map((paket: PaketInfaqItem, idx: number) => (
-              <Card
-                key={idx}
-                hoverEffect
-                className="p-8 flex flex-col justify-between border-neutral-200/80 group"
-              >
-                <div>
-                  <div className="w-12 h-12 rounded-2xl bg-yimi-blue-50 text-yimi-blue-600 flex items-center justify-center mb-6 group-hover:bg-yimi-blue-600 group-hover:text-white transition-colors">
-                    <Utensils className="w-6 h-6" />
-                  </div>
-                  <h3 className="text-xl font-bold text-yimi-blue-800 mb-2">
-                    {paket.nama}
-                  </h3>
-                  <div className="text-2xl sm:text-3xl font-extrabold font-mono text-yimi-blue-600 mb-4">
-                    {formatRupiah(paket.nominal)}
-                  </div>
-                  <p className="text-sm text-neutral-600 leading-relaxed mb-6">
-                    {paket.deskripsi}
-                  </p>
-                </div>
+          {fotoPenyaluran.length > 0 ? (
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+              {fotoPenyaluran.map((foto: FotoPenyaluran) => (
+                <FotoPenyaluranCard key={foto.id} foto={foto} />
+              ))}
+            </div>
+          ) : (
+            <p className="text-center text-sm text-neutral-500 py-8">
+              Dokumentasi penyaluran segera tampil di sini.
+            </p>
+          )}
 
-                <Button
-                  href="/donasi"
-                  variant="primary"
-                  size="md"
-                  className="w-full flex items-center justify-center gap-2"
-                >
-                  <Heart className="w-4 h-4 fill-white" />
-                  <span>Salurkan Infaq</span>
-                </Button>
-              </Card>
-            ))}
+          <div className="flex justify-center mt-12">
+            <Button
+              href="/donasi"
+              variant="primary"
+              size="lg"
+              className="flex items-center gap-2"
+            >
+              <Heart className="w-5 h-5 fill-white" />
+              <span>Salurkan Infaq</span>
+            </Button>
           </div>
         </div>
       </section>
