@@ -76,9 +76,10 @@ export function Hero({
           <span>{namaYayasan || siteData.namaLengkap}</span>
         </div>
 
-        {/* Hero Title — tagline CMS statis (baris pertama) */}
+        {/* Hero Title — H1 menarget kata kunci utama "yayasan Islam Karawang".
+            Tagline CMS dipertahankan utuh setelah tanda pisah (bukan diubah). */}
         <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold text-yimi-blue-800 tracking-tight max-w-4xl leading-[1.15] mb-5">
-          {tagline}
+          Yayasan Islam Karawang — {tagline}
         </h1>
 
         {/* Hero Tagline Subtitle */}

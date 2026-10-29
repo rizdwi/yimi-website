@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import { constructMetadata } from '@/lib/seo';
+import { FaqJsonLd } from '@/components/seo/FaqJsonLd';
 import KajianProgramPage from './content';
 
 // Metadata unik per halaman (wajib: satu title & description unik, canonical).
@@ -11,5 +12,28 @@ export const metadata: Metadata = constructMetadata({
 });
 
 export default function Page() {
-  return <KajianProgramPage />;
+  return (
+    <>
+      <FaqJsonLd
+        faqs={[
+          {
+            question: 'Di mana tempat kajian Sunnah di Karawang?',
+            answer:
+              'Yayasan Insan Muslim Istiqomah (YIMI) rutin mengadakan tempat kajian Sunnah di Karawang (Cikampek, Jatisari dan sekitarnya) — membahas aqidah, fiqih, dan adab di atas sunnah sesuai pemahaman salafus shalih.',
+          },
+          {
+            question: 'Kapan jadwal kajian rutin YIMI Karawang?',
+            answer:
+              'Jadwal kajian rutin YIMI di Karawang diperbarui berkala dan dapat dilihat di halaman Program Kajian website ini.',
+          },
+          {
+            question: 'Apakah kajian YIMI terbuka untuk umum?',
+            answer:
+              'Ya. Kajian yang diadakan YIMI di Karawang terbuka untuk umum — muslimin dan muslimat dipersilakan hadir sesuai jadwal yang diumumkan.',
+          },
+        ]}
+      />
+      <KajianProgramPage />
+    </>
+  );
 }

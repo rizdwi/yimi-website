@@ -7,6 +7,7 @@ import { LandBanner } from '@/components/sections/LandBanner';
 import { LatestNews } from '@/components/sections/LatestNews';
 import { constructMetadata } from '@/lib/seo';
 import { getHomeData } from '@/lib/home-data';
+import { FaqJsonLd } from '@/components/seo/FaqJsonLd';
 
 // Section client di bawah fold di-split dari bundle awal (next/dynamic,
 // tetap SSR) agar JS awal lebih ringan — parser & eksekusi JS tidak
@@ -44,6 +45,30 @@ export default async function HomePage() {
 
   return (
     <>
+      <FaqJsonLd
+        faqs={[
+          {
+            question: 'Apa itu Yayasan Insan Muslim Istiqomah (YIMI)?',
+            answer:
+              'Yayasan Insan Muslim Istiqomah (YIMI) adalah yayasan Islam di Karawang yang bergerak di bidang dakwah, pendidikan, dan sosial kemanusiaan — mengajak kepada pemurnian aqidah dan ibadah berlandaskan Al-Qur\u2019an dan As-Sunnah sesuai pemahaman Salafus Shalih.',
+          },
+          {
+            question: 'Di mana lokasi Yayasan Insan Muslim Istiqomah?',
+            answer:
+              'YIMI beralamat di Perum Bumi Cikampek Baru Blok B3 No. 10, Desa Balonggandu, Kecamatan Jatisari, Kabupaten Karawang, Jawa Barat 41373 — melayani Cikampek, Jatisari, dan sekitarnya.',
+          },
+          {
+            question: 'Apa saja program unggulan YIMI?',
+            answer:
+              'Program unggulan YIMI meliputi TK Islam Insan Muslim Istiqomah di Karawang, tempat kajian Sunnah rutin di Karawang, Sedekah Jumat Berkah, dan program wakaf pembebasan lahan untuk masjid dan sentra dakwah di Karawang.',
+          },
+          {
+            question: 'Bagaimana cara berwakaf melalui YIMI Karawang?',
+            answer:
+              'Wakaf untuk pembebasan lahan masjid dan sentra dakwah YIMI di Karawang dapat disalurkan melalui halaman Donasi di website ini atau menghubungi WhatsApp YIMI di +62 812-1936-2077.',
+          },
+        ]}
+      />
       <Hero tagline={data.hero.tagline} subtitle={data.hero.subtitle} />
       <IntroVision dalil={data.dalil} />
       <ProgramCards programs={data.programs} />

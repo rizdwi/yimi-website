@@ -1,4 +1,5 @@
 import React from 'react';
+import Link from 'next/link';
 import { Landmark, ArrowRight, Heart, MapPin } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
 import { ProgressBar } from '@/components/ui/ProgressBar';
@@ -66,7 +67,14 @@ export function LandBanner({
               <strong className="text-white font-bold">
                 {campaign.luasTargetM2.toLocaleString('id-ID')} m²
               </strong>{' '}
-              untuk pembangunan Masjid Jami&apos; YIMI dan gedung representatif TK Islam Insan Muslim Istiqomah.
+              untuk pembangunan Masjid Jami&apos; YIMI dan gedung representatif TK Islam Insan Muslim Istiqomah.{' '}
+              <Link
+                href="/berita/wakaf-karawang-amalan-yang-pahalanya-terus-mengalir-meski-kita-telah-tiada"
+                className="underline decoration-yimi-yellow-400/70 underline-offset-4 text-white hover:text-yimi-yellow-400 transition-colors font-semibold"
+              >
+                Baca keutamaan wakaf Karawang
+              </Link>
+              .
             </p>
 
             <div className="flex items-center gap-2 text-xs md:text-sm text-blue-200 mt-1">
