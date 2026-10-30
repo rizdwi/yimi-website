@@ -18,6 +18,7 @@ import {
   Download,
   UserCheck,
   BarChart3,
+  TrendingUp,
   HeartHandshake,
   X,
 } from 'lucide-react';
@@ -35,6 +36,7 @@ export function AdminSidebar({ isOpen, onClose, unreadCount = 0 }: AdminSidebarP
   const menuItems = [
     { label: 'Dashboard', href: '/admin', icon: LayoutDashboard },
     { label: 'Traffic Pengunjung', href: '/admin/analitik', icon: BarChart3 },
+    { label: 'Ranking Google', href: '/admin/ranking', icon: TrendingUp },
     { label: 'Pengaturan Situs', href: '/admin/pengaturan', icon: Settings },
     { label: 'Halaman Statis', href: '/admin/halaman', icon: FileText },
     { label: 'Program', href: '/admin/program', icon: Layers },

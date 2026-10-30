@@ -26,6 +26,7 @@ interface NewsItem {
 export default function BeritaPage() {
   // CMS adalah sumber kebenaran: mulai kosong, isi dari API.
   const [newsList, setNewsList] = useState<NewsItem[]>([]);
+  const [loading, setLoading] = useState(true);
   const [selectedCategory, setSelectedCategory] = useState<string>('Semua');
   const [searchQuery, setSearchQuery] = useState<string>('');
 
@@ -40,6 +41,8 @@ export default function BeritaPage() {
         }
       } catch (err) {
         console.error('Gagal mengambil daftar berita live:', err);
+      } finally {
+        setLoading(false);
       }
     }
 
@@ -116,7 +119,24 @@ export default function BeritaPage() {
           </div>
 
           {/* News Grid */}
-          {filteredNews.length > 0 ? (
+          {loading ? (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+              {[0, 1, 2, 3, 4, 5].map((i) => (
+                <div
+                  key={i}
+                  className="bg-white rounded-3xl overflow-hidden border border-neutral-200/80 animate-pulse"
+                >
+                  <div className="aspect-16/9 w-full bg-neutral-200" />
+                  <div className="p-6 space-y-3">
+                    <div className="h-3 w-1/3 bg-neutral-200 rounded" />
+                    <div className="h-5 w-full bg-neutral-200 rounded" />
+                    <div className="h-5 w-2/3 bg-neutral-200 rounded" />
+                    <div className="h-3 w-full bg-neutral-100 rounded" />
+                  </div>
+                </div>
+              ))}
+            </div>
+          ) : filteredNews.length > 0 ? (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
               {filteredNews.map((item) => (
                 <Card

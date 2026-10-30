@@ -103,7 +103,7 @@ export default function PembebasanLahanPage() {
               luasTargetM2: Number(c.luasTargetM2) || landDataFallback.luasTargetM2,
               hargaPerMeter: Number(c.hargaPerMeter) || landDataFallback.hargaPerMeter,
               targetDana: Number(c.targetDana) || landDataFallback.targetDana,
-              terkumpul: Number(c.terkumpul) || 0,
+              terkumpul: Number(c.terkumpul) || landDataFallback.terkumpul,
               diperbaruiPada: c.diperbaruiPada || landDataFallback.diperbaruiPada,
               paketWakaf: Array.isArray(c.paketWakaf) ? c.paketWakaf : (landDataFallback.paketWakaf as PaketWakafItem[]),
               paketJudul: c.paketJudul || 'Pilihan Paket Wakaf Tanah',
