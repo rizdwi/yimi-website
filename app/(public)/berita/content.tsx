@@ -27,26 +27,37 @@ export default function BeritaPage() {
   // CMS adalah sumber kebenaran: mulai kosong, isi dari API.
   const [newsList, setNewsList] = useState<NewsItem[]>([]);
   const [loading, setLoading] = useState(true);
+  const [loadError, setLoadError] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState<string>('Semua');
   const [searchQuery, setSearchQuery] = useState<string>('');
 
-  useEffect(() => {
-    async function fetchNews() {
-      try {
-        const res = await fetch('/api/berita');
-        if (res.ok) {
-          const data = await res.json();
-          // Hormati CMS: kosong → kosong (jangan fallback ke data lokal basi)
-          setNewsList(Array.isArray(data.news) ? data.news : []);
-        }
-      } catch (err) {
-        console.error('Gagal mengambil daftar berita live:', err);
-      } finally {
-        setLoading(false);
+  const fetchNews = async (retry = true) => {
+    setLoading(true);
+    setLoadError(false);
+    try {
+      const res = await fetch('/api/berita');
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      const ct = res.headers.get('content-type') || '';
+      if (!ct.includes('application/json')) throw new Error('respons bukan JSON');
+      const data = await res.json();
+      // Hormati CMS: kosong → kosong (jangan fallback ke data lokal basi)
+      setNewsList(Array.isArray(data.news) ? data.news : []);
+    } catch (err) {
+      console.error('Gagal mengambil daftar berita live:', err);
+      if (retry) {
+        // Coba sekali lagi setelah 1,5 dtk (gagal transient, mis. challenge CDN sesaat)
+        await new Promise((r) => setTimeout(r, 1500));
+        return fetchNews(false);
       }
+      setLoadError(true);
+    } finally {
+      setLoading(false);
     }
+  };
 
+  useEffect(() => {
     fetchNews();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const categories = useMemo(() => {
@@ -135,6 +146,23 @@ export default function BeritaPage() {
                   </div>
                 </div>
               ))}
+            </div>
+          ) : loadError ? (
+            <div className="bg-white rounded-3xl p-12 text-center border border-neutral-200/80 max-w-lg mx-auto">
+              <Tag className="w-10 h-10 text-neutral-300 mx-auto mb-3" />
+              <h3 className="text-lg font-bold text-yimi-blue-800 mb-1">
+                Gagal Memuat Artikel
+              </h3>
+              <p className="text-xs text-neutral-500 mb-4">
+                Koneksi ke server terputus sesaat. Periksa koneksi internetmu lalu coba lagi.
+              </p>
+              <button
+                type="button"
+                onClick={() => fetchNews()}
+                className="text-xs font-bold text-white bg-yimi-blue-600 hover:bg-yimi-blue-700 rounded-full px-5 py-2.5 cursor-pointer"
+              >
+                Coba Lagi
+              </button>
             </div>
           ) : filteredNews.length > 0 ? (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
