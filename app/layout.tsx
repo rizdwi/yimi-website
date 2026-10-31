@@ -51,6 +51,17 @@ const jsonLd = {
   '@context': 'https://schema.org',
   '@graph': [
     {
+      // Nama situs resmi untuk tampilan hasil pencarian Google
+      // (perintah user 2026-10-31: ganti "yimi.my.id" jadi nama yayasan).
+      '@type': 'WebSite',
+      '@id': `${baseUrl}/#website`,
+      url: baseUrl,
+      name: siteData.namaLengkap,
+      alternateName: siteData.singkatan,
+      publisher: { '@id': `${baseUrl}/#yayasan` },
+      inLanguage: 'id',
+    },
+    {
       '@type': 'NGO',
       '@id': `${baseUrl}/#yayasan`,
       name: siteData.namaLengkap,
