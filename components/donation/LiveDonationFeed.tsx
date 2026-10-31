@@ -55,7 +55,6 @@ export function LiveDonationFeed({ onOpenConfirm, filterProgram }: LiveDonationF
       {/* Header Bar */}
       <div className="px-6 py-4 bg-neutral-50/80 border-b border-neutral-200 flex items-center justify-between">
         <div className="flex items-center gap-2">
-          <div className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse" />
           <h3 className="text-xs sm:text-sm font-bold text-neutral-800 uppercase tracking-wider">
             Doa &amp; Amanah Muhsinin Terkini
           </h3>

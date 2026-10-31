@@ -70,16 +70,15 @@ export function Hero({
           </div>
         </div>
 
-        {/* Foundation Eyebrow Label */}
+        {/* Foundation Eyebrow Label (tanpa dot — perintah user 2026-10-31) */}
         <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/90 border border-yimi-blue-600/15 text-yimi-blue-800 text-xs md:text-sm font-bold tracking-widest uppercase mb-4 shadow-xs">
-          <span className="w-2 h-2 rounded-full bg-yimi-green-500 animate-pulse" />
           <span>{namaYayasan || siteData.namaLengkap}</span>
         </div>
 
-        {/* Hero Title — H1 menarget kata kunci utama "yayasan Islam Karawang".
-            Tagline CMS dipertahankan utuh setelah tanda pisah (bukan diubah). */}
+        {/* Hero Title — H1 = tagline CMS saja (perintah user 2026-10-31:
+            "Yayasan Islam Karawang" dihilangkan dari H1). */}
         <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold text-yimi-blue-800 tracking-tight max-w-4xl leading-[1.15] mb-5">
-          Yayasan Islam Karawang — {tagline}
+          {tagline}
         </h1>
 
         {/* Hero Tagline Subtitle */}

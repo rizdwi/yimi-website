@@ -249,7 +249,6 @@ export function GalleryPreview({ items }: { items: unknown[] }) {
         <div className="flex flex-col md:flex-row md:items-end justify-between mb-8 md:mb-12 gap-4">
           <div>
             <div className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-yimi-green-700 mb-2">
-              <span className="w-1.5 h-1.5 rounded-full bg-yimi-green-500 animate-pulse" />
               Dokumentasi &amp; Jejak Langkah
             </div>
             <h2 className="text-2xl sm:text-3xl md:text-4xl font-extrabold text-yimi-blue-800 tracking-tight">
@@ -333,31 +332,6 @@ export function GalleryPreview({ items }: { items: unknown[] }) {
               Menampilkan {currentIndex + 1} -{' '}
               {Math.min(currentIndex + visibleCount, totalPhotos)} dari{' '}
               <span className="text-yimi-blue-800 font-bold">{totalPhotos}</span> foto kegiatan
-              <span className="ml-2 inline-flex items-center gap-1 text-[11px] text-yimi-green-700 font-medium">
-                <span className="w-1.5 h-1.5 rounded-full bg-yimi-green-500 animate-ping" />
-                Auto-slide aktif
-              </span>
-            </div>
-
-            {/* Pagination Dots */}
-            <div className="flex items-center gap-1.5">
-              {Array.from({ length: maxIndex + 1 }).map((_, dotIdx) => (
-                <button
-                  key={dotIdx}
-                  type="button"
-                  onClick={() => setCurrentIndex(dotIdx)}
-                  className={`min-h-[44px] min-w-[32px] inline-flex items-center justify-center cursor-pointer group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-yimi-blue-600 rounded-full`}
-                  aria-label={`Pindah ke slide ${dotIdx + 1}`}
-                >
-                  <span
-                    className={`h-2 rounded-full transition-all duration-300 ${
-                      currentIndex === dotIdx
-                        ? 'w-6 bg-yimi-blue-600'
-                        : 'w-2 bg-neutral-300 group-hover:bg-neutral-400'
-                    }`}
-                  />
-                </button>
-              ))}
             </div>
           </div>
         )}

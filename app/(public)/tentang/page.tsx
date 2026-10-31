@@ -401,7 +401,6 @@ export default async function TentangPage() {
                   className="p-5 rounded-2xl bg-neutral-50 border border-neutral-100 hover:border-yimi-blue-600/20 transition-colors"
                 >
                   <h3 className="text-sm font-bold text-yimi-blue-800 mb-1.5 flex items-center gap-2">
-                    <span className="w-2 h-2 rounded-full bg-yimi-blue-600 shrink-0" />
                     <span>{item.elemen}</span>
                   </h3>
                   <p className="text-xs text-neutral-600 leading-relaxed">

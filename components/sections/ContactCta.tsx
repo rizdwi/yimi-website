@@ -78,7 +78,6 @@ export function ContactCta() {
           {/* Left Info Column */}
           <div className="lg:col-span-6 flex flex-col gap-6">
             <div className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-yimi-green-500">
-              <span className="w-1.5 h-1.5 rounded-full bg-yimi-green-500" />
               Silaturahim &amp; Informasi
             </div>
 

@@ -60,7 +60,6 @@ export function KajianSchedule({ kajian }: { kajian: unknown[] }) {
         <div className="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-4">
           <div>
             <div className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-yimi-green-700 mb-2">
-              <span className="w-1.5 h-1.5 rounded-full bg-yimi-green-500" />
               Majelis Ilmu Syar&apos;i
             </div>
             <h2 className="text-2xl sm:text-3xl md:text-4xl font-extrabold text-yimi-blue-800 tracking-tight">
