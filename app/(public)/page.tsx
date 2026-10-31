@@ -30,9 +30,9 @@ const ContactCta = dynamic(() =>
 // client-side, sehingga LCP 4,1 dtk & CLS 0,19 (PageSpeed 27 Okt 2026).
 export const revalidate = 60;
 
-// Metadata homepage dioptimasi untuk kata kunci target: yayasan sunnah salafiyah + lokal Karawang dulu (scope terbesar, termasuk pencari dari luar Karawang), lalu Cikampek & Jatisari.
+// Metadata homepage — perintah user 2026-10-31: title = nama resmi yayasan.
 export const metadata: Metadata = constructMetadata({
-  title: 'Yayasan Sunnah Salafiyah Karawang, Cikampek & Jatisari',
+  title: 'Yayasan Insan Muslim Istiqomah',
   description:
     'Yayasan Insan Muslim Istiqomah (YIMI) — yayasan dakwah sunnah bermanhaj salaf di Karawang: Cikampek, Jatisari dan sekitarnya. TK Islam, tempat kajian Sunnah, Jumat Berkah, dan wakaf pembebasan lahan.',
   canonical: '/',
