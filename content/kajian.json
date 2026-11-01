@@ -1,50 +1,38 @@
 [
   {
     "id": "kj-01",
-    "hari": "Sabtu",
-    "tanggal": "2026-10-10",
-    "waktu": "Ba'da Maghrib – Isya (18.15 – 19.30 WIB)",
-    "tema": "Kitab Ushul Tsalatsah: Mengenal Rabb, Agama, dan Nabi Kita",
-    "pemateri": "Ustadz Abdullah Abu Salma, B.A.",
-    "tempat": "Masjid Binaan YIMI, Jl. Dakwah Sunnah No. 08, Depok",
+    "hari": "Ahad",
+    "tanggal": "2026-11-08",
+    "waktu": "Ba'da Ashar (15.30 – 17.00 WIB)",
+    "tema": "Kitab Ushul Tsalatsah: Mengenal Rabb, Agama, dan Nabi Kita Berdasarkan Dalil Shahih",
+    "pemateri": "Ustadz Ahmad Tonarih Al-Atsary",
+    "tempat": "Sekretariat YIMI, Perum Bumi Cikampek Baru Blok B3 No. 10, Balonggandu, Jatisari, Karawang",
     "kategori": "Aqidah & Tauhid",
     "sifat": "Terbuka untuk Umum (Ikhwan & Akhwat)",
-    "keterangan": "Disediakan resume materi dan konsumsi ringan."
+    "keterangan": "Rutin Ahad Pekan ke-2. Terbuka gratis untuk kaum muslimin Karawang, Cikampek, dan sekitarnya."
   },
   {
     "id": "kj-02",
     "hari": "Ahad",
-    "tanggal": "2026-10-11",
-    "waktu": "Ba'da Subuh – 06.30 WIB",
-    "tema": "Syarah Kitab Riyadhus Shalihin: Keutamaan Niat & Menuntut Ilmu",
-    "pemateri": "Ustadz Muhammad Hanif, Lc.",
-    "tempat": "Masjid Binaan YIMI, Jl. Dakwah Sunnah No. 08, Depok",
-    "kategori": "Hadits & Tazkiyatun Nufus",
+    "tanggal": "2026-11-22",
+    "waktu": "Ba'da Ashar (15.30 – 17.00 WIB)",
+    "tema": "Syarah Fiqih Ibadah: Tata Cara Wudhu & Shalat Sesuai Sunnah Nabi ﷺ",
+    "pemateri": "Ustadz Ahmad Tonarih Al-Atsary",
+    "tempat": "Sekretariat YIMI, Perum Bumi Cikampek Baru Blok B3 No. 10, Balonggandu, Jatisari, Karawang",
+    "kategori": "Fiqih Sunnah",
     "sifat": "Terbuka untuk Umum (Ikhwan & Akhwat)",
-    "keterangan": "Sarapan pagi bersama ba'da kajian."
+    "keterangan": "Rutin Ahad Pekan ke-4. Pembahasan praktis diselipkan sesi tanya jawab seputar fiqih harian."
   },
   {
     "id": "kj-03",
-    "hari": "Sabtu",
-    "tanggal": "2026-10-17",
-    "waktu": "09.00 – 11.00 WIB",
-    "tema": "Fiqih Pendidikan Anak: Menanamkan Aqidah Shahihah Sejak Dini",
-    "pemateri": "Ustadz Dr. Fathurrahman, M.Pd.I.",
-    "tempat": "Aula Serbaguna YIMI, Depok",
-    "kategori": "Parenting & Keluarga",
-    "sifat": "Khusus Orang Tua Santri & Terbuka untuk Umum",
-    "keterangan": "Tersedia ruang konsultasi keluarga ba'da acara."
-  },
-  {
-    "id": "kj-04",
     "hari": "Ahad",
-    "tanggal": "2026-10-18",
-    "waktu": "Ba'da Ashar – Menjelang Maghrib (15.45 – 17.30 WIB)",
-    "tema": "Tafsir Juz 'Amma: Tadabbur Surat Al-Fajr dan Makna Ujian Kehidupan",
-    "pemateri": "Ustadz Abu Zubair Al-Atsary",
-    "tempat": "Masjid Binaan YIMI, Jl. Dakwah Sunnah No. 08, Depok",
-    "kategori": "Tafsir Al-Qur'an",
+    "tanggal": "2026-12-13",
+    "waktu": "Ba'da Ashar (15.30 – 17.00 WIB)",
+    "tema": "Manhaj Ahlus Sunnah wal Jama'ah: Menjaga Aqidah dan Akhlak di Tengah Umat",
+    "pemateri": "Ustadz Ahmad Tonarih Al-Atsary",
+    "tempat": "Sekretariat YIMI, Perum Bumi Cikampek Baru Blok B3 No. 10, Balonggandu, Jatisari, Karawang",
+    "kategori": "Manhaj & Aqidah",
     "sifat": "Terbuka untuk Umum (Ikhwan & Akhwat)",
-    "keterangan": "Membawa mushaf Al-Qur'an masing-masing."
+    "keterangan": "Kajian ilmiah terbuka untuk masyarakat Cikampek, Jatisari, Karawang, dan sekitarnya."
   }
 ]

@@ -14,9 +14,9 @@ import { BreadcrumbJsonLd } from '@/components/seo/BreadcrumbJsonLd';
 export const revalidate = 60;
 
 export const metadata: Metadata = constructMetadata({
-  title: 'Tentang Yayasan & Manhaj Dakwah',
+  title: 'Yayasan Islam Karawang: Profil & Legalitas YIMI Cikampek',
   description:
-    'Profil Yayasan Insan Muslim Istiqomah: visi, misi, manhaj dakwah di atas sunnah, susunan pengurus, dan makna lambang yayasan.',
+    'Profil resmi Yayasan Islam Karawang — Insan Muslim Istiqomah (YIMI): visi, misi dakwah sunnah salaf, susunan pengurus, legalitas SK Kemenkumham, dan kantor sekretariat di Cikampek.',
   canonical: '/tentang',
 });
 

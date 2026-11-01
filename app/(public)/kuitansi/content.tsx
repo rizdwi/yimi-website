@@ -12,6 +12,8 @@ import {
   ArrowLeft,
   Heart,
   X,
+  Search,
+  Loader2,
 } from 'lucide-react';
 import { formatRupiah, formatTanggal, terbilangRupiah } from '@/lib/format';
 import { StarOrnament } from '@/components/ui/StarOrnament';
@@ -19,12 +21,69 @@ import { StarOrnament } from '@/components/ui/StarOrnament';
 function KuitansiInner() {
   const searchParams = useSearchParams();
   const [copied, setCopied] = useState(false);
+  const [searchInput, setSearchInput] = useState('');
+  const [searching, setSearching] = useState(false);
+  const [searchMsg, setSearchMsg] = useState<{ type: 'error' | 'success'; text: string } | null>(null);
 
-  const refId = searchParams.get('ref') || 'YIMI-2026-OFFICIAL';
-  const rawNama = searchParams.get('nama') || 'Muhsinin YIMI';
-  const nominal = Number(searchParams.get('nom')) || 100000;
-  const program = searchParams.get('prog') || 'Pembebasan Lahan Sentra Dakwah & Masjid YIMI';
-  const tanggal = searchParams.get('tgl') || new Date().toISOString().split('T')[0];
+  const initialRef = searchParams.get('ref') || 'YIMI-2026-OFFICIAL';
+  const initialNama = searchParams.get('nama') || 'Muhsinin YIMI';
+  const initialNominal = Number(searchParams.get('nom')) || 100000;
+  const initialProg = searchParams.get('prog') || 'Pembebasan Lahan Sentra Dakwah & Masjid YIMI';
+  const initialTgl = searchParams.get('tgl') || new Date().toISOString().split('T')[0];
+
+  const [receipt, setReceipt] = useState({
+    refId: initialRef,
+    nama: initialNama,
+    nominal: initialNominal,
+    program: initialProg,
+    tanggal: initialTgl,
+  });
+
+  // Jika URL hanya ada ref tanpa nom/nama, coba cari otomatis di server
+  useEffect(() => {
+    const r = searchParams.get('ref');
+    if (r && !searchParams.get('nom') && r !== 'YIMI-2026-OFFICIAL') {
+      lookupRef(r);
+    }
+  }, [searchParams]);
+
+  const lookupRef = async (code: string) => {
+    const clean = code.trim();
+    if (!clean) return;
+    setSearching(true);
+    setSearchMsg(null);
+    try {
+      const res = await fetch(`/api/donasi/kuitansi?ref=${encodeURIComponent(clean)}`);
+      const json = await res.json();
+      if (res.ok && json.found && json.receipt) {
+        setReceipt({
+          refId: json.receipt.ref_id,
+          nama: json.receipt.nama,
+          nominal: json.receipt.nominal || 100000,
+          program: json.receipt.program,
+          tanggal: json.receipt.tanggal,
+        });
+        setSearchMsg({ type: 'success', text: `Data kuitansi ditemukan untuk ${json.receipt.ref_id}` });
+      } else {
+        setSearchMsg({ type: 'error', text: json.message || 'Nomor registrasi tidak ditemukan. Pastikan format YIMI-...' });
+      }
+    } catch {
+      setSearchMsg({ type: 'error', text: 'Gagal menghubungkan ke server verifikasi' });
+    } finally {
+      setSearching(false);
+    }
+  };
+
+  const handleSearchSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    lookupRef(searchInput);
+  };
+
+  const refId = receipt.refId;
+  const rawNama = receipt.nama;
+  const nominal = receipt.nominal;
+  const program = receipt.program;
+  const tanggal = receipt.tanggal;
 
   const isWakaf = program.toLowerCase().includes('lahan') || program.toLowerCase().includes('wakaf');
   const terbilangText = terbilangRupiah(nominal);
@@ -97,6 +156,41 @@ function KuitansiInner() {
               <span>Tutup</span>
             </button>
           </div>
+        </div>
+
+        {/* Search / Lookup Kuitansi Mandiri (Hidden on print) */}
+        <div className="bg-white rounded-2xl border border-neutral-200 p-4 shadow-2xs print:hidden">
+          <form onSubmit={handleSearchSubmit} className="flex flex-col sm:flex-row gap-2">
+            <div className="relative flex-1">
+              <Search className="w-4 h-4 text-neutral-400 absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+              <input
+                type="text"
+                value={searchInput}
+                onChange={(e) => setSearchInput(e.target.value)}
+                placeholder="Cari kuitansi: masukkan Ref ID (contoh: YIMI-2026...)"
+                className="w-full pl-9 pr-3 py-2 text-xs sm:text-sm rounded-xl border border-neutral-300 focus:outline-none focus:ring-2 focus:ring-yimi-blue-500 font-mono"
+              />
+            </div>
+            <button
+              type="submit"
+              disabled={searching || !searchInput.trim()}
+              className="inline-flex items-center justify-center gap-1.5 px-4 py-2 rounded-xl bg-yimi-blue-600 hover:bg-yimi-blue-700 disabled:opacity-50 text-white text-xs font-bold transition cursor-pointer"
+            >
+              {searching ? (
+                <>
+                  <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                  <span>Memeriksa...</span>
+                </>
+              ) : (
+                <span>Cari Kuitansi</span>
+              )}
+            </button>
+          </form>
+          {searchMsg && (
+            <p className={`text-xs mt-2 font-medium ${searchMsg.type === 'success' ? 'text-emerald-700' : 'text-rose-600'}`}>
+              {searchMsg.text}
+            </p>
+          )}
         </div>
 
         {/* Kartu Sertifikat / Kuitansi */}

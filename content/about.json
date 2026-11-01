@@ -1,15 +1,16 @@
 {
   "judul": "Tentang Yayasan Insan Muslim Istiqomah",
-  "ringkasan": "Yayasan Insan Muslim Istiqomah (YIMI) hadir sebagai wadah dakwah, pendidikan, dan sosial yang mengajak kaum muslimin kembali kepada kemurnian syariat Islam.",
-  "visi": "[TBD: Visi resmi yayasan — Mengajak kaum muslimin kepada Islam yang murni dan istiqomah di atas Sunnah]",
+  "ringkasan": "Yayasan Insan Muslim Istiqomah (YIMI) hadir sebagai wadah dakwah, pendidikan anak usia dini, dan sosial kemanusiaan yang mengajak kaum muslimin kembali kepada kemurnian syariat Islam di Karawang dan sekitarnya.",
+  "visi": "Menjadi lembaga dakwah, pendidikan, dan sosial Islam yang istiqomah di atas manhaj Salafus Shalih, amanah, profesional, dan menebarkan manfaat bagi umat di Karawang dan sekitarnya.",
   "misi": [
     "Menyelenggarakan kajian Islam ilmiah berlandaskan Al-Qur'an dan As-Sunnah sesuai pemahaman Salafus Shalih.",
-    "Mengembangkan pendidikan anak usia dini (TK) yang berakhlak mulia, beraqidah shahihah, dan cinta Al-Qur'an.",
+    "Mengembangkan pendidikan anak usia dini (TK Islam) yang berakhlak mulia, beraqidah shahihah, dan cinta Al-Qur'an.",
     "Menyalurkan kepedulian sosial kaum muslimin melalui program rutin seperti Jumat Berkah dan bantuan kemanusiaan.",
-    "Mewujudkan sarana ibadah dan pusat dakwah permanen melalui pembebasan lahan wakaf yang berkelanjutan."
+    "Mewujudkan sarana ibadah dan pusat dakwah permanen melalui pembebasan lahan wakaf yang berkelanjutan.",
+    "Membina generasi Rabbani yang beradab islami dan bertauhid kokoh sejak usia dini."
   ],
   "manhaj": {
-    "judul": "Landasan Dakwah & Manhaj",
+    "judul": "Landasan Dakwah & Manhaj Salafus Shalih",
     "penjelasan": "Dakwah YIMI ditegakkan di atas sunnah Rasulullah ﷺ, berlandaskan Al-Qur'an dan As-Sunnah dengan merujuk kepada pemahaman Salafus Shalih (para sahabat radhiyallahu 'anhum, tabi'in, dan tabi'ut tabi'in). Kami menjunjung tinggi prinsip keikhlasan, ittiba' (mengikuti dalil), dan dakwah bil hikmah.",
     "dalilQuran": {
       "arab": "يَا أَيُّهَا الَّذِينَ آمَنُوا اتَّقُوا اللَّهَ حَقَّ تُقَاتِهِ وَلَا تَمُوتُنَّ إِلَّا وَأَنتُم مُّسْلِمُونَ",
@@ -23,48 +24,38 @@
     }
   },
   "sejarah": {
-    "teks": "[TBD: Sejarah resmi berdirinya YIMI yang disusun oleh dewan pembina dan pengurus]. Berawal dari majelis taklim pekanan dan kepedulian bersama akan pentingnya sarana pendidikan Islam generasi dini, kaum muslimin berhimpun membentuk yayasan legal guna mengelola amanah dakwah, pendidikan, dan wakaf umat secara terorganisir, transparan, dan berkelanjutan."
+    "teks": "Yayasan Insan Muslim Istiqomah (YIMI) berawal dari majelis taklim kajian sunnah dan kegiatan sosial santunan yang digagas oleh para muhsinin di Cikampek, Kabupaten Karawang pada tahun 2022. Seiring berjalannya waktu, amanah umat berkembang hingga diresmikan secara legal formal melalui SK Kemenkumham RI guna mengelola amanah dakwah sunnah, operasional pendidikan TK Islam, dan wakaf tanah pembebasan lahan secara profesional, amanah, dan akuntabel."
   },
   "strukturPengurus": [
     {
       "jabatan": "Dewan Pembina",
-      "nama": "[TBD: Pembina Yayasan]",
-      "peran": "Memberikan arahan strategis, pembinaan syariah, dan penjagaan manhaj yayasan."
-    },
-    {
-      "jabatan": "Dewan Pengawas",
-      "nama": "[TBD: Pengawas Yayasan]",
-      "peran": "Mengawasi jalannya roda organisasi, kepatuhan legalitas, dan transparansi amanah umat."
+      "nama": "Ustadz Ahmad Tonarih Al-Atsary",
+      "peran": "Memberikan arahan strategis, pembinaan syariah, dan penjagaan manhaj dakwah yayasan."
     },
     {
       "jabatan": "Ketua Pengurus",
-      "nama": "[TBD: Ketua Pengurus]",
-      "peran": "Memimpin eksekusi program harian, koordinasi divisi, dan hubungan eksternal."
+      "nama": "Suparno",
+      "peran": "Memimpin jalannya organisasi yayasan, eksekusi program harian, dan hubungan kelembagaan."
     },
     {
       "jabatan": "Sekretaris",
-      "nama": "[TBD: Sekretaris]",
-      "peran": "Administrasi, korespondensi resmi, perizinan, dan tata kelola dokumentasi."
+      "nama": "Wahyu Susanto",
+      "peran": "Administrasi, korespondensi resmi, legalitas perizinan, dan tata kelola arsip yayasan."
     },
     {
       "jabatan": "Bendahara",
-      "nama": "[TBD: Bendahara]",
-      "peran": "Akuntabilitas keuangan, pelaporan donasi, dan pengelolaan kas operasional yayasan."
+      "nama": "Agus Budi Mahendra & Mulyanto",
+      "peran": "Akuntabilitas keuangan, pelaporan donasi & wakaf, dan tata kelola kas operasional yayasan."
     },
     {
-      "jabatan": "Divisi Dakwah & Kajian",
-      "nama": "[TBD: Koordinator Dakwah]",
-      "peran": "Penyelenggaraan kajian rutin, tabligh akbar, serta kurasi pemateri sunnah."
+      "jabatan": "Divisi Pendidikan (TK Islam)",
+      "nama": "Tim Asatidzah TK Islam YIMI",
+      "peran": "Pengelolaan kurikulum tauhid & adab dini, hafalan Quran, dan pendampingan santri cilik."
     },
     {
-      "jabatan": "Divisi Pendidikan (TK)",
-      "nama": "[TBD: Kepala Sekolah & Koordinator]",
-      "peran": "Pengelolaan kurikulum dini, hafalan Quran, dan pembinaan pengajar TK."
-    },
-    {
-      "jabatan": "Divisi Sosial & Wakaf Lahan",
-      "nama": "[TBD: Koordinator Wakaf]",
-      "peran": "Pelaksanaan Jumat Berkah, kampanye pembebasan lahan, dan hubungan donatur."
+      "jabatan": "Divisi Dakwah & Sosial",
+      "nama": "Tim Dakwah & Relawan YIMI Karawang",
+      "peran": "Penyelenggaraan kajian rutin majelis taklim, Sedekah Jumat Berkah, dan layanan jamaah."
     }
   ],
   "maknaLambang": [

@@ -5,15 +5,11 @@ import { IntroVision } from '@/components/sections/IntroVision';
 import { ProgramCards } from '@/components/sections/ProgramCards';
 import { LandBanner } from '@/components/sections/LandBanner';
 import { LatestNews } from '@/components/sections/LatestNews';
+import { HomeFaq } from '@/components/sections/HomeFaq';
 import { constructMetadata } from '@/lib/seo';
 import { getHomeData } from '@/lib/home-data';
 import { FaqJsonLd } from '@/components/seo/FaqJsonLd';
 
-// Section client di bawah fold di-split dari bundle awal (next/dynamic,
-// tetap SSR) agar JS awal lebih ringan — parser & eksekusi JS tidak
-// berebut bandwidth/CPU dengan logo (elemen LCP) di slow 4G. Section
-// server (IntroVision, ProgramCards, LandBanner, LatestNews) tidak punya
-// JS, jadi tidak perlu di-split.
 const KajianSchedule = dynamic(() =>
   import('@/components/sections/KajianSchedule').then((m) => m.KajianSchedule)
 );
@@ -24,23 +20,16 @@ const ContactCta = dynamic(() =>
   import('@/components/sections/ContactCta').then((m) => m.ContactCta)
 );
 
-// ISR 60 dtk: HTML beranda di-cache di edge Vercel (TTFB cepat), konten CMS
-// tetap segar (diperbarui maks 60 dtk setelah perubahan). Sebelumnya
-// force-dynamic — setiap request me-render ulang & semua section fetch
-// client-side, sehingga LCP 4,1 dtk & CLS 0,19 (PageSpeed 27 Okt 2026).
 export const revalidate = 60;
 
-// Metadata homepage — perintah user 2026-10-31: title = nama resmi yayasan.
 export const metadata: Metadata = constructMetadata({
-  title: 'Yayasan Insan Muslim Istiqomah',
+  title: 'Yayasan Islam Karawang & Cikampek | YIMI',
   description:
-    'Yayasan Insan Muslim Istiqomah (YIMI) — yayasan dakwah sunnah bermanhaj salaf di Karawang: Cikampek, Jatisari dan sekitarnya. TK Islam, tempat kajian Sunnah, Jumat Berkah, dan wakaf pembebasan lahan.',
+    'Yayasan Insan Muslim Istiqomah (YIMI) — yayasan dakwah Islam bermanhaj Salafus Shalih di Karawang & Cikampek. Pusat kajian sunnah, TK Islam Karawang, dan wakaf pembebasan lahan.',
   canonical: '/',
 });
 
 export default async function HomePage() {
-  // Ambil SEMUA data beranda di server (paralel) — section menerima data
-  // sebagai props dan me-render di HTML awal, bukan fetch client-side.
   const data = await getHomeData();
 
   return (
@@ -48,24 +37,34 @@ export default async function HomePage() {
       <FaqJsonLd
         faqs={[
           {
-            question: 'Apa itu Yayasan Insan Muslim Istiqomah (YIMI)?',
+            question:
+              'Apa profil dan fokus dakwah Yayasan Insan Muslim Istiqomah (YIMI)?',
             answer:
-              'Yayasan Insan Muslim Istiqomah (YIMI) adalah yayasan Islam di Karawang yang bergerak di bidang dakwah, pendidikan, dan sosial kemanusiaan — mengajak kepada pemurnian aqidah dan ibadah berlandaskan Al-Qur\u2019an dan As-Sunnah sesuai pemahaman Salafus Shalih.',
+              'Yayasan Insan Muslim Istiqomah (YIMI) adalah yayasan Islam di Karawang dan Cikampek yang berkhidmat dalam dakwah Islam bermanhaj Salafus Shalih, pendidikan anak usia dini (PAUD/TK Islam), serta aksi sosial kemanusiaan. Berpusat di Perum Bumi Cikampek Baru, Balonggandu, Jatisari, YIMI berupaya menyebarkan dakwah yang murni berlandaskan Al-Qur’an dan As-Sunnah.',
           },
           {
-            question: 'Di mana lokasi Yayasan Insan Muslim Istiqomah?',
+            question:
+              'Bagaimana kurikulum dan pendaftaran TK Islam Insan Muslim Istiqomah di Karawang?',
             answer:
-              'YIMI beralamat di Perum Bumi Cikampek Baru Blok B3 No. 10, Desa Balonggandu, Kecamatan Jatisari, Kabupaten Karawang, Jawa Barat 41373 — melayani Cikampek, Jatisari, dan sekitarnya.',
+              'TK Islam Insan Muslim Istiqomah adalah TK Islam di Karawang yang fokus menanamkan aqidah shahihah, pembiasaan adab islami, hafalan Al-Qur’an (Juz 30), hafalan hadits dan doa harian, serta motorik anak usia dini dengan suasana belajar yang aman dan penuh kasih sayang.',
           },
           {
-            question: 'Apa saja program unggulan YIMI?',
+            question:
+              'Di mana tempat kajian sunnah di Karawang dan kapan jadwal rutinnya?',
             answer:
-              'Program unggulan YIMI meliputi TK Islam Insan Muslim Istiqomah di Karawang, tempat kajian Sunnah rutin di Karawang, Sedekah Jumat Berkah, dan program wakaf pembebasan lahan untuk masjid dan sentra dakwah di Karawang.',
+              'YIMI menyelenggarakan tempat kajian sunnah di Karawang secara berkala di Sekretariat YIMI, Perum Bumi Cikampek Baru Blok B3 No. 10, Balonggandu, Jatisari, Karawang. Kajian rutin diadakan setiap Ahad (Pekan ke-2 & ke-4 ba’da Ashar) membahas Kitab Ushul Tsalatsah dan Fiqih Ibadah bersama Ustadz Ahmad Tonarih Al-Atsary, terbuka gratis untuk umum.',
           },
           {
-            question: 'Bagaimana cara berwakaf melalui YIMI Karawang?',
+            question:
+              'Bagaimana cara berpartisipasi dalam program wakaf pembebasan lahan di Karawang?',
             answer:
-              'Wakaf untuk pembebasan lahan masjid dan sentra dakwah YIMI di Karawang dapat disalurkan melalui halaman Donasi di website ini atau menghubungi WhatsApp YIMI di +62 812-1936-2077.',
+              'Program wakaf Karawang YIMI ditujukan untuk pembebasan tanah seluas 840 m² guna pembangunan Masjid Jami’ dan gedung representatif TK Islam di Cikampek–Jatisari. Muhsinin dapat menyalurkan wakaf tunai mulai Rp 50.000,- atau paket pembebasan lahan per meter (Rp 500.000,-/m²) ke rekening BSI 7182045556 a.n. Yayasan Insan Muslim Istiqomah.',
+          },
+          {
+            question:
+              'Apa saja wilayah khidmah dan kegiatan sosial Yayasan Islam Cikampek ini?',
+            answer:
+              'Selain pendidikan dan dakwah, YIMI menyalurkan Sedekah Jumat Berkah dan bantuan sosial sembako kepada fakir miskin, janda, dan dhuafa di wilayah Cikampek, Jatisari, Kotabaru, Cilamaya, dan sekitarnya di Kabupaten Karawang.',
           },
         ]}
       />
@@ -76,6 +75,7 @@ export default async function HomePage() {
       <KajianSchedule kajian={data.kajian} />
       <LatestNews news={data.news} />
       <GalleryPreview items={data.gallery} />
+      <HomeFaq />
       <ContactCta />
     </>
   );

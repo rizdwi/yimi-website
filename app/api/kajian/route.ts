@@ -33,11 +33,12 @@ export async function GET(req: NextRequest) {
     if (error) {
       console.error('Supabase error fetching public jadwal_kajian:', error);
     } else {
-      // Jadwal yang sudah terlewat disembunyikan dari web utama.
-      // CMS (endpoint /api/admin/kajian) tetap menyimpan semuanya sebagai arsip.
-      return NextResponse.json(paginate(saringKajianAktif(data || [])), {
-        headers: CACHE_HEADERS,
-      });
+      const aktif = saringKajianAktif(data || []);
+      if (aktif.length > 0) {
+        return NextResponse.json(paginate(aktif), {
+          headers: CACHE_HEADERS,
+        });
+      }
     }
   } catch (err) {
     console.error('Failed to load public kajian from Supabase:', err);

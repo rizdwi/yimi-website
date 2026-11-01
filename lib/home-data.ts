@@ -302,7 +302,8 @@ async function getKajian(): Promise<unknown[]> {
       .order('tanggal', { ascending: true })
       .limit(200);
     if (!error && data) {
-      return saringKajianAktif(data as { tanggal?: string }[]);
+      const aktif = saringKajianAktif(data as { tanggal?: string }[]);
+      if (aktif.length > 0) return aktif;
     }
   } catch {
     /* abaikan — fallback di bawah */
