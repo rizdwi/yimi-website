@@ -17,5 +17,6 @@
 
 ## Tautan Sitemap & Dokumen
 - XML Sitemap: https://yimi.my.id/sitemap.xml
+- Basis Pengetahuan Lengkap (GEO Full): https://yimi.my.id/llms-full.txt
 - Warta & Artikel Dakwah: https://yimi.my.id/berita
 - Kontak & Konsultasi: https://yimi.my.id/kontak

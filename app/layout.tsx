@@ -62,7 +62,7 @@ const jsonLd = {
       inLanguage: 'id',
     },
     {
-      '@type': 'NGO',
+      '@type': ['NGO', 'Place', 'LocalBusiness'],
       '@id': `${baseUrl}/#yayasan`,
       name: siteData.namaLengkap,
       alternateName: siteData.singkatan,
@@ -70,7 +70,18 @@ const jsonLd = {
       slogan: siteData.tagline,
       description: siteData.deskripsi,
       email: siteData.kontak.email,
-      telephone: siteData.kontak.whatsapp,
+      telephone: '+6281219362077',
+      priceRange: 'Infaq / Sukarela',
+      currenciesAccepted: 'IDR',
+      paymentAccepted: 'Bank Transfer',
+      openingHoursSpecification: [
+        {
+          '@type': 'OpeningHoursSpecification',
+          dayOfWeek: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'],
+          opens: '08:00',
+          closes: '17:00',
+        },
+      ],
       address: alamatYayasan,
       geo: geoYayasan,
       hasMap: mapsUrl,
@@ -79,7 +90,15 @@ const jsonLd = {
         { '@type': 'City', name: 'Karawang' },
         { '@type': 'City', name: 'Jatisari' },
         { '@type': 'City', name: 'Cilamaya' },
+        { '@type': 'AdministrativeArea', name: 'Jawa Barat' },
       ],
+      contactPoint: {
+        '@type': 'ContactPoint',
+        telephone: '+6281219362077',
+        contactType: 'customer service',
+        areaServed: 'ID',
+        availableLanguage: ['Indonesian', 'Arabic'],
+      },
       sameAs: [
         'https://www.instagram.com/yayasaninsanmuslimistiqamah',
         'https://facebook.com/yimi.official',
@@ -118,6 +137,10 @@ export default function RootLayout({
       className={`scroll-smooth ${fontSans.variable} ${fontArabic.variable}`}
     >
       <head>
+        <meta name="geo.region" content="ID-JB" />
+        <meta name="geo.placename" content="Kabupaten Karawang, Cikampek, Jatisari" />
+        <meta name="geo.position" content="-6.3874379;107.510405" />
+        <meta name="ICBM" content="-6.3874379, 107.510405" />
         <link
           rel="preconnect"
           href="https://fopqfjqztvmktzvahjrh.supabase.co"

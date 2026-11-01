@@ -76,6 +76,12 @@ export function constructMetadata({
         '1GeKB4zQj9o8YrbhCd606JEbzUCXZ9DaMmy4Z5yzBps',
       ],
     },
+    other: {
+      'geo.region': 'ID-JB',
+      'geo.placename': 'Kabupaten Karawang, Cikampek, Jatisari',
+      'geo.position': '-6.3874379;107.510405',
+      'ICBM': '-6.3874379, 107.510405',
+    },
     icons: {
       icon: '/icon.png',
       apple: '/apple-icon.png',
