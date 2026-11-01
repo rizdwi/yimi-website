@@ -137,10 +137,6 @@ export default function RootLayout({
       className={`scroll-smooth ${fontSans.variable} ${fontArabic.variable}`}
     >
       <head>
-        <meta name="geo.region" content="ID-JB" />
-        <meta name="geo.placename" content="Kabupaten Karawang, Cikampek, Jatisari" />
-        <meta name="geo.position" content="-6.3874379;107.510405" />
-        <meta name="ICBM" content="-6.3874379, 107.510405" />
         <link
           rel="preconnect"
           href="https://fopqfjqztvmktzvahjrh.supabase.co"
