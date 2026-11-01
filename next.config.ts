@@ -30,6 +30,16 @@ const nextConfig: NextConfig = {
       },
     ],
   },
+  async redirects() {
+    return [
+      {
+        source: '/berita/m',
+        destination:
+          '/berita/mencari-tempat-kajian-sunnah-karawang-pahami-keutamaannya',
+        permanent: true,
+      },
+    ];
+  },
   async headers() {
     return [
       {
