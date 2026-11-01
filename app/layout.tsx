@@ -6,7 +6,6 @@ import siteData from '@/content/site.json';
 
 const fontSans = Plus_Jakarta_Sans({
   subsets: ['latin'],
-  weight: ['400', '500', '600', '700', '800'],
   variable: '--font-sans',
   display: 'swap',
 });
@@ -16,6 +15,7 @@ const fontArabic = Amiri({
   weight: ['400', '700'],
   variable: '--font-arabic',
   display: 'swap',
+  preload: false,
 });
 
 export const metadata: Metadata = constructMetadata();
@@ -136,12 +136,6 @@ export default function RootLayout({
       lang="id"
       className={`scroll-smooth ${fontSans.variable} ${fontArabic.variable}`}
     >
-      <head>
-        <link
-          rel="preconnect"
-          href="https://fopqfjqztvmktzvahjrh.supabase.co"
-        />
-      </head>
       <body className="antialiased min-h-screen flex flex-col bg-[#F5F7FA] text-[#111827]">
         <script
           type="application/ld+json"

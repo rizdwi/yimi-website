@@ -101,7 +101,10 @@ export function ProgramCards({ programs }: { programs: unknown[] }) {
                         src={banner}
                         alt={item.judul}
                         fill
-                        sizes="(max-width: 640px) 92vw, (max-width: 1024px) 45vw, 280px"
+                        unoptimized
+                        loading="lazy"
+                        decoding="async"
+                        sizes="(max-width: 640px) 360px, 280px"
                         className="object-cover transition-transform duration-500 group-hover:scale-105"
                       />
                       <div

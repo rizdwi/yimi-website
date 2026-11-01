@@ -1,6 +1,9 @@
 import type { NextConfig } from 'next';
 
 const nextConfig: NextConfig = {
+  experimental: {
+    optimizePackageImports: ['lucide-react'],
+  },
   images: {
     dangerouslyAllowSVG: true,
     formats: ['image/avif', 'image/webp'],
