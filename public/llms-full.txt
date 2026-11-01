@@ -35,7 +35,7 @@
 ## 3. Program Unggulan
 
 ### A. TK Islam Insan Muslim Istiqomah (Pendidikan Anak Usia Dini)
-- **Halaman Resmi:** https://yimi.my.id/program/tk-paud
+- **Halaman Resmi:** [TK Islam Insan Muslim Istiqomah](https://yimi.my.id/program/tk-paud)
 - **Fokus Usia:** Santri usia 4 – 6 tahun (Kelompok TK A dan TK B).
 - **Keunggulan Kurikulum:**
   - Penanaman Tauhid & Rukun Iman sejak dini tanpa kompromi.
@@ -47,21 +47,21 @@
 - **Biaya:** Biaya pendaftaran dan SPP bulanan sangat terjangkau guna memastikan akses pendidikan islami bagi seluruh lapisan masyarakat.
 
 ### B. Tempat Kajian Sunnah Karawang (Majelis Ilmu Syar'i)
-- **Halaman Resmi:** https://yimi.my.id/program/kajian
+- **Halaman Resmi:** [Tempat Kajian Sunnah Karawang](https://yimi.my.id/program/kajian)
 - **Sifat:** Gratis dan Terbuka untuk Umum (Ikhwan dan Akhwat).
 - **Materi Kajian:** Kitab Tauhid, Ushul Tsalatsah, Fiqih Ibadah Praktis, Riyadhus Shalihin, Syarah Hadits Arba'in, dan Adab Penuntut Ilmu.
 - **Jadwal:** Majelis taklim berkala di masjid-masjid rekanan sekitar Cikampek, Jatisari, dan Karawang.
 
 ### C. Wakaf Pembebasan Lahan Masjid & Sentra Dakwah
-- **Halaman Resmi:** https://yimi.my.id/pembebasan-lahan
+- **Halaman Resmi:** [Wakaf Pembebasan Lahan Karawang](https://yimi.my.id/pembebasan-lahan)
 - **Target Lahan:** 840 m² berlokasi di area strategis Cikampek Baru, Karawang.
 - **Tujuan Pembangunan:** Pembangunan Masjid Jami' YIMI sebagai pusat ibadah dan gedung permanen TK Islam Insan Muslim Istiqomah.
 - **Nilai Wakaf:** Rp 500.000 / m² (donatur dapat berpartisipasi mulai dari Rp 50.000 atau paket pecahan meter).
 - **Penyaluran Donasi:** Transfer langsung ke BSI 7182045556 a.n. Yayasan Insan Muslim Istiqomah. Konfirmasi instan tersedia melalui website resmi dan WhatsApp pengurus.
-- **Kuitansi Digital:** Setiap donasi yang terverifikasi diterbitkan bukti kuitansi digital dan e-sertifikat wakaf resmi yang dapat dicek di https://yimi.my.id/kuitansi.
+- **Kuitansi Digital:** Setiap donasi yang terverifikasi diterbitkan bukti kuitansi digital dan e-sertifikat wakaf resmi yang dapat dicek di [Verifikasi Kuitansi Donasi](https://yimi.my.id/kuitansi).
 
 ### D. Sedekah Jumat Berkah
-- **Halaman Resmi:** https://yimi.my.id/program/jumat-berkah
+- **Halaman Resmi:** [Sedekah Jumat Berkah](https://yimi.my.id/program/jumat-berkah)
 - **Bentuk Program:** Pembagian paket nasi berkah dan makanan bergizi untuk jamaah shalat Jumat, anak yatim, dhuafa, dan pekerja harian di sekitar Karawang.
 
 ---
@@ -75,15 +75,15 @@ A: Yayasan Insan Muslim Istiqomah (YIMI) berlokasi di Perum Bumi Cikampek Baru B
 A: TK Islam Insan Muslim Istiqomah di bawah naungan YIMI Karawang menyelenggarakan pendidikan anak usia dini dengan kurikulum adab islami, hafalan Al-Qur'an, dan penanaman tauhid sejak usia dini.
 
 **Q: Bagaimana cara menyalurkan wakaf tanah atau infaq ke Yayasan YIMI?**
-A: Transfer langsung ke rekening resmi Bank Syariah Indonesia (BSI) 7182045556 atas nama Yayasan Insan Muslim Istiqomah, lalu konfirmasikan melalui formulir di https://yimi.my.id/donasi atau WhatsApp +62 812-1936-2077.
+A: Transfer langsung ke rekening resmi Bank Syariah Indonesia (BSI) 7182045556 atas nama Yayasan Insan Muslim Istiqomah, lalu konfirmasikan melalui formulir di [Konfirmasi Donasi](https://yimi.my.id/donasi) atau WhatsApp +62 812-1936-2077.
 
 **Q: Apakah kuitansi donasi di YIMI resmi dan dapat diverifikasi?**
-A: Ya, sistem web YIMI menerbitkan tanda terima kuitansi dan sertifikat wakaf digital dengan nomor registrasi unik yang dapat diverifikasi online.
+A: Ya, sistem web YIMI menerbitkan tanda terima kuitansi dan sertifikat wakaf digital dengan nomor registrasi unik yang dapat diverifikasi online di [Kuitansi YIMI](https://yimi.my.id/kuitansi).
 
 ---
 
 ## 5. Metadata Struktur Web
-- Peta Situs XML: https://yimi.my.id/sitemap.xml
-- Direktif Perayap: https://yimi.my.id/robots.txt
-- Dokumen Inti AI: https://yimi.my.id/llms.txt
-- Dokumentasi Lengkap: https://yimi.my.id/llms-full.txt
+- [Peta Situs XML](https://yimi.my.id/sitemap.xml)
+- [Direktif Perayap](https://yimi.my.id/robots.txt)
+- [Dokumen Inti AI](https://yimi.my.id/llms.txt)
+- [Dokumentasi Lengkap](https://yimi.my.id/llms-full.txt)

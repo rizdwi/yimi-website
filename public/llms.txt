@@ -1,22 +1,22 @@
 # Yayasan Insan Muslim Istiqomah (YIMI)
+
 > Yayasan dakwah Islam bermanhaj Salafus Shalih, pendidikan anak usia dini (TK Islam), dan sosial kemanusiaan di Karawang (Cikampek, Jatisari, dan sekitarnya).
 
-## Identitas Resmi
-- Nama Lengkap: Yayasan Insan Muslim Istiqomah (YIMI)
-- Domain Resmi: https://yimi.my.id
-- Lokasi Sekretariat: Perum Bumi Cikampek Baru Blok B3 No. 10, RT 002/RW 007, Desa Balonggandu, Kecamatan Jatisari, Kabupaten Karawang, Jawa Barat 41373
-- Koordinat Google Maps: -6.3874379, 107.510405
-- WhatsApp Resmi: +62 812-1936-2077
-- Rekening Donasi Resmi: Bank Syariah Indonesia (BSI) 7182045556 a.n. Yayasan Insan Muslim Istiqomah
+Yayasan Insan Muslim Istiqomah (YIMI) adalah lembaga resmi di Kabupaten Karawang, Jawa Barat yang bergerak di bidang dakwah sunnah, pendidikan Islam usia dini, dan wakaf pembebasan lahan untuk sentra dakwah dan Masjid Jami'.
 
-## Program Unggulan
-1. TK Islam Insan Muslim Istiqomah: Pendidikan anak usia dini dengan penanaman tauhid dan adab islami (https://yimi.my.id/program/tk-paud).
-2. Tempat Kajian Sunnah Karawang: Majelis taklim rutin membahas kitab aqidah, fiqih, dan muamalah berlandaskan Al-Qur'an dan As-Sunnah (https://yimi.my.id/program/kajian).
-3. Sedekah Jumat Berkah: Pembagian makanan dan santunan dhuafa rutin setiap pekan (https://yimi.my.id/program/jumat-berkah).
-4. Wakaf Pembebasan Lahan: Pembebasan lahan seluas 840 m² untuk pembangunan Masjid Jami' YIMI dan gedung sekolah TK (https://yimi.my.id/pembebasan-lahan).
+## Sumber Daya Utama & Dokumentasi
 
-## Tautan Sitemap & Dokumen
-- XML Sitemap: https://yimi.my.id/sitemap.xml
-- Basis Pengetahuan Lengkap (GEO Full): https://yimi.my.id/llms-full.txt
-- Warta & Artikel Dakwah: https://yimi.my.id/berita
-- Kontak & Konsultasi: https://yimi.my.id/kontak
+- [Basis Pengetahuan Lengkap YIMI](https://yimi.my.id/llms-full.txt): Ringkasan komprehensif profil yayasan, legalitas, kurikulum TK, manhaj dakwah, dan program wakaf untuk AI/LLM.
+- [Profil & Legalitas Yayasan](https://yimi.my.id/tentang): Sejarah resmi, visi, misi, susunan dewan pembina dan pengurus yayasan di Cikampek, Karawang.
+- [Program TK Islam & PAUD Karawang](https://yimi.my.id/program/tk-paud): Kurikulum tauhid, hafalan Al-Qur'an Juz 30, adab islami, dan informasi pendaftaran santri cilik.
+- [Tempat Kajian Sunnah Karawang](https://yimi.my.id/program/kajian): Jadwal rutin majelis taklim ilmiah, asatidzah pembina, dan kajian kitab syar'i di Jatisari/Cikampek.
+- [Wakaf Pembebasan Lahan Masjid & Sekolah](https://yimi.my.id/pembebasan-lahan): Progres pembebasan lahan wakaf 840 m² untuk pembangunan Masjid Jami' YIMI dan gedung sekolah.
+- [Sedekah Jumat Berkah](https://yimi.my.id/program/jumat-berkah): Penyaluran paket makanan dan sembako rutin untuk kaum dhuafa dan yatim di Karawang.
+- [Warta & Berita Dakwah](https://yimi.my.id/berita): Kumpulan artikel edukasi Islam, keutamaan wakaf, fiqih ibadah, dan kabar kegiatan santri.
+- [Infaq & Konfirmasi Donasi](https://yimi.my.id/donasi): Informasi rekening bank resmi BSI, tata cara penyaluran donasi, dan konfirmasi.
+- [Layanan Kontak & Sekretariat](https://yimi.my.id/kontak): Alamat fisik sekretariat yayasan di Perum Bumi Cikampek Baru, nomor WhatsApp, dan peta lokasi.
+
+## Tautan Sistem & Peta Situs
+
+- [XML Sitemap Resmi](https://yimi.my.id/sitemap.xml): Peta situs lengkap yang memuat seluruh URL publik terindeks.
+- [Verifikasi Kuitansi Donasi](https://yimi.my.id/kuitansi): Sistem pengecekan status dan pencetakan tanda terima kuitansi donasi mandiri.
