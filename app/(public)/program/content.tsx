@@ -39,9 +39,9 @@ interface ProgramDetailItem {
   href: string;
 }
 
-export default function ProgramIndexPage() {
-  // CMS adalah sumber kebenaran: mulai kosong, isi dari API.
-  const [programs, setPrograms] = useState<ProgramDetailItem[]>([]);
+export default function ProgramIndexPage({ initialPrograms }: { initialPrograms?: ProgramDetailItem[] }) {
+  // Jika server sudah memberikan initialPrograms (SSR untuk Googlebot & fast load), langsung gunakan
+  const [programs, setPrograms] = useState<ProgramDetailItem[]>(initialPrograms || []);
 
   useEffect(() => {
     async function fetchLivePrograms() {
@@ -49,8 +49,9 @@ export default function ProgramIndexPage() {
         const res = await fetch('/api/programs', { cache: 'no-store' });
         if (res.ok) {
           const data = await res.json();
-          // Hormati CMS: kosong → kosong (jangan fallback ke data lokal basi)
-          setPrograms(Array.isArray(data.programs) ? data.programs : []);
+          if (Array.isArray(data.programs)) {
+            setPrograms(data.programs);
+          }
         }
       } catch (err) {
         console.error('Gagal mengambil daftar program:', err);

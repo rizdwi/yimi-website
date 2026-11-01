@@ -60,9 +60,9 @@ function GalleryPhotoCard({ photo, onSelect }: { photo: GalleryPhotoItemLocal; o
   );
 }
 
-export default function GaleriPage() {
-  // CMS adalah sumber kebenaran: mulai kosong, isi dari API.
-  const [photos, setPhotos] = useState<GalleryPhotoItemLocal[]>([]);
+export default function GaleriPage({ initialPhotos }: { initialPhotos?: GalleryPhotoItemLocal[] }) {
+  // Jika server sudah memberikan initialPhotos (SSR untuk Googlebot & fast load), langsung gunakan
+  const [photos, setPhotos] = useState<GalleryPhotoItemLocal[]>(initialPhotos || []);
   const [selectedCategory, setSelectedCategory] = useState<string>('Semua');
   const [activePhoto, setActivePhoto] = useState<GalleryPhotoItemLocal | null>(null);
 
@@ -72,18 +72,19 @@ export default function GaleriPage() {
         const res = await fetch('/api/galeri');
         if (res.ok) {
           const data = await res.json();
-          // Hormati CMS: kosong → kosong (jangan fallback ke data lokal basi)
-          setPhotos(
-            (data.items || []).map((i: { id: string; judul: string; keterangan?: string; deskripsi?: string; gambar: string; kategori: string; izin_orang_tua?: boolean; izinOrangTua?: boolean; tanggal?: string }) => ({
-              id: i.id,
-              judul: i.judul,
-              deskripsi: i.keterangan || i.deskripsi || '',
-              gambar: i.gambar,
-              kategori: i.kategori,
-              izinOrangTua: i.izin_orang_tua ?? i.izinOrangTua ?? true,
-              tanggal: i.tanggal,
-            }))
-          );
+          if (Array.isArray(data.items)) {
+            setPhotos(
+              data.items.map((i: { id: string; judul: string; keterangan?: string; deskripsi?: string; gambar: string; kategori: string; izin_orang_tua?: boolean; izinOrangTua?: boolean; tanggal?: string }) => ({
+                id: i.id,
+                judul: i.judul,
+                deskripsi: i.keterangan || i.deskripsi || '',
+                gambar: i.gambar,
+                kategori: i.kategori,
+                izinOrangTua: i.izin_orang_tua ?? i.izinOrangTua ?? true,
+                tanggal: i.tanggal,
+              }))
+            );
+          }
         }
       } catch (err) {
         console.error('Failed to load photos:', err);

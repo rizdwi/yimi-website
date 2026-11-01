@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import { constructMetadata } from '@/lib/seo';
 import { FaqJsonLd } from '@/components/seo/FaqJsonLd';
+import { BreadcrumbJsonLd } from '@/components/seo/BreadcrumbJsonLd';
 import KajianProgramPage from './content';
 
 // Metadata unik per halaman (wajib: satu title & description unik, canonical).
@@ -14,6 +15,13 @@ export const metadata: Metadata = constructMetadata({
 export default function Page() {
   return (
     <>
+      <BreadcrumbJsonLd
+        items={[
+          { name: 'Beranda', item: '/' },
+          { name: 'Program Kerja', item: '/program' },
+          { name: 'Tempat Kajian Sunnah', item: '/program/kajian' },
+        ]}
+      />
       <FaqJsonLd
         faqs={[
           {

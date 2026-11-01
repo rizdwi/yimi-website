@@ -81,10 +81,9 @@ const jsonLd = {
         { '@type': 'City', name: 'Cilamaya' },
       ],
       sameAs: [
-        siteData.sosmed.instagram,
-        siteData.sosmed.youtube,
-        siteData.sosmed.facebook,
-        siteData.sosmed.telegram,
+        'https://www.instagram.com/yayasaninsanmuslimistiqamah',
+        'https://facebook.com/yimi.official',
+        'https://t.me/yimidakwah',
       ],
     },
     {

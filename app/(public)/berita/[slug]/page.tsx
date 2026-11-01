@@ -14,6 +14,7 @@ import siteData from '@/content/site.json';
 import { extractGalleryFromPost } from '@/lib/news';
 import { NewsGallery } from '@/components/news/NewsGallery';
 import { ArticleInteractions } from '@/components/news/ArticleInteractions';
+import { BreadcrumbJsonLd } from '@/components/seo/BreadcrumbJsonLd';
 
 const FALLBACK_IMAGE = '/images/og-default.jpg';
 
@@ -210,6 +211,13 @@ export default async function BeritaDetailPage({ params }: Props) {
 
   return (
     <div className="pt-[72px] pb-24 bg-white">
+      <BreadcrumbJsonLd
+        items={[
+          { name: 'Beranda', item: '/' },
+          { name: 'Warta & Artikel', item: '/berita' },
+          { name: article.judul, item: `/berita/${article.slug}` },
+        ]}
+      />
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(newsJsonLd) }}

@@ -23,16 +23,19 @@ interface NewsItem {
   ringkasan: string;
 }
 
-export default function BeritaPage() {
-  // CMS adalah sumber kebenaran: mulai kosong, isi dari API.
-  const [newsList, setNewsList] = useState<NewsItem[]>([]);
-  const [loading, setLoading] = useState(true);
+export default function BeritaPage({ initialNews }: { initialNews?: NewsItem[] }) {
+  // Jika server sudah memberikan initialNews (SSR untuk Googlebot & fast load), langsung gunakan
+  const [newsList, setNewsList] = useState<NewsItem[]>(initialNews || []);
+  const [loading, setLoading] = useState(initialNews ? false : true);
   const [loadError, setLoadError] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState<string>('Semua');
   const [searchQuery, setSearchQuery] = useState<string>('');
 
   const fetchNews = async (retry = true) => {
-    setLoading(true);
+    // Jika sudah ada data dari SSR, jangan tampilkan skeleton loading yang merusak layout
+    if (!initialNews || initialNews.length === 0) {
+      setLoading(true);
+    }
     setLoadError(false);
     try {
       const res = await fetch('/api/berita');
@@ -40,22 +43,25 @@ export default function BeritaPage() {
       const ct = res.headers.get('content-type') || '';
       if (!ct.includes('application/json')) throw new Error('respons bukan JSON');
       const data = await res.json();
-      // Hormati CMS: kosong → kosong (jangan fallback ke data lokal basi)
-      setNewsList(Array.isArray(data.news) ? data.news : []);
+      if (Array.isArray(data.news)) {
+        setNewsList(data.news);
+      }
     } catch (err) {
       console.error('Gagal mengambil daftar berita live:', err);
       if (retry) {
-        // Coba sekali lagi setelah 1,5 dtk (gagal transient, mis. challenge CDN sesaat)
         await new Promise((r) => setTimeout(r, 1500));
         return fetchNews(false);
       }
-      setLoadError(true);
+      if (!initialNews || initialNews.length === 0) {
+        setLoadError(true);
+      }
     } finally {
       setLoading(false);
     }
   };
 
   useEffect(() => {
+    // Jalankan fetch background untuk sinkronisasi views/likes terbaru
     fetchNews();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);

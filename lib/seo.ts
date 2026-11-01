@@ -26,13 +26,16 @@ export function constructMetadata({
     : `${siteData.namaLengkap} (${siteData.singkatan}) | ${siteData.tagline}`;
 
   const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://yimi.my.id';
-  const canonicalUrl = canonical ? `${baseUrl}${canonical}` : undefined;
+  const canonicalUrl = canonical ? `${baseUrl}${canonical.startsWith('/') ? canonical : `/${canonical}`}` : undefined;
 
   return {
     metadataBase: new URL(baseUrl),
     title: fullTitle,
     description,
     alternates: canonicalUrl ? { canonical: canonicalUrl } : undefined,
+    authors: [{ name: siteData.namaLengkap, url: baseUrl }],
+    creator: siteData.namaLengkap,
+    publisher: siteData.namaLengkap,
     openGraph: {
       title: fullTitle,
       description,
@@ -40,7 +43,7 @@ export function constructMetadata({
       url: canonicalUrl,
       images: [
         {
-          url: image,
+          url: image.startsWith('http') ? image : `${baseUrl}${image.startsWith('/') ? image : `/${image}`}`,
           width: 1200,
           height: 630,
           alt: fullTitle,
@@ -54,11 +57,24 @@ export function constructMetadata({
       card: 'summary_large_image',
       title: fullTitle,
       description,
-      images: [image],
+      images: [image.startsWith('http') ? image : `${baseUrl}${image.startsWith('/') ? image : `/${image}`}`],
     },
     robots: {
       index: !noIndex,
       follow: !noIndex,
+      googleBot: {
+        index: !noIndex,
+        follow: !noIndex,
+        'max-video-preview': -1,
+        'max-image-preview': 'large',
+        'max-snippet': -1,
+      },
+    },
+    verification: {
+      google: [
+        'ckxxJLgzLrzcG9WpwYR1TNKsmQtoOdsbDXsutddyC1U',
+        '1GeKB4zQj9o8YrbhCd606JEbzUCXZ9DaMmy4Z5yzBps',
+      ],
     },
     icons: {
       icon: '/icon.png',

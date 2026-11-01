@@ -35,19 +35,20 @@ function toDate(value?: string | null): Date | undefined {
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://yimi.my.id';
+  const now = new Date();
 
   const staticRoutes: MetadataRoute.Sitemap = [
-    { url: baseUrl, changeFrequency: 'daily', priority: 1.0 },
-    { url: `${baseUrl}/tentang`, changeFrequency: 'monthly', priority: 0.8 },
-    { url: `${baseUrl}/program`, changeFrequency: 'weekly', priority: 0.8 },
-    { url: `${baseUrl}/program/tk-paud`, changeFrequency: 'monthly', priority: 0.7 },
-    { url: `${baseUrl}/program/jumat-berkah`, changeFrequency: 'weekly', priority: 0.7 },
-    { url: `${baseUrl}/program/kajian`, changeFrequency: 'weekly', priority: 0.8 },
-    { url: `${baseUrl}/pembebasan-lahan`, changeFrequency: 'daily', priority: 0.9 },
-    { url: `${baseUrl}/berita`, changeFrequency: 'daily', priority: 0.8 },
-    { url: `${baseUrl}/galeri`, changeFrequency: 'weekly', priority: 0.7 },
-    { url: `${baseUrl}/donasi`, changeFrequency: 'monthly', priority: 0.8 },
-    { url: `${baseUrl}/kontak`, changeFrequency: 'monthly', priority: 0.6 },
+    { url: baseUrl, lastModified: now, changeFrequency: 'daily', priority: 1.0 },
+    { url: `${baseUrl}/tentang`, lastModified: now, changeFrequency: 'monthly', priority: 0.8 },
+    { url: `${baseUrl}/program`, lastModified: now, changeFrequency: 'weekly', priority: 0.8 },
+    { url: `${baseUrl}/program/tk-paud`, lastModified: now, changeFrequency: 'monthly', priority: 0.8 },
+    { url: `${baseUrl}/program/jumat-berkah`, lastModified: now, changeFrequency: 'weekly', priority: 0.7 },
+    { url: `${baseUrl}/program/kajian`, lastModified: now, changeFrequency: 'weekly', priority: 0.9 },
+    { url: `${baseUrl}/pembebasan-lahan`, lastModified: now, changeFrequency: 'daily', priority: 0.9 },
+    { url: `${baseUrl}/berita`, lastModified: now, changeFrequency: 'daily', priority: 0.8 },
+    { url: `${baseUrl}/galeri`, lastModified: now, changeFrequency: 'weekly', priority: 0.7 },
+    { url: `${baseUrl}/donasi`, lastModified: now, changeFrequency: 'monthly', priority: 0.8 },
+    { url: `${baseUrl}/kontak`, lastModified: now, changeFrequency: 'monthly', priority: 0.7 },
   ];
 
   // Gabung artikel lokal + artikel CMS, hilangkan duplikat slug.
@@ -60,9 +61,9 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     seen.add(post.slug);
     newsRoutes.push({
       url: `${baseUrl}/berita/${post.slug}`,
-      lastModified: toDate(post.updated_at) || toDate(post.terbit_pada) || toDate(post.created_at),
-      changeFrequency: 'monthly',
-      priority: 0.6,
+      lastModified: toDate(post.updated_at) || toDate(post.terbit_pada) || toDate(post.created_at) || now,
+      changeFrequency: 'weekly',
+      priority: 0.7,
     });
   }
 
@@ -71,7 +72,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     seen.add(article.slug);
     newsRoutes.push({
       url: `${baseUrl}/berita/${article.slug}`,
-      lastModified: toDate(article.tanggal),
+      lastModified: toDate(article.tanggal) || now,
       changeFrequency: 'monthly',
       priority: 0.6,
     });

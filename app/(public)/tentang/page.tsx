@@ -9,13 +9,15 @@ import { constructMetadata } from '@/lib/seo';
 import aboutData from '@/content/about.json';
 import siteData from '@/content/site.json';
 import { supabase } from '@/lib/supabase';
+import { BreadcrumbJsonLd } from '@/components/seo/BreadcrumbJsonLd';
 
-export const dynamic = 'force-dynamic';
+export const revalidate = 60;
 
 export const metadata: Metadata = constructMetadata({
   title: 'Tentang Yayasan & Manhaj Dakwah',
   description:
     'Profil Yayasan Insan Muslim Istiqomah: visi, misi, manhaj dakwah di atas sunnah, susunan pengurus, dan makna lambang yayasan.',
+  canonical: '/tentang',
 });
 
 interface AboutContent {
@@ -175,6 +177,12 @@ export default async function TentangPage() {
 
   return (
     <div className="pt-[72px]">
+      <BreadcrumbJsonLd
+        items={[
+          { name: 'Beranda', item: '/' },
+          { name: 'Tentang Yayasan & Manhaj', item: '/tentang' },
+        ]}
+      />
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }}

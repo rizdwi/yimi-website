@@ -169,7 +169,7 @@ async function getTarifLahanLabel(): Promise<string> {
   return cadangan > 0 ? `${formatRupiah(cadangan)} / m²` : '';
 }
 
-async function getPrograms(): Promise<unknown[]> {
+export async function getPrograms(): Promise<unknown[]> {
   const tarifLabel = await getTarifLahanLabel();
   try {
     const { data, error } = await supabase
