@@ -86,53 +86,58 @@ export default function ProgramIndexPage({ initialPrograms }: { initialPrograms?
               const IconComponent = iconMap[iconKey] || BookOpen;
 
               return (
-                <Card
+                <Link
                   key={item.id}
-                  hoverEffect
-                  className="p-8 flex flex-col justify-between border-neutral-200/80 hover:border-yimi-blue-600/30 group"
+                  href={item.href}
+                  className="group block h-full focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-yimi-blue-500 rounded-2xl"
+                  aria-label={`Program ${item.judul} - ${item.highlight}`}
                 >
-                  <div>
-                    <div className="flex items-center justify-between mb-6">
-                      <div className="w-14 h-14 rounded-2xl bg-yimi-blue-50 text-yimi-green-700 flex items-center justify-center group-hover:bg-yimi-blue-600 group-hover:text-white transition-colors duration-300">
-                        <IconComponent className="w-7 h-7 stroke-[1.75]" />
+                  <Card
+                    hoverEffect
+                    className="p-8 h-full flex flex-col justify-between border-neutral-200/80 hover:border-yimi-blue-600/30"
+                  >
+                    <div>
+                      <div className="flex items-center justify-between mb-6">
+                        <div className="w-14 h-14 rounded-2xl bg-yimi-blue-50 text-yimi-green-700 flex items-center justify-center group-hover:bg-yimi-blue-600 group-hover:text-white transition-colors duration-300">
+                          <IconComponent className="w-7 h-7 stroke-[1.75]" />
+                        </div>
+                        <Badge variant="blue">{item.kategori}</Badge>
                       </div>
-                      <Badge variant="blue">{item.kategori}</Badge>
+
+                      <h2 className="text-2xl font-bold text-yimi-blue-800 mb-3 group-hover:text-yimi-blue-600 transition-colors">
+                        {item.judul}
+                      </h2>
+
+                      <p className="text-sm sm:text-base text-neutral-600 leading-relaxed mb-6">
+                        {item.ringkasan}
+                      </p>
+
+                      <div className="flex flex-wrap items-center gap-2 mb-6">
+                        <span className="text-xs font-bold text-neutral-500 uppercase tracking-wider">
+                          Fokus:
+                        </span>
+                        <span className="text-xs font-semibold px-2.5 py-1 rounded-md bg-neutral-100 text-neutral-700">
+                          {item.targetUsia}
+                        </span>
+                        <span className="text-xs font-semibold px-2.5 py-1 rounded-md bg-emerald-50 text-yimi-green-700">
+                          {item.highlight}
+                        </span>
+                      </div>
                     </div>
 
-                    <h2 className="text-2xl font-bold text-yimi-blue-800 mb-3 group-hover:text-yimi-blue-600 transition-colors">
-                      {item.judul}
-                    </h2>
-
-                    <p className="text-sm sm:text-base text-neutral-600 leading-relaxed mb-6">
-                      {item.ringkasan}
-                    </p>
-
-                    <div className="flex flex-wrap items-center gap-2 mb-6">
-                      <span className="text-xs font-bold text-neutral-500 uppercase tracking-wider">
-                        Fokus:
+                    <div className="pt-6 border-t border-neutral-100 flex items-center justify-between">
+                      <span className="text-xs font-semibold text-neutral-500">
+                        {item.tag}
                       </span>
-                      <span className="text-xs font-semibold px-2.5 py-1 rounded-md bg-neutral-100 text-neutral-700">
-                        {item.targetUsia}
-                      </span>
-                      <span className="text-xs font-semibold px-2.5 py-1 rounded-md bg-emerald-50 text-yimi-green-700">
-                        {item.highlight}
+                      <span
+                        className="inline-flex items-center gap-1.5 text-sm font-bold text-yimi-blue-600 group-hover:text-yimi-blue-800 transition-colors"
+                      >
+                        <span>Lihat Selengkapnya</span>
+                        <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
                       </span>
                     </div>
-                  </div>
-
-                  <div className="pt-6 border-t border-neutral-100 flex items-center justify-between">
-                    <span className="text-xs font-semibold text-neutral-500">
-                      {item.tag}
-                    </span>
-                    <Link
-                      href={item.href}
-                      className="inline-flex items-center gap-1.5 text-sm font-bold text-yimi-blue-600 group-hover:text-yimi-blue-800 transition-colors"
-                    >
-                      <span>Lihat Selengkapnya</span>
-                      <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
-                    </Link>
-                  </div>
-                </Card>
+                  </Card>
+                </Link>
               );
             })}
           </div>
