@@ -15,12 +15,12 @@ import { Badge } from '@/components/ui/Badge';
 
 /** Banner tematik per slug program (halaman detail program). */
 const programBanner: Record<string, string> = {
-  'tk-paud': '/images/banners/tk-paud.jpg',
-  'tk': '/images/banners/tk-paud.jpg',
-  'kajian': '/images/banners/kajian.jpg',
-  'jumat-berkah': '/images/banners/jumat-berkah.jpg',
-  'pembebasan-lahan': '/images/banners/pembebasan-lahan.jpg',
-  'wakaf': '/images/banners/pembebasan-lahan.jpg',
+  'tk-paud': '/images/banners/tk-paud.webp',
+  'tk': '/images/banners/tk-paud.webp',
+  'kajian': '/images/banners/kajian.webp',
+  'jumat-berkah': '/images/banners/jumat-berkah.webp',
+  'pembebasan-lahan': '/images/banners/pembebasan-lahan.webp',
+  'wakaf': '/images/banners/pembebasan-lahan.webp',
 };
 
 const iconMap = {
