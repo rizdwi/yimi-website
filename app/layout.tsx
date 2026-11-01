@@ -52,12 +52,12 @@ const jsonLd = {
   '@graph': [
     {
       // Nama situs resmi untuk tampilan hasil pencarian Google
-      // (perintah user 2026-10-31: ganti "yimi.my.id" jadi nama yayasan).
+      // (perintah user: ganti "yimi.my.id" jadi nama yayasan resmi di Google Site Name).
       '@type': 'WebSite',
       '@id': `${baseUrl}/#website`,
-      url: baseUrl,
+      url: `${baseUrl}/`,
       name: siteData.namaLengkap,
-      alternateName: siteData.singkatan,
+      alternateName: [siteData.singkatan, 'Insan Muslim Istiqomah'],
       publisher: { '@id': `${baseUrl}/#yayasan` },
       inLanguage: 'id',
     },

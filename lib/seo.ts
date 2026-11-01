@@ -32,6 +32,12 @@ export function constructMetadata({
     metadataBase: new URL(baseUrl),
     title: fullTitle,
     description,
+    applicationName: siteData.namaLengkap,
+    appleWebApp: {
+      title: siteData.namaLengkap,
+      capable: true,
+      statusBarStyle: 'default',
+    },
     alternates: canonicalUrl ? { canonical: canonicalUrl } : undefined,
     authors: [{ name: siteData.namaLengkap, url: baseUrl }],
     creator: siteData.namaLengkap,
