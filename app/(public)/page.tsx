@@ -23,7 +23,7 @@ const ContactCta = dynamic(() =>
 export const revalidate = 60;
 
 export const metadata: Metadata = constructMetadata({
-  title: 'Yayasan Islam Karawang & Cikampek | YIMI',
+  title: 'Yayasan Islam Karawang & Cikampek',
   description:
     'Yayasan Insan Muslim Istiqomah (YIMI) — yayasan dakwah Islam bermanhaj Salafus Shalih di Karawang & Cikampek. Pusat kajian sunnah, TK Islam Karawang, dan wakaf pembebasan lahan.',
   canonical: '/',
