@@ -167,7 +167,7 @@ export default function TkPaudPage() {
   return (
     <div className="pt-[72px]">
       <PageHero
-        image="/images/banners/tk-paud.jpg"
+        image="/images/banners/tk-paud.webp"
         imageAlt="Ruang kelas TK yang hangat dengan buku dan mainan edukasi Islami"
         badge={
           <>

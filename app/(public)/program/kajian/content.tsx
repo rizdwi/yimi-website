@@ -75,7 +75,7 @@ export default function KajianProgramPage() {
   return (
     <div className="pt-[72px]">
       <PageHero
-        image="/images/banners/kajian.jpg"
+        image="/images/banners/kajian.webp"
         imageAlt="Kitab-kitab klasik dan tasbih di atas rehal kayu dengan cahaya hangat"
         badge={
           <>

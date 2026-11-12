@@ -14,7 +14,7 @@ import { BreadcrumbJsonLd } from '@/components/seo/BreadcrumbJsonLd';
 export const revalidate = 60;
 
 export const metadata: Metadata = constructMetadata({
-  title: 'Yayasan Islam Karawang: Profil & Legalitas YIMI Cikampek',
+  title: 'Profil & Legalitas Yayasan Islam Karawang',
   description:
     'Profil resmi Yayasan Islam Karawang — Insan Muslim Istiqomah (YIMI): visi, misi dakwah sunnah salaf, susunan pengurus, legalitas SK Kemenkumham, dan kantor sekretariat di Cikampek.',
   canonical: '/tentang',
@@ -189,7 +189,7 @@ export default async function TentangPage() {
       />
       {/* Subpage Hero (Height 320px) */}
       <PageHero
-        image="/images/banners/tentang.jpg"
+        image="/images/banners/tentang.webp"
         imageAlt="Al-Qur'an bercahaya dengan ornamen geometris Islami"
         badge={
           <>

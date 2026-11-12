@@ -113,7 +113,7 @@ export default function GaleriPage({ initialPhotos }: { initialPhotos?: GalleryP
     <div className="pt-[72px]">
       {/* Subpage Hero */}
       <PageHero
-        image="/images/banners/galeri.jpg"
+        image="/images/banners/galeri.webp"
         imageAlt="Dinding galeri dengan bingkai foto emas"
         badge={
           <>

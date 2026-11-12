@@ -33,9 +33,13 @@ export async function getAllNews(): Promise<NewsListItem[]> {
     if (!error && data && data.length > 0) {
       return data.map((post) => {
         const { cleanIsi, galeri } = extractGalleryFromPost(post.gambar_utama, post.isi);
+        const finalSlug =
+          post.slug === 'y'
+            ? 'yayasan-islam-karawang-berdakwah-dan-mendidik-sesuai-sunnah-di-tengah-umat'
+            : post.slug;
         return {
           id: post.id,
-          slug: post.slug,
+          slug: finalSlug,
           judul: post.judul,
           tanggal: post.terbit_pada || (post.created_at ? post.created_at.split('T')[0] : '2026-10-09'),
           penulis: post.penulis || 'Tim Dakwah YIMI',

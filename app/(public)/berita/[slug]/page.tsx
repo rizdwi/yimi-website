@@ -62,20 +62,28 @@ function renderInline(text: string): React.ReactNode {
 }
 
 async function getArticle(slug: string): Promise<ArticleItem | null> {
+  const isTargetAlias =
+    slug === 'yayasan-islam-karawang-berdakwah-dan-mendidik-sesuai-sunnah-di-tengah-umat';
+  const querySlugs = isTargetAlias ? [slug, 'y'] : [slug];
+
   try {
     const { data: post, error } = await supabase
       .from('news_posts')
       .select('*')
-      .eq('slug', slug)
+      .in('slug', querySlugs)
       .eq('status', 'terbit')
       .maybeSingle();
 
     if (!error && post) {
       const { cleanIsi, galeri } = extractGalleryFromPost(post.gambar_utama, post.isi);
+      const postSlug =
+        post.slug === 'y'
+          ? 'yayasan-islam-karawang-berdakwah-dan-mendidik-sesuai-sunnah-di-tengah-umat'
+          : post.slug;
 
       return {
         id: post.id,
-        slug: post.slug,
+        slug: postSlug,
         judul: post.judul,
         tanggal: post.terbit_pada || (post.created_at ? post.created_at.split('T')[0] : '2026-10-09'),
         penulis: post.penulis || 'Tim Dakwah YIMI',
@@ -104,19 +112,27 @@ async function getArticle(slug: string): Promise<ArticleItem | null> {
 }
 
 async function getRelatedArticles(currentSlug: string): Promise<ArticleItem[]> {
+  const excludeSlugs =
+    currentSlug === 'yayasan-islam-karawang-berdakwah-dan-mendidik-sesuai-sunnah-di-tengah-umat'
+      ? [currentSlug, 'y']
+      : [currentSlug];
+
   try {
     const { data, error } = await supabase
       .from('news_posts')
       .select('*')
       .eq('status', 'terbit')
-      .neq('slug', currentSlug)
+      .not('slug', 'in', `(${excludeSlugs.join(',')})`)
       .order('terbit_pada', { ascending: false })
       .limit(2);
 
     if (!error && data && data.length > 0) {
       return data.map((post) => ({
         id: post.id,
-        slug: post.slug,
+        slug:
+          post.slug === 'y'
+            ? 'yayasan-islam-karawang-berdakwah-dan-mendidik-sesuai-sunnah-di-tengah-umat'
+            : post.slug,
         judul: post.judul,
         tanggal: post.terbit_pada || (post.created_at ? post.created_at.split('T')[0] : '2026-10-09'),
         penulis: post.penulis || 'Tim Dakwah YIMI',

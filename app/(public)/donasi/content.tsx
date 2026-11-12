@@ -91,7 +91,7 @@ export default function DonasiPage() {
     <div className="pt-[72px]">
       {/* Subpage Hero */}
       <PageHero
-        image="/images/banners/donasi.jpg"
+        image="/images/banners/donasi.webp"
         imageAlt="Kotak donasi dengan simbol hati bercahaya, semangat berbagi"
         badge={
           <>

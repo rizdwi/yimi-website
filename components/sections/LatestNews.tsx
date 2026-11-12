@@ -54,8 +54,13 @@ export function LatestNews({ news }: { news: unknown[] }) {
 
         {/* 3 News Cards Grid */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8">
-          {latestThree.map((item) => (
-            <Link key={item.id} href={`/berita/${item.slug}`} className="group block">
+          {latestThree.map((item) => {
+            const itemSlug =
+              item.slug === 'y'
+                ? 'yayasan-islam-karawang-berdakwah-dan-mendidik-sesuai-sunnah-di-tengah-umat'
+                : item.slug;
+            return (
+              <Link key={item.id} href={`/berita/${itemSlug}`} className="group block">
               <Card
                 hoverEffect
                 className="overflow-hidden h-full flex flex-col justify-between border-neutral-200/80 group-hover:border-yimi-blue-600/30"
@@ -106,7 +111,8 @@ export function LatestNews({ news }: { news: unknown[] }) {
                 </div>
               </Card>
             </Link>
-          ))}
+          );
+        })}
         </div>
       </div>
     </section>

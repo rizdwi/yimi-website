@@ -5,7 +5,7 @@ import { BreadcrumbJsonLd } from '@/components/seo/BreadcrumbJsonLd';
 import { FaqJsonLd } from '@/components/seo/FaqJsonLd';
 
 export const metadata: Metadata = constructMetadata({
-  title: 'Wakaf Karawang: Pembebasan Lahan Masjid & Sentra Dakwah YIMI',
+  title: 'Wakaf Pembebasan Lahan Karawang',
   description:
     'Program wakaf Karawang pembebasan lahan 840 m² untuk Masjid Jami’ dan TK Islam YIMI di Cikampek & Jatisari. Pahala jariyah abadi untuk Anda dan keluarga.',
   canonical: '/pembebasan-lahan',

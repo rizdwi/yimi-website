@@ -96,7 +96,7 @@ export default function KontakPage() {
     <div className="pt-[72px]">
       {/* Subpage Hero */}
       <PageHero
-        image="/images/banners/kontak.jpg"
+        image="/images/banners/kontak.webp"
         imageAlt="Gerbang masjid dengan lentera hangat di waktu senja"
         badge={
           <>

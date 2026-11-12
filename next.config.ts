@@ -41,6 +41,12 @@ const nextConfig: NextConfig = {
           '/berita/mencari-tempat-kajian-sunnah-karawang-pahami-keutamaannya',
         permanent: true,
       },
+      {
+        source: '/berita/y',
+        destination:
+          '/berita/yayasan-islam-karawang-berdakwah-dan-mendidik-sesuai-sunnah-di-tengah-umat',
+        permanent: true,
+      },
     ];
   },
   async headers() {

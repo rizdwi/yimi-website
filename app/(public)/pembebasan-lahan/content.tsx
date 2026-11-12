@@ -146,7 +146,7 @@ export default function PembebasanLahanPage() {
   return (
     <div className="flex flex-col min-h-screen">
       <PageHero
-        image="/images/banners/pembebasan-lahan.jpg"
+        image="/images/banners/pembebasan-lahan.webp"
         imageAlt="Pembangunan kubah masjid di atas lahan hijau saat senja"
         align="center"
         badge={

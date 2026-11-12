@@ -117,7 +117,7 @@ export default function JumatBerkahPage() {
   return (
     <div className="pt-[72px]">
       <PageHero
-        image="/images/banners/jumat-berkah.jpg"
+        image="/images/banners/jumat-berkah.webp"
         imageAlt="Paket makanan sedekah yang disiapkan dengan latar masjid di pagi hari"
         badge={
           <>

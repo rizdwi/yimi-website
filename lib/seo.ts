@@ -20,10 +20,16 @@ export function constructMetadata({
   /** Tanggal terbit ISO untuk artikel, mis. '2026-10-11'. */
   publishedTime?: string;
 } = {}): Metadata {
-  // Judul halaman memakai sufiks pendek agar tidak terpotong di hasil pencarian (±60 karakter).
-  const fullTitle = title
-    ? `${title} | ${siteData.singkatan}`
-    : `${siteData.namaLengkap} (${siteData.singkatan}) | ${siteData.tagline}`;
+  // Format judul: jika judul belum memiliki nama lengkap yayasan, sertakan
+  // "Yayasan Insan Muslim Istiqomah" agar Google SERP dan Site Name mengenalinya secara konsisten.
+  let fullTitle: string;
+  if (!title) {
+    fullTitle = `${siteData.namaLengkap} — Yayasan Islam Karawang | yimi.my.id`;
+  } else if (title.includes(siteData.namaLengkap)) {
+    fullTitle = title.includes('yimi.my.id') ? title : `${title} | yimi.my.id`;
+  } else {
+    fullTitle = `${title} | ${siteData.namaLengkap}`;
+  }
 
   const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://yimi.my.id';
   const canonicalUrl = canonical ? `${baseUrl}${canonical.startsWith('/') ? canonical : `/${canonical}`}` : undefined;

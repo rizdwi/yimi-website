@@ -87,7 +87,7 @@ export default function BeritaPage({ initialNews }: { initialNews?: NewsItem[] }
     <div className="pt-[72px]">
       {/* Subpage Hero */}
       <PageHero
-        image="/images/banners/berita.jpg"
+        image="/images/banners/berita.webp"
         imageAlt="Meja tulis dengan buku catatan dan pena, berita dakwah"
         badge={
           <>

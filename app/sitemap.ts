@@ -49,6 +49,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: `${baseUrl}/galeri`, lastModified: now, changeFrequency: 'weekly', priority: 0.7 },
     { url: `${baseUrl}/donasi`, lastModified: now, changeFrequency: 'monthly', priority: 0.8 },
     { url: `${baseUrl}/kontak`, lastModified: now, changeFrequency: 'monthly', priority: 0.7 },
+    { url: `${baseUrl}/kuitansi`, lastModified: now, changeFrequency: 'monthly', priority: 0.7 },
   ];
 
   // Gabung artikel lokal + artikel CMS, hilangkan duplikat slug.
@@ -57,10 +58,16 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const newsRoutes: MetadataRoute.Sitemap = [];
 
   for (const post of cmsPosts) {
-    if (!post.slug || seen.has(post.slug)) continue;
+    if (!post.slug) continue;
+    const finalSlug =
+      post.slug === 'y'
+        ? 'yayasan-islam-karawang-berdakwah-dan-mendidik-sesuai-sunnah-di-tengah-umat'
+        : post.slug;
+    if (seen.has(finalSlug)) continue;
     seen.add(post.slug);
+    seen.add(finalSlug);
     newsRoutes.push({
-      url: `${baseUrl}/berita/${post.slug}`,
+      url: `${baseUrl}/berita/${finalSlug}`,
       lastModified: toDate(post.updated_at) || toDate(post.terbit_pada) || toDate(post.created_at) || now,
       changeFrequency: 'weekly',
       priority: 0.7,

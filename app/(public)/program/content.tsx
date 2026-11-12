@@ -65,7 +65,7 @@ export default function ProgramIndexPage({ initialPrograms }: { initialPrograms?
     <div className="pt-[72px]">
       {/* Hero 320px */}
       <PageHero
-        image="/images/banners/program.jpg"
+        image="/images/banners/program.webp"
         imageAlt="Simbol program dakwah dan sosial: buku, sekolah, dan kubah masjid saat matahari terbit"
         badge={
           <>
